@@ -17,7 +17,7 @@
     .sidebar { width: 248px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 14px 12px; gap: 4px; }
     .ws { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
     .ws:hover { background: var(--bg-hover); }
-    .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f4f5f7; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #1f1f1f; font-size: 13px; font-weight: 600; }
+    .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f0f1f3 !important; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #5a6068 !important; font-size: 13px; font-weight: 400; }
     .ws-name { font-weight: 600; font-size: 14px; flex: 1; }
     .nav { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
     .nav-group-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 14px 8px 5px; }
@@ -43,7 +43,7 @@
     .msg-layout { flex: 1; display: flex; min-width: 0; }
 
     .conv-list { width: 300px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-    .pane-head { padding: 18px 20px; border-bottom: 1px solid var(--border); font-size: 18px; font-weight: 600; }
+    .pane-head { display: flex; align-items: center; height: 52px; flex-shrink: 0; padding: 0 20px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
     .conv { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
     .conv:hover, .conv.active { background: var(--bg-soft); }
     .conv-ic { width: 36px; height: 36px; border-radius: 9px; background: var(--dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -54,18 +54,19 @@
     .conv-time { font-size: 11px; color: var(--muted); align-self: flex-start; margin-top: 2px; }
 
     .thread { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-    .thread-head { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 59px; border-bottom: 1px solid var(--border); }
-    .thread-name { font-size: 15px; font-weight: 600; }
+    .thread-head { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 52px; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    .thread-name { font-size: 13px; font-weight: 500; }
     .thread-menu { border: none; background: transparent; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--muted); display: inline-flex; }
     .thread-menu:hover { background: var(--bg-hover); }
     .thread-body { flex: 1; overflow-y: auto; padding: 20px; }
 
     .banner { display: flex; gap: 10px; background: #eef2fc; border: 1px solid #dbe3f7; border-radius: 10px; padding: 14px 16px; font-size: 13px; color: #2f3b52; line-height: 1.5; margin-bottom: 22px; }
     .banner svg { width: 16px; height: 16px; color: #5b6cf0; flex-shrink: 0; margin-top: 1px; }
+    .banner img { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; display: block; }
     .banner a { color: #2f56c0; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
 
     .msg { display: flex; gap: 12px; }
-    .msg-av { width: 32px; height: 32px; border-radius: 50%; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .msg-av { width: 32px; height: 32px; border-radius: 50%; font-size: 12px; font-weight: 400; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .msg-main { min-width: 0; }
     .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
     .msg-author { font-size: 13.5px; font-weight: 600; }
@@ -78,9 +79,10 @@
     .composer { border-top: 1px solid var(--border); padding: 12px 20px 18px; }
     .composer-inner { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
     .composer-toolbar { display: flex; align-items: center; gap: 2px; padding: 7px 10px; background: var(--bg-soft); border-bottom: 1px solid var(--border); }
-    .tool { width: 26px; height: 26px; border: none; background: transparent; border-radius: 6px; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+    .tool { width: 26px; height: 26px; border: none; background: transparent; border-radius: 6px; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 400; }
     .tool:hover { background: var(--bg-hover); }
     .tool svg { width: 14px; height: 14px; }
+    .tool img { display: block; }
     .composer-body { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; }
     .composer-body textarea { flex: 1; border: none; outline: none; resize: none; font-family: inherit; font-size: 13.5px; color: var(--text); min-height: 40px; max-height: 140px; background: transparent; }
     .composer-body textarea::placeholder { color: #9aa0a6; }
@@ -88,7 +90,7 @@
     .send-btn { width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--dark); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     .right-rail { width: 48px; flex-shrink: 0; border-left: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 6px; }
-    .right-rail .rr-av { width: 28px; height: 28px; border-radius: 50%; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+    .right-rail .rr-av { width: 28px; height: 28px; border-radius: 50%; font-size: 11px; font-weight: 400; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
     .right-rail .rr-btn { width: 32px; height: 32px; border: none; background: transparent; border-radius: 8px; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .right-rail .rr-btn:hover, .right-rail .rr-btn.active { background: var(--bg-hover); color: var(--text); }
   </style>
@@ -105,9 +107,9 @@
       <nav class="nav">
         <a class="nav-item" data-nav="crm.html"><img class="ic" src="assets/crm.svg" alt="" width="16" height="16" />CRM</a>
         <a class="nav-item" data-nav="team.html"><img class="ic" src="assets/team.svg" alt="" width="18" height="18" />Team</a>
-        <a class="nav-item" data-nav="notifications.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B6F76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications</a>
+        <a class="nav-item" data-nav="notifications.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#212B36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications</a>
         <div class="nav-group-label">Apps</div>
-        <a class="nav-item" data-nav="studio.html"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>
+        <a class="nav-item" data-nav="home.html"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>
         <a class="nav-item active"><img class="ic" src="assets/message.svg" alt="" width="18" height="18" />Messages</a>
         <a class="nav-item add" data-nav="studio.html"><img class="ic" src="assets/pls.svg" alt="" width="15" height="15" />Add app</a>
         <div class="nav-group-label">Customize</div>
@@ -141,7 +143,7 @@
           <div class="conv-time">1h</div>
         </div>
         <div class="conv">
-          <div class="conv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="7" height="7" rx="1"/><rect x="13" y="3" width="7" height="7" rx="1"/><rect x="13" y="14" width="7" height="7" rx="1"/><rect x="4" y="14" width="7" height="7" rx="1"/></svg></div>
+          <img src="assets/rocket.svg" width="36" height="36" style="border-radius:9px;flex-shrink:0;display:block" alt="" />
           <div class="conv-body"><div class="conv-name">Rocket Rides (Test Company)</div><div class="conv-sub">Conversation Created</div></div>
           <div class="conv-time">1h</div>
         </div>
@@ -155,7 +157,7 @@
         </div>
         <div class="thread-body">
           <div class="banner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <img src="assets/info.svg" width="16" height="16" alt="" />
             <div>The welcome message below will be sent when the client logs in. You can update the welcome message in your settings or send a message below to overwrite it.<br/><a href="#">Update settings <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
           </div>
           <div class="msg">
@@ -177,12 +179,12 @@
         <div class="composer">
           <div class="composer-inner">
             <div class="composer-toolbar">
-              <button class="tool" style="font-weight:700">B</button>
-              <button class="tool" style="font-style:italic">I</button>
-              <button class="tool" style="text-decoration:underline">U</button>
+              <button class="tool"><img src="assets/Menu-item.svg" width="15" height="15" alt="Bold" /></button>
+              <button class="tool"><img src="assets/ff.svg" width="15" height="15" alt="Italic" /></button>
+              <button class="tool"><img src="assets/underline.svg" width="15" height="15" alt="Underline" /></button>
               <button class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
-              <button class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2M6 18H4l2-3H4"/></svg></button>
-              <button class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+              <button class="tool"><img src="assets/d.svg" width="15" height="15" alt="Numbered list" /></button>
+              <button class="tool"><img src="assets/link.svg" width="15" height="15" alt="Link" /></button>
             </div>
             <div class="composer-body">
               <textarea rows="1" placeholder="Message your client"></textarea>
@@ -234,5 +236,6 @@
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
   </script>
+  <script src="ftux.js"></script>
 </body>
 </html>

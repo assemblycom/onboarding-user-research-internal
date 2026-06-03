@@ -24,7 +24,7 @@
     .sidebar { width: 248px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 14px 12px; gap: 4px; }
     .ws { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
     .ws:hover { background: var(--bg-hover); }
-    .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f4f5f7; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #1f1f1f; font-size: 13px; font-weight: 600; }
+    .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f0f1f3 !important; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #5a6068 !important; font-size: 13px; font-weight: 400; }
     .ws-name { font-weight: 600; font-size: 14px; flex: 1; }
     .nav { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
     .nav-group-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 14px 8px 5px; }
@@ -48,12 +48,13 @@
 
     /* ── Main ── */
     .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-    .crm-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; border-bottom: 1px solid var(--border); gap: 16px; }
-    .crm-title { font-size: 18px; font-weight: 600; }
-    .crm-actions { display: flex; gap: 8px; }
-    .btn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--border); background: #fff; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; font-family: inherit; transition: background 0.12s; white-space: nowrap; }
+    .crm-top { display: flex; align-items: center; justify-content: space-between; height: 52px; flex-shrink: 0; padding: 0 28px; border-bottom: 1px solid var(--border); gap: 24px; }
+    .crm-title { font-size: 13px; font-weight: 500; color: var(--text); }
+    .crm-actions { display: flex; align-items: center; gap: 10px; }
+    .vdivider { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+    .btn { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--border); background: #fff; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--text); cursor: pointer; font-family: inherit; transition: background 0.12s; white-space: nowrap; }
     .btn:hover { background: var(--bg-hover); }
-    .btn svg { width: 14px; height: 14px; color: var(--muted); }
+    .btn svg { width: 12px; height: 12px; color: var(--muted); }
     .btn-dark { background: var(--dark); border-color: var(--dark); color: #fff; }
     .btn-dark svg { color: #fff; }
     .btn-dark:hover { background: #000; }
@@ -68,10 +69,11 @@
     .crm-table th .info { display: inline-flex; vertical-align: middle; margin-left: 4px; color: #b3b8bf; }
     .crm-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); }
     .crm-table tbody tr:hover { background: var(--bg-soft); }
+    .crm-table tbody tr:last-child td { border-bottom: none; }
     .crm-table .col-actions { width: 40px; text-align: right; }
 
     .cell-name { display: flex; align-items: center; gap: 11px; }
-    .cell-name .avatar { width: 28px; height: 28px; border-radius: 50%; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cell-name .avatar { width: 28px; height: 28px; border-radius: 50%; font-size: 11px; font-weight: 400; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .cell-name .nm { font-weight: 500; line-height: 1.3; }
     .cell-name .em { font-size: 12px; color: var(--muted); line-height: 1.3; }
 
@@ -100,10 +102,10 @@
       <nav class="nav">
         <a class="nav-item active"><img class="ic" src="assets/crm.svg" alt="" width="16" height="16" />CRM</a>
         <a class="nav-item" data-nav="team.html"><img class="ic" src="assets/team.svg" alt="" width="18" height="18" />Team</a>
-        <a class="nav-item" data-nav="notifications.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B6F76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications</a>
+        <a class="nav-item" data-nav="notifications.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#212B36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications</a>
 
         <div class="nav-group-label">Apps</div>
-        <a class="nav-item" data-nav="studio.html"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>
+        <a class="nav-item" data-nav="home.html"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>
         <a class="nav-item" data-nav="messages.html"><img class="ic" src="assets/message.svg" alt="" width="18" height="18" />Messages</a>
         <a class="nav-item add" data-nav="studio.html"><img class="ic" src="assets/pls.svg" alt="" width="15" height="15" />Add app</a>
 
@@ -136,8 +138,10 @@
         <div class="crm-title">CRM</div>
         <div class="crm-actions">
           <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search</button>
+          <span class="vdivider"></span>
           <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>View</button>
           <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+          <span class="vdivider"></span>
           <button class="btn btn-dark">Create <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         </div>
       </div>
@@ -160,7 +164,7 @@
           </thead>
           <tbody>
             <tr>
-              <td><div class="cell-name"><span class="avatar" style="background:#dfe3ee;color:#5a6172">AE</span><div><div class="nm">Ana Eremina</div><div class="em">ana@brandmages.com</div></div></div></td>
+              <td><div class="cell-name"><span class="avatar">TU</span><div><div class="nm">Test User</div><div class="em">test.user@brandmages.com</div></div></div></td>
               <td><div class="cell-co"><span class="co-ic" style="background:#1a1a1a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>BrandMages (Test Company)</div></td>
               <td><span class="badge badge-inactive">Inactive</span></td>
               <td class="date">6/1/2026</td>
@@ -168,14 +172,14 @@
             </tr>
             <tr>
               <td><div class="cell-name"><span class="avatar" style="background:#d6e4f0;color:#3a6ea5">JD</span><div><div class="nm">John Doe</div><div class="em">john@rocket.com</div></div></div></td>
-              <td><div class="cell-co"><span class="co-ic" style="background:#6b6f76"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="7" height="7" rx="1"/><rect x="13" y="3" width="7" height="7" rx="1"/><rect x="13" y="14" width="7" height="7" rx="1"/><rect x="4" y="14" width="7" height="7" rx="1"/></svg></span>Rocket Rides (Test Company)</div></td>
+              <td><div class="cell-co"><img src="assets/rocket.svg" width="22" height="22" style="border-radius:6px;flex-shrink:0" alt="" />Rocket Rides (Test Company)</div></td>
               <td><span class="badge badge-inactive">Inactive</span></td>
               <td class="date">6/1/2026</td>
               <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
             </tr>
             <tr>
               <td><div class="cell-name"><span class="avatar" style="background:#f0ddd6;color:#a5613a">JD</span><div><div class="nm">Jane Doe</div><div class="em">jane@rocket.com</div></div></div></td>
-              <td><div class="cell-co"><span class="co-ic" style="background:#6b6f76"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="7" height="7" rx="1"/><rect x="13" y="3" width="7" height="7" rx="1"/><rect x="13" y="14" width="7" height="7" rx="1"/><rect x="4" y="14" width="7" height="7" rx="1"/></svg></span>Rocket Rides (Test Company)</div></td>
+              <td><div class="cell-co"><img src="assets/rocket.svg" width="22" height="22" style="border-radius:6px;flex-shrink:0" alt="" />Rocket Rides (Test Company)</div></td>
               <td><span class="badge badge-inactive">Inactive</span></td>
               <td class="date">6/1/2026</td>
               <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
@@ -222,5 +226,6 @@
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
   </script>
+  <script src="ftux.js"></script>
 </body>
 </html>

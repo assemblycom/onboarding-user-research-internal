@@ -17,7 +17,7 @@
     .side { width: 230px; flex-shrink: 0; background: var(--side); color: var(--side-tx); display: flex; flex-direction: column; padding: 14px 12px; }
     .side-ws { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
     .side-ws:hover { background: rgba(255,255,255,0.35); }
-    .side-av { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,0,0,0.06); }
+    .side-av { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; font-weight: 400; border: 1px solid rgba(0,0,0,0.06); background: #f0f1f3 !important; color: #5a6068 !important; }
     .side-name { font-weight: 600; font-size: 14px; flex: 1; color: var(--side-tx); }
     .side-caret { opacity: 0.55; }
     .side-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 12px; }
@@ -119,12 +119,12 @@
         <div class="how">
           <h2 class="sec-title">How to use the portal</h2>
           <p class="sec-text">Save the link to this portal. If you miss an email notification, you can always log in and check this portal for reminders on important tasks and actions required. Explore the options on your left sidebar. We may add more options tailored to your experience.</p>
-          <div class="how-item"><span class="he">💬</span><div class="ht"><b>Messages</b><br><span>Questions? Chat with the team and get answers.</span></div></div>
-          <div class="how-item"><span class="he">📁</span><div class="ht"><b>Files</b><br><span>Use this tab to share files with the <span id="filesCo">BrandMages</span> team — you can upload any required documents and assets here. This is where we will store files for reference in the future.</span></div></div>
-          <div class="how-item"><span class="he">📝</span><div class="ht"><b>Contracts</b><br><span>View and sign contracts shared by our team.</span></div></div>
-          <div class="how-item"><span class="he">➕</span><div class="ht"><b>Forms</b><br><span>Fill out forms with all relevant information.</span></div></div>
-          <div class="how-item"><span class="he">💳</span><div class="ht"><b>Billing</b><br><span>Here you will see any active subscriptions you have and any invoices after we send them to you.</span></div></div>
-          <div class="how-item"><span class="he">📕</span><div class="ht"><b>Helpdesk</b><br><span>Access a collection of helpful articles we have put together.</span></div></div>
+          <div class="how-item"><div class="ht"><b>Messages</b><br><span>Questions? Chat with the team and get answers.</span></div></div>
+          <div class="how-item"><div class="ht"><b>Files</b><br><span>Use this tab to share files with the <span id="filesCo">BrandMages</span> team — you can upload any required documents and assets here. This is where we will store files for reference in the future.</span></div></div>
+          <div class="how-item"><div class="ht"><b>Contracts</b><br><span>View and sign contracts shared by our team.</span></div></div>
+          <div class="how-item"><div class="ht"><b>Forms</b><br><span>Fill out forms with all relevant information.</span></div></div>
+          <div class="how-item"><div class="ht"><b>Billing</b><br><span>Here you will see any active subscriptions you have and any invoices after we send them to you.</span></div></div>
+          <div class="how-item"><div class="ht"><b>Helpdesk</b><br><span>Access a collection of helpful articles we have put together.</span></div></div>
         </div>
       </div>
     </main>
@@ -162,5 +162,6 @@
     ['company','name','email','theme'].forEach(k => { const v = getHashParam(k); if (v) navParams.push(k + '=' + encodeURIComponent(v)); });
     document.getElementById('exitPreview').setAttribute('href', 'studio.html' + (navParams.length ? '#' + navParams.join('&') : ''));
   </script>
+  <script src="ftux.js"></script>
 </body>
 </html>

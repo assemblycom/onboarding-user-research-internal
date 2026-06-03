@@ -25,7 +25,7 @@
     .sidebar { width: 248px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 14px 12px; gap: 4px; }
     .ws { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
     .ws:hover { background: var(--bg-hover); }
-    .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f4f5f7; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #1f1f1f; font-size: 13px; font-weight: 600; }
+    .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f0f1f3 !important; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #5a6068 !important; font-size: 13px; font-weight: 400; }
     .ws-name { font-weight: 600; font-size: 14px; flex: 1; }
     .ws-caret { color: var(--muted); }
     .nav { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
@@ -56,10 +56,12 @@
     .sidebar-foot .open-portal:hover { background: var(--bg-hover); }
 
     /* ── Main ── */
-    .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-    .topbar { padding: 18px 28px 0; }
-    .topbar-title { font-size: 15px; font-weight: 400; }
-    .tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--border); margin-top: 14px; padding: 0 28px; }
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { display: flex; align-items: center; height: 52px; flex-shrink: 0; padding: 0 28px; border-bottom: 1px solid var(--border); }
+    .topbar-title { font-size: 13px; font-weight: 500; color: var(--text); }
+    .tabs { display: flex; gap: 22px; flex-shrink: 0; border-bottom: 1px solid var(--border); margin-top: 0; padding: 0 28px; }
+    /* Only this area scrolls — the top bar + tabs stay pinned */
+    .scroll-area { flex: 1; overflow-y: auto; }
     .tab { padding: 10px 2px; font-size: 14px; color: var(--muted); cursor: pointer; border-bottom: 1px solid transparent; margin-bottom: -1px; }
     .tab.active { color: var(--text); font-weight: 500; border-bottom-color: var(--dark); }
 
@@ -77,21 +79,21 @@
     .start-btn:hover { opacity: 0.88; }
 
     .chips { display: flex; gap: 8px; margin-top: 16px; flex-wrap: nowrap; overflow: hidden; }
-    .chip { flex-shrink: 0; font-size: 13px; color: var(--text); background: #fff; border: 1px solid var(--border); border-radius: 99px; padding: 7px 14px; cursor: pointer; font-family: inherit; transition: background 0.12s, border-color 0.12s; }
+    .chip { flex-shrink: 0; font-size: 13px; color: var(--text); background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 7px 13px; cursor: pointer; font-family: inherit; transition: background 0.12s, border-color 0.12s; }
     .chip:hover { background: var(--bg-soft); border-color: #c7ccd3; }
-    .chip-more { width: 36px; padding: 7px 0; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+    .chip-more { width: 34px; padding: 7px 0; display: flex; align-items: center; justify-content: center; color: var(--muted); }
 
     /* Templates */
-    .templates { max-width: 1100px; margin: 0 auto; width: 100%; padding: 0 24px 60px; }
-    .templates-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .templates { max-width: 1180px; margin: 0 auto; width: 100%; padding: 36px 24px 60px; }
+    .templates-panel { border: 1px solid var(--border); border-radius: 16px; padding: 22px 24px 26px; }
+    .templates-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
     .templates-title { font-size: 15px; font-weight: 600; }
     .templates-nav { display: flex; gap: 8px; }
     .templates-nav button { width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 8px; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .templates-nav button:hover { background: var(--bg-hover); }
-    .template-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .template-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 18px; }
     .template-card { cursor: pointer; }
-    .template-thumb { border: 1px solid var(--border); border-radius: 12px; height: 150px; background: linear-gradient(135deg, #f3f4f7, #e9ebef); overflow: hidden; position: relative; }
-    .template-thumb::after { content: 'Proposal Builder'; position: absolute; top: 14px; left: 16px; font-size: 9px; font-weight: 600; color: #9aa0a6; }
+    .template-thumb { border: 1px solid var(--border); border-radius: 12px; height: 138px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: #aab0b8; font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
     .template-name { font-size: 14px; font-weight: 600; margin: 12px 0 4px; }
     .template-desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
   </style>
@@ -109,10 +111,10 @@
       <nav class="nav">
         <a class="nav-item" data-nav="crm.html"><img class="ic" src="assets/crm.svg" alt="" width="16" height="16" />CRM</a>
         <a class="nav-item" data-nav="team.html"><img class="ic" src="assets/team.svg" alt="" width="18" height="18" />Team</a>
-        <a class="nav-item" data-nav="notifications.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B6F76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications</a>
+        <a class="nav-item" data-nav="notifications.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#212B36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications</a>
 
         <div class="nav-group-label">Apps</div>
-        <a class="nav-item"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>
+        <a class="nav-item" data-nav="home.html"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>
         <a class="nav-item" data-nav="messages.html"><img class="ic" src="assets/message.svg" alt="" width="18" height="18" />Messages</a>
         <a class="nav-item add active"><img class="ic" src="assets/pls.svg" alt="" width="15" height="15" />Add app</a>
 
@@ -147,40 +149,48 @@
         <div class="tab">Browse</div>
       </div>
 
-      <div class="content">
-        <h1 class="greeting">What will you build?</h1>
-        <div class="promptbox">
-          <textarea id="buildPrompt" rows="2" placeholder="Describe the app you want to build for your clients…"></textarea>
-          <div class="promptbox-bar">
-            <button class="attach" title="Attach"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
-            <button class="start-btn" id="startBuilding" type="button">Start Building</button>
+      <div class="scroll-area">
+        <div class="content">
+          <h1 class="greeting">What will you build?</h1>
+          <div class="promptbox">
+            <textarea id="buildPrompt" rows="2" placeholder="Describe the app you want to build for your clients…"></textarea>
+            <div class="promptbox-bar">
+              <button class="attach" title="Attach"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+              <button class="start-btn" id="startBuilding" type="button">Start Building</button>
+            </div>
+          </div>
+
+          <div class="chips" id="chips">
+            <button class="chip" data-prompt="A client onboarding flow with intake forms, e-signatures, and document upload">Onboarding</button>
+            <button class="chip" data-prompt="A client dashboard showing project status, recent activity, and key metrics">Dashboard</button>
+            <button class="chip" data-prompt="An approvals workflow where clients review and sign off on deliverables">Approvals</button>
+            <button class="chip" data-prompt="A request intake app where clients submit and track requests">Requests</button>
+            <button class="chip" data-prompt="A proposal builder to create, send, and track client proposals">Proposals</button>
+            <button class="chip" data-prompt="An AI assistant that answers client questions from my knowledge base">AI Assistants</button>
+            <button class="chip chip-more" title="More"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
           </div>
         </div>
 
-        <div class="chips" id="chips">
-          <button class="chip" data-prompt="A client onboarding flow with intake forms, e-signatures, and document upload">Onboarding</button>
-          <button class="chip" data-prompt="A client dashboard showing project status, recent activity, and key metrics">Dashboard</button>
-          <button class="chip" data-prompt="An approvals workflow where clients review and sign off on deliverables">Approvals</button>
-          <button class="chip" data-prompt="A request intake app where clients submit and track requests">Requests</button>
-          <button class="chip" data-prompt="A proposal builder to create, send, and track client proposals">Proposals</button>
-          <button class="chip" data-prompt="An AI assistant that answers client questions from my knowledge base">AI Assistants</button>
-          <button class="chip chip-more" title="More"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-        </div>
-      </div>
-
-      <div class="templates">
-        <div class="templates-head">
-          <div class="templates-title">Remix from app templates</div>
-          <div class="templates-nav">
-            <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-            <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        <div class="templates">
+          <div class="templates-panel">
+            <div class="templates-head">
+              <div class="templates-title">Remix from app templates</div>
+              <div class="templates-nav">
+                <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+                <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              </div>
+            </div>
+            <div class="template-grid">
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
+            </div>
           </div>
-        </div>
-        <div class="template-grid">
-          <div class="template-card"><div class="template-thumb"></div><div class="template-name">Proposal Builder</div><div class="template-desc">Track stock levels, orders, and warehouse locations in real-time</div></div>
-          <div class="template-card"><div class="template-thumb"></div><div class="template-name">Proposal Builder</div><div class="template-desc">Track stock levels, orders, and warehouse locations in real-time</div></div>
-          <div class="template-card"><div class="template-thumb"></div><div class="template-name">Proposal Builder</div><div class="template-desc">Track stock levels, orders, and warehouse locations in real-time</div></div>
-          <div class="template-card"><div class="template-thumb"></div><div class="template-name">Proposal Builder</div><div class="template-desc">Track stock levels, orders, and warehouse locations in real-time</div></div>
         </div>
       </div>
     </main>
@@ -261,5 +271,6 @@
       if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); startBuilding(); }
     });
   </script>
+  <script src="ftux.js"></script>
 </body>
 </html>
