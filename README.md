@@ -1,6 +1,6 @@
-# Builder Flow Prototype
+# Onboarding user research
 
-A clickable, static-HTML prototype of the **Assembly Studio** AI Builder end-to-end flow — marketing site → sign-up/auth → personalize → build page → portal app pages → client portal.
+A clickable, static-HTML prototype of the **Assembly Studio** onboarding / AI Builder end-to-end flow — marketing site → sign-up/auth → personalize → build page → portal app pages → client portal. Used for user-research / testing sessions.
 
 This is a **standalone prototype**. It is **not** part of the `assemblycom/core` codebase and ships no production code.
 
