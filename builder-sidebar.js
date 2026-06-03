@@ -24,7 +24,7 @@
     '.asm-sb .ws{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer;}' +
     '.asm-sb .ws:hover{background:var(--bg-hover);}' +
     '.asm-sb .ws-avatar{width:26px;height:26px;border-radius:7px;background:#f0f1f3;border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#5a6068;font-size:13px;font-weight:400;}' +
-    '.asm-sb .ws-name{font-weight:600;font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
+    '.asm-sb .ws-name{font-weight:500;font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
     '.asm-sb .nav{display:flex;flex-direction:column;gap:1px;margin-top:8px;}' +
     '.asm-sb .nav-group-label{font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);padding:14px 8px 5px;}' +
     '.asm-sb .nav-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;font-size:13.5px;color:var(--text);cursor:pointer;text-decoration:none;}' +
