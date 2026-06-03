@@ -61,7 +61,46 @@
   var CLOCK = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#212B36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>';
 
   // The app being built shows as a Draft entry under the Apps group.
-  var DRAFT_APP = 'Time tracker';
+  // The label tracks the builder's own app title (read from its breadcrumb);
+  // this is just the fallback before that title is available.
+  var DRAFT_APP = 'Time Tracker';
+
+  // Read the app name the builder is using, from its "Workspace / App"
+  // breadcrumb in the top bar. Empty string if not found yet.
+  function appTitle() {
+    var nodes = document.querySelectorAll('div, span');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var own = '';
+      for (var c = 0; c < el.childNodes.length; c++) {
+        if (el.childNodes[c].nodeType === 3) own += el.childNodes[c].textContent;
+      }
+      own = own.trim();
+      if (own.indexOf(' / ') !== -1 && el.getBoundingClientRect().top < 70) {
+        var parts = own.split(' / ');
+        var t = parts[parts.length - 1].trim();
+        if (t) return t;
+      }
+    }
+    return '';
+  }
+
+  // The builder surfaces an "...version published" checkpoint once the app
+  // is published; at that point it is no longer a draft.
+  function isPublished() {
+    return document.body && /version published/i.test(document.body.innerText);
+  }
+
+  // Keep the draft entry's name in sync with the builder, and drop the
+  // Draft badge once published.
+  function syncDraft(host) {
+    var label = host.querySelector('.draft-label');
+    if (label) { var t = appTitle(); if (t && label.textContent !== t) label.textContent = t; }
+    if (isPublished()) {
+      var badge = host.querySelector('.draft-badge');
+      if (badge) badge.remove();
+    }
+  }
 
   function buildHTML() {
     var co = company();
@@ -136,8 +175,8 @@
     rebrandText();
     var sb = findBundleSidebar();
     if (!sb) return;
-    // Already replaced and still intact — nothing to do.
-    if (sb.getAttribute(MARK) === '1' && sb.querySelector('.asm-sb')) return;
+    // Already replaced and still intact — just keep the draft entry in sync.
+    if (sb.getAttribute(MARK) === '1' && sb.querySelector('.asm-sb')) { syncDraft(sb); return; }
     sb.setAttribute(MARK, '1');
     // Neutralise the bundle's inline chrome so our sidebar owns the column.
     sb.style.padding = '0';
@@ -147,6 +186,7 @@
     sb.style.boxShadow = 'none';
     sb.innerHTML = buildHTML();
     wire(sb);
+    syncDraft(sb);
     if (typeof window.ftuxInit === 'function') window.ftuxInit();
   }
 
