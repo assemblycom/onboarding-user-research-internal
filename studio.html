@@ -75,8 +75,13 @@
     .promptbox-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 12px; }
     .attach { width: 30px; height: 30px; border: none; background: transparent; border-radius: 8px; color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .attach:hover { background: var(--bg-hover); }
-    .start-btn { background: var(--dark); color: #fff; border: none; border-radius: 4px; padding: 9px 16px; font-family: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
-    .start-btn:hover { opacity: 0.88; }
+    /* Send button: dark rounded square with a soft white glow behind the
+       arrow, so it reads with a little depth instead of a flat fill. */
+    .start-btn { position: relative; width: 44px; height: 44px; flex-shrink: 0; background: var(--dark); color: #fff; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; transition: opacity 0.15s, transform 0.12s; }
+    .start-btn::before { content: ""; position: absolute; left: 50%; top: 56%; width: 40px; height: 40px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 68%); filter: blur(5px); pointer-events: none; }
+    .start-btn svg { position: relative; z-index: 1; width: 19px; height: 19px; }
+    .start-btn:not(:disabled):hover { transform: translateY(-1px); }
+    .start-btn:not(:disabled):active { transform: translateY(0); }
 
     /* Single row, but scroll instead of clipping when it doesn't fit. */
     .chips { display: flex; gap: 8px; margin-top: 16px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; }
@@ -180,7 +185,7 @@
             <textarea id="buildPrompt" rows="2" placeholder="Describe the app you want to build for your clients…"></textarea>
             <div class="promptbox-bar">
               <button class="attach" title="Attach"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
-              <button class="start-btn" id="startBuilding" type="button">Start Building</button>
+              <button class="start-btn" id="startBuilding" type="button" aria-label="Start building"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
             </div>
           </div>
 

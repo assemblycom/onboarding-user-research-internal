@@ -72,16 +72,19 @@
   var STYLE_ID = 'ac-style';
   var CSS =
     '.ac{font-family:inherit;}' +
-    '.ac-row{display:flex;align-items:center;gap:8px;}' +
-    '.ac-scroller{display:flex;gap:8px;overflow-x:auto;scroll-behavior:smooth;flex:1;min-width:0;scrollbar-width:none;-ms-overflow-style:none;padding:1px;}' +
+    '.ac-row{position:relative;}' +
+    '.ac-scroller{display:flex;gap:8px;overflow-x:auto;scroll-behavior:smooth;min-width:0;scrollbar-width:none;-ms-overflow-style:none;padding:1px;}' +
     '.ac-scroller::-webkit-scrollbar{display:none;}' +
     '.ac-chip{flex:0 0 auto;font-size:13px;font-weight:500;color:#1a1a1a;background:#fff;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s,border-color .12s;}' +
     '.ac-chip:hover{background:rgba(0,0,0,0.035);}' +
     '.ac-chip.is-active{background:#ececea;border-color:rgba(0,0,0,0.18);}' +
-    '.ac-arrow{flex:0 0 auto;width:30px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.12);background:#fff;border-radius:8px;cursor:pointer;color:#5a6068;transition:background .12s;}' +
-    '.ac-arrow:hover{background:rgba(0,0,0,0.04);}' +
+    /* Arrows float over the scroller edges on a soft white fade (not a boxed
+       button), so chips slide smoothly underneath — hinting there is more. */
+    '.ac-arrow{position:absolute;top:0;bottom:0;width:52px;display:flex;align-items:center;border:none;background:transparent;padding:0;cursor:pointer;color:#1a1a1a;z-index:2;}' +
+    '.ac-prev{left:0;justify-content:flex-start;padding-left:1px;background:linear-gradient(to right, var(--ac-fade,#fff) 38%, rgba(255,255,255,0) 100%);}' +
+    '.ac-next{right:0;justify-content:flex-end;padding-right:1px;background:linear-gradient(to left, var(--ac-fade,#fff) 38%, rgba(255,255,255,0) 100%);}' +
     '.ac-arrow.is-hidden{display:none;}' +
-    '.ac-arrow svg{width:16px;height:16px;}' +
+    '.ac-arrow svg{width:17px;height:17px;filter:drop-shadow(0 0 5px var(--ac-fade,#fff)) drop-shadow(0 0 3px var(--ac-fade,#fff));}' +
     '.ac-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .22s ease,margin-top .3s cubic-bezier(.4,0,.2,1);}' +
     '.ac-panel.is-open{opacity:1;margin-top:14px;}' +
     '.ac-card{border:1px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;overflow:hidden;}' +
@@ -112,6 +115,7 @@
     var cats = opts.categories || CATEGORIES;
 
     host.classList.add('ac');
+    if (opts.fade) host.style.setProperty('--ac-fade', opts.fade);
     host.innerHTML =
       '<div class="ac-row">' +
         '<button class="ac-arrow ac-prev is-hidden" type="button" aria-label="Scroll left">' + CHEV_L + '</button>' +
