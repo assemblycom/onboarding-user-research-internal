@@ -10,13 +10,19 @@
    with data-live="1" to opt it out. */
 (function () {
   // Things that actually do something — never hint these.
-  var LIVE = '[data-nav],[data-live],.open-portal,.checklist-item,.tab,' +
+  var LIVE = '[data-nav],[data-live],.open-portal,.checklist-item,' +
     '.start-btn,#startBuilding,.template-card,.ac-chip,.ac-item,.ac-arrow,' +
     '.studio-primary,.studio-google,.studio-theme,' +
     // FTUX flows are real, working modals — never hint inside them.
     '.pi-ov,.inv-overlay';
 
+  // Clickable-looking things that often lack a pointer cursor (flat tabs and
+  // settings rows). Inactive tabs / these rows are decorative in the prototype.
+  var EXTRA = '.tab, .preview-tab, .asset-row';
+
   function isLive(el) {
+    // The active tab is the current view, not a dead control.
+    if (el.closest('.tab.active, .preview-tab.active')) return true;
     if (el.closest(LIVE)) return true;
     var a = el.closest('a[href]');
     if (a) { var h = a.getAttribute('href'); if (h && h !== '#' && h !== '') return true; }
@@ -24,14 +30,15 @@
     return false;
   }
 
-  // Anything the page styles as clickable (cursor:pointer) but that isn't a
-  // wired-up control is treated as decorative. This auto-covers every page's
-  // bespoke toggles/rows/buttons without maintaining a selector list.
+  // Hint anything the page styles as clickable (cursor:pointer), plus the
+  // flat tabs/rows above, as long as it isn't a wired-up/active control.
   function isHintable(el) {
     if (!el || el.nodeType !== 1) return false;
     if (el === tip || (tip && tip.contains(el))) return false;
-    if (getComputedStyle(el).cursor !== 'pointer') return false;
-    return !isLive(el);
+    if (isLive(el)) return false;
+    if (getComputedStyle(el).cursor === 'pointer') return true;
+    if (el.closest(EXTRA)) return true;
+    return false;
   }
 
   var STYLE_ID = 'proto-hint-style';
