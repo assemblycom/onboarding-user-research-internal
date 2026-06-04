@@ -184,14 +184,7 @@
             </div>
           </div>
 
-          <div class="chips" id="chips">
-            <button class="chip" data-prompt="A client onboarding flow with intake forms, e-signatures, and document upload">Onboarding</button>
-            <button class="chip" data-prompt="A client dashboard showing project status, recent activity, and key metrics">Dashboard</button>
-            <button class="chip" data-prompt="An approvals workflow where clients review and sign off on deliverables">Approvals</button>
-            <button class="chip" data-prompt="A request intake app where clients submit and track requests">Requests</button>
-            <button class="chip" data-prompt="A proposal builder to create, send, and track client proposals">Proposals</button>
-            <button class="chip" data-prompt="An AI assistant that answers client questions from my knowledge base">AI Assistants</button>
-          </div>
+          <div id="appCategories"></div>
         </div>
 
         <div class="templates">
@@ -219,6 +212,7 @@
     </main>
   </div>
 
+  <script src="app-categories.js"></script>
   <script>
     // Read the prompt passed from the marketing site / chip selection (#prompt=…)
     function getHashParam(name) {
@@ -280,16 +274,20 @@
 
     promptField.addEventListener('input', () => { autosize(); updateStart(); if (promptField.value.trim()) markPromptEntered(); });
 
-    // Chips below let them pick a starting prompt if they didn't type one
-    document.querySelectorAll('#chips .chip[data-prompt]').forEach(chip => {
-      chip.addEventListener('click', () => {
-        promptField.value = chip.dataset.prompt;
-        autosize();
-        updateStart();
-        markPromptEntered();
-        promptField.focus();
+    // Category chips below open a dropdown of related starter apps; picking one
+    // fills the prompt (same effect the old single-prompt chips had).
+    if (window.AppCategories) {
+      window.AppCategories.mount({
+        host: document.getElementById('appCategories'),
+        onSelect: function (item) {
+          promptField.value = item.prompt;
+          autosize();
+          updateStart();
+          markPromptEntered();
+          promptField.focus();
+        }
       });
-    });
+    }
 
     // Start Building → kick off the existing build process (plan mode etc.)
     function startBuilding() {
