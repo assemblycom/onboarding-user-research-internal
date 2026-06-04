@@ -204,6 +204,10 @@
     </main>
   </div>
 
+  <!-- Off-white wash that fades in on "build", matching the builder's own
+       load cover (#FBFBF5) so the page handoff doesn't flash white. -->
+  <div id="buildLeave" style="position:fixed;inset:0;background:#FBFBF5;opacity:0;pointer-events:none;transition:opacity 0.22s ease;z-index:9999;"></div>
+
   <script src="app-categories.js"></script>
   <script>
     // Read the prompt passed from the marketing site / chip selection (#prompt=…)
@@ -325,7 +329,15 @@
     function startBuilding() {
       const p = promptField.value.trim();
       if (!p) { promptField.focus(); return; }
-      window.location.href = 'builder.html#prompt=' + encodeURIComponent(p);
+      const dest = 'builder.html#prompt=' + encodeURIComponent(p);
+      const wash = document.getElementById('buildLeave');
+      if (wash) {
+        wash.style.pointerEvents = 'auto';
+        wash.style.opacity = '1';
+        setTimeout(function () { window.location.href = dest; }, 200);
+      } else {
+        window.location.href = dest;
+      }
     }
     startBtn.addEventListener('click', startBuilding);
     promptField.addEventListener('keydown', e => {
