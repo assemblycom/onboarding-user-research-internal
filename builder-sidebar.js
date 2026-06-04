@@ -109,7 +109,22 @@
     '.asm-sri-badge.open{background:#e1edff;color:#2456c7;}' +
     '.asm-sri-badge.review{background:#fdeccb;color:#946200;}' +
     '.asm-sri-badge.resolved{background:#d8f0df;color:#1d7a45;}' +
-    '.asm-sri-badge.closed{background:#eceef1;color:#6b6f76;}';
+    '.asm-sri-badge.closed{background:#eceef1;color:#6b6f76;}' +
+    // Client-facing portal wrapper: our own dark sidebar + the SRI app, so the
+    // Portal view always has the client sidebar and stays responsive.
+    ".asm-sri-portal{display:flex;height:100%;background:#fff;overflow:hidden;font-family:'Inter',system-ui,-apple-system,sans-serif;}" +
+    '.asm-sri-portal *{box-sizing:border-box;}' +
+    '.asm-sri-pnav{width:200px;max-width:42%;flex-shrink:0;background:#0e1726;color:#c7d0dc;display:flex;flex-direction:column;padding:14px 12px;gap:2px;overflow:hidden;}' +
+    '.asm-sri-pnav .pn-ws{display:flex;align-items:center;gap:10px;padding:6px 8px 14px;}' +
+    '.asm-sri-pnav .pn-ws-av{width:26px;height:26px;border-radius:7px;background:#26334a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;}' +
+    '.asm-sri-pnav .pn-ws-name{font-weight:500;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
+    '.asm-sri-pnav .pn-item{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;font-size:13.5px;color:#c7d0dc;cursor:pointer;white-space:nowrap;}' +
+    '.asm-sri-pnav .pn-item svg{width:17px;height:17px;color:#8b97a8;flex-shrink:0;}' +
+    '.asm-sri-pnav .pn-item.active{background:#fff;color:#1a1a1a;font-weight:500;}' +
+    '.asm-sri-pnav .pn-item.active svg{color:#1a1a1a;}' +
+    '.asm-sri-portal .asm-sri-app{flex:1;min-width:0;}' +
+    '.asm-sri-body{flex:1;overflow:auto;}' +
+    '.asm-sri-table{min-width:520px;}';
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -443,58 +458,70 @@
     return active;
   }
 
-  // Right edge of the dark client-portal nav (the column holding Messages …
-  // Helpdesk), so the SRI overlay can sit beside it rather than over it.
-  function portalNavRight() {
-    var hd = null;
-    var els = document.querySelectorAll('div,span,a');
+  // Client-facing portal preview = our own dark sidebar + the SRI app, so the
+  // Portal view always keeps the client sidebar and is fully responsive.
+  function sriPortalHTML() {
+    var co = company();
+    var initial = ((co.trim()[0]) || 'A').toUpperCase();
+    var S = function (p, fill) { return '<svg viewBox="0 0 24 24" fill="' + (fill ? 'currentColor' : 'none') + '" stroke="' + (fill ? 'none' : 'currentColor') + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; };
+    var ICONS = {
+      msg: S('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'),
+      files: S('<path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z"/>'),
+      req: S('<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/>'),
+      forms: S('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'),
+      billing: S('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>'),
+      help: S('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="m4.9 4.9 4.3 4.3M14.8 14.8l4.3 4.3M19.1 4.9l-4.3 4.3M9.2 14.8l-4.3 4.3"/>'),
+      more: S('<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>', true)
+    };
+    var items = [['msg', 'Messages', ''], ['files', 'Files', ''], ['req', 'Service Requests', 'active'], ['forms', 'Forms', ''], ['billing', 'Billing', ''], ['help', 'Helpdesk', ''], ['more', 'More', '']];
+    var nav = items.map(function (n) { return '<div class="pn-item ' + n[2] + '">' + ICONS[n[0]] + '<span>' + n[1] + '</span></div>'; }).join('');
+    return '<div class="asm-sri-portal">' +
+      '<div class="asm-sri-pnav"><div class="pn-ws"><div class="pn-ws-av">' + initial + '</div><span class="pn-ws-name">' + co + '</span></div>' + nav + '</div>' +
+      sriAppHTML() +
+    '</div>';
+  }
+  // The full portal preview card: an ancestor of the dark nav (Helpdesk) that
+  // also holds the app ("+ Log Time").
+  function findPortalCard() {
+    var hd = null, els = document.querySelectorAll('div,span,a');
     for (var i = 0; i < els.length; i++) {
       var own = '';
       for (var c = 0; c < els[i].childNodes.length; c++) { if (els[i].childNodes[c].nodeType === 3) own += els[i].childNodes[c].textContent; }
-      if (own.trim() === 'Helpdesk') { hd = els[i]; break; }
+      if (own.trim() === 'Helpdesk' && !els[i].closest('#asm-sri-overlay')) { hd = els[i]; break; }
     }
     if (!hd) return null;
     var node = hd;
-    for (var d = 0; d < 6 && node.parentElement; d++) {
+    for (var d = 0; d < 9 && node.parentElement; d++) {
       node = node.parentElement;
-      if (/Messages/.test(node.textContent) && /Files/.test(node.textContent)) {
-        var r = node.getBoundingClientRect();
-        if (r.width > 0) return r.right;
-      }
+      if (/\+\s*log time/i.test(node.textContent)) { var r = node.getBoundingClientRect(); if (r.width > 0) return node; }
     }
     return null;
   }
-
+  function previewPaneLeft() {
+    var btns = document.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].textContent.trim() === 'Dashboard' && (btns[i].getAttribute('style') || '').indexOf('padding: 4px 10px') > -1) {
+        return btns[i].getBoundingClientRect().left - 16;
+      }
+    }
+    return 0;
+  }
   // Overlay (not innerHTML replace) so we never fight the bundle's React
-  // reconciliation. Only shown on the Dashboard preview tab — the wide
-  // client-portal artboard (Portal tab) lays out differently.
+  // reconciliation. Dashboard → just the SRI app; Portal → our own client
+  // portal (dark sidebar + app), so the client sidebar is always present.
   function injectSriApp() {
     var ov = document.getElementById('asm-sri-overlay');
     var tab = activePreviewTab();
-    var card = (tab === null || tab === 'Dashboard' || tab === 'Portal') ? findAppCard() : null;
+    var card = null, mode = null;
+    if (tab === 'Portal') { card = findPortalCard(); mode = 'portal'; }
+    else if (tab === null || tab === 'Dashboard') { card = findAppCard(); mode = 'dash'; }
     if (!card) { if (ov) ov.style.display = 'none'; return; }
-    if (!ov) {
-      ov = document.createElement('div');
-      ov.id = 'asm-sri-overlay';
-      ov.innerHTML = sriAppHTML();
-      document.body.appendChild(ov);
-    }
+    if (!ov) { ov = document.createElement('div'); ov.id = 'asm-sri-overlay'; document.body.appendChild(ov); }
+    if (ov.getAttribute('data-mode') !== mode) { ov.innerHTML = (mode === 'portal') ? sriPortalHTML() : sriAppHTML(); ov.setAttribute('data-mode', mode); }
     var r = card.getBoundingClientRect();
     var radius = getComputedStyle(card).borderRadius || '0px';
-    // Clamp the left edge to the preview pane (the Dashboard tab marks it) so
-    // the overlay never bleeds over the chat at wide viewports.
-    var left = r.left;
-    var dashTab = null, btns = document.querySelectorAll('button');
-    for (var i = 0; i < btns.length; i++) {
-      if (btns[i].textContent.trim() === 'Dashboard' && (btns[i].getAttribute('style') || '').indexOf('padding: 4px 10px') > -1) { dashTab = btns[i]; break; }
-    }
-    if (dashTab) { var tr = dashTab.getBoundingClientRect(); if (tr.left - 16 > left) left = tr.left - 16; }
-    // In the client-portal (Portal) view, keep the overlay right of the dark
-    // portal nav so the client-portal sidebar stays visible.
-    if (tab === 'Portal') {
-      var nr = portalNavRight();
-      if (nr != null && nr > left) left = nr;
-    }
+    // Clamp the left to the preview pane so the overlay never bleeds over chat.
+    var left = Math.max(r.left, previewPaneLeft());
     var width = Math.max(0, r.right - left);
     ov.style.cssText = 'position:fixed;z-index:140;background:#fff;overflow:hidden;border-radius:' + radius +
       ';left:' + left + 'px;top:' + r.top + 'px;width:' + width + 'px;height:' + r.height + 'px;display:block;';
