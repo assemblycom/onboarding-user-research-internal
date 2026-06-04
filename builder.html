@@ -518,10 +518,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-publish-popover { position: fixed; top: 56px; right: 16px; width: 384px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 14px; box-shadow: 0 16px 40px rgba(16,24,40,0.16), 0 2px 6px rgba(16,24,40,0.05); z-index: 180; display: none; overflow: hidden; font-family: var(--font-sans, "Inter", system-ui); color: #212b36; }',
       '.asm-publish-popover.open { display: block; animation: asmFadeIn 0.16s ease-out; }',
       '.asm-pub-head { padding: 18px 20px 16px; border-bottom: 1px solid #eceef1; }',
-      '.asm-pub-title { font-size: 16px; font-weight: 500; color: #212b36; }',
+      '.asm-pub-title { font-size: 15px; font-weight: 500; color: #212b36; }',
       '.asm-pub-sub { font-size: 13px; color: #6b6f76; margin-top: 3px; }',
       '.asm-pub-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }',
-      '.asm-pub-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1px solid #e6e8eb; border-radius: 10px; background: #fff; font-family: inherit; font-size: 14px; color: #212b36; text-align: left; box-sizing: border-box; }',
+      '.asm-pub-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px; border: 1px solid #e6e8eb; border-radius: 10px; background: #fff; font-family: inherit; font-size: 13.5px; color: #212b36; text-align: left; box-sizing: border-box; }',
+      '.asm-pub-row-label[contenteditable="true"] { outline: none; cursor: text; border-bottom: 1px solid #c9cdd4; }',
       '.asm-pub-row-btn { cursor: pointer; transition: background 0.12s; }',
       '.asm-pub-row-btn:hover { background: #f8f9fb; }',
       '.asm-pub-ic { display: flex; color: #6b6f76; flex-shrink: 0; }',
@@ -555,7 +556,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-pub-opt-ic { width: 34px; height: 34px; border-radius: 8px; background: #f4f5f7; display: flex; align-items: center; justify-content: center; color: #6b6f76; flex-shrink: 0; }',
       '.asm-pub-opt-ic svg { width: 17px; height: 17px; }',
       '.asm-pub-opt-text { flex: 1; min-width: 0; }',
-      '.asm-pub-opt-title { display: block; font-size: 14px; font-weight: 500; color: #212b36; }',
+      '.asm-pub-opt-title { display: block; font-size: 13.5px; font-weight: 500; color: #212b36; }',
       '.asm-pub-opt-desc { display: block; font-size: 12.5px; color: #6b6f76; margin-top: 2px; line-height: 1.4; }',
       '.asm-pub-radio { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #c7ccd3; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; }',
       '.asm-pub-opt.selected .asm-pub-radio { border-color: #1d9a52; background: #1d9a52; }',
@@ -2290,6 +2291,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (v) v.textContent = o.getAttribute('data-label');
       });
     });
+    // Inline-rename the app name (the pencil, or clicking the name itself).
+    (function () {
+      var nmEl = pop.querySelector('#asm-pub-appname');
+      var editBtn = pop.querySelector('.asm-pub-edit');
+      function beginRename() {
+        if (!nmEl) return;
+        var prev = nmEl.textContent;
+        nmEl.setAttribute('contenteditable', 'true');
+        nmEl.focus();
+        var r = document.createRange(); r.selectNodeContents(nmEl);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        function finish() {
+          nmEl.removeAttribute('contenteditable');
+          var v = nmEl.textContent.replace(/\s+/g, ' ').trim();
+          nmEl.textContent = v || prev;
+          nmEl.removeEventListener('blur', finish);
+          nmEl.removeEventListener('keydown', onKey);
+        }
+        function onKey(e) {
+          if (e.key === 'Enter') { e.preventDefault(); nmEl.blur(); }
+          else if (e.key === 'Escape') { nmEl.textContent = prev; nmEl.blur(); }
+        }
+        nmEl.addEventListener('blur', finish);
+        nmEl.addEventListener('keydown', onKey);
+      }
+      if (editBtn) editBtn.addEventListener('click', function (e) { e.stopPropagation(); beginRename(); });
+      if (nmEl) nmEl.addEventListener('click', function (e) { e.stopPropagation(); beginRename(); });
+    })();
     pop.querySelector('#asm-publish-cancel').addEventListener('click', function (e) { e.stopPropagation(); closePublishPopover(); });
     pop.querySelector('#asm-publish-confirm').addEventListener('click', function (e) { e.stopPropagation(); startPublishing(); });
     pop.querySelector('#asm-pub-done').addEventListener('click', function (e) { e.stopPropagation(); closePublishPopover(); });
