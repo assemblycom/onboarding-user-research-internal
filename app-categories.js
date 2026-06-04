@@ -76,8 +76,8 @@
     '.ac-scroller{display:flex;gap:8px;overflow-x:auto;scroll-behavior:smooth;min-width:0;scrollbar-width:none;-ms-overflow-style:none;padding:1px;}' +
     '.ac-scroller::-webkit-scrollbar{display:none;}' +
     '.ac-chip{flex:0 0 auto;font-size:13px;font-weight:500;color:#212b36;background:#fff;border:1px solid #dfe1e4;border-radius:var(--ac-chip-radius,4px);padding:6px 12px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s,border-color .12s;}' +
-    '.ac-chip:not(.is-active):hover{background:#eff1f4;border-color:#d3d6db;}' +
-    '.ac-chip.is-active{background:#eff1f4;border-color:#c9cdd4;}' +
+    '.ac-chip:not(.is-active):hover{background:var(--ac-hover,#eff1f4);border-color:var(--ac-hover-border,#d3d6db);}' +
+    '.ac-chip.is-active{background:var(--ac-active,#eff1f4);border-color:var(--ac-active-border,#c9cdd4);}' +
     /* The scroller itself is masked so chips fade softly to transparent at the
        edges (set in JS per scroll position) — smooth regardless of chip color.
        Arrows just float over that fade as a glyph, no hard band. */
@@ -92,7 +92,7 @@
     '.ac-card{border:1px solid #dfe1e4;border-radius:var(--ac-card-radius,4px);background:#fff;overflow:hidden;}' +
     '.ac-item{display:flex;align-items:center;gap:14px;width:100%;padding:13px 16px;background:transparent;border:none;border-top:1px solid #e8eaed;cursor:pointer;text-align:left;font-family:inherit;transition:background .12s;}' +
     '.ac-item:first-child{border-top:none;}' +
-    '.ac-item:hover{background:#f8f9fb;}' +
+    '.ac-item:hover{background:var(--ac-item-hover,#f8f9fb);}' +
     '.ac-ic{width:34px;height:34px;border-radius:var(--ac-ic-radius,4px);background:#f0f1f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#6b6f76;}' +
     '.ac-ic svg{width:17px;height:17px;}' +
     '.ac-tt{display:block;font-size:14px;font-weight:500;color:#212b36;line-height:1.3;}' +
@@ -122,6 +122,11 @@
     if (opts.chipRadius) host.style.setProperty('--ac-chip-radius', opts.chipRadius);
     if (opts.cardRadius) host.style.setProperty('--ac-card-radius', opts.cardRadius);
     if (opts.icRadius) host.style.setProperty('--ac-ic-radius', opts.icRadius);
+    if (opts.hoverBg) host.style.setProperty('--ac-hover', opts.hoverBg);
+    if (opts.hoverBorder) host.style.setProperty('--ac-hover-border', opts.hoverBorder);
+    if (opts.activeBg) host.style.setProperty('--ac-active', opts.activeBg);
+    if (opts.activeBorder) host.style.setProperty('--ac-active-border', opts.activeBorder);
+    if (opts.itemHoverBg) host.style.setProperty('--ac-item-hover', opts.itemHoverBg);
     host.innerHTML =
       '<div class="ac-row">' +
         '<button class="ac-arrow ac-prev is-hidden" type="button" aria-label="Scroll left">' + CHEV_L + '</button>' +
