@@ -273,7 +273,7 @@
         <label class="studio-field"><span>Company name</span><input type="text" id="companyName" placeholder="Your company" /></label>
         <label class="studio-field"><span>Portal URL</span>
           <div class="studio-url" id="portalUrlBox">
-            <input type="text" id="portalSub" placeholder="yourcompany" />
+            <input type="text" id="portalSub" placeholder="yourcompany" maxlength="22" />
             <span class="studio-url-sep"></span>
             <span class="studio-url-suffix">.mystudio.com</span>
             <span class="studio-url-ind" id="portalInd"></span>
@@ -584,7 +584,8 @@
     const TAKEN = ['acme', 'demo', 'test', 'studio', 'admin', 'app', 'client', 'portal', 'rocket'];
     const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
     const CROSS = '<img src="assets/circle-x.svg" width="20" height="20" alt="" />';
-    const slug = s => s.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const MAX_SUB = 22;
+    const slug = s => s.trim().toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, MAX_SUB);
     function evalAvail() {
       const v = sub.value.trim().toLowerCase();
       ind.className = 'studio-url-ind'; ind.innerHTML = '';
