@@ -81,11 +81,12 @@
     /* The scroller itself is masked so chips fade softly to transparent at the
        edges (set in JS per scroll position) — smooth regardless of chip color.
        Arrows just float over that fade as a glyph, no hard band. */
-    '.ac-arrow{position:absolute;top:0;bottom:0;width:46px;display:flex;align-items:center;border:none;background:transparent;padding:0;cursor:pointer;color:#1a1a1a;z-index:2;}' +
+    '.ac-arrow{position:absolute;top:0;bottom:0;width:46px;display:flex;align-items:center;border:none;background:transparent;padding:0;cursor:pointer;color:var(--ac-arrow,#1a1a1a);z-index:2;}' +
     '.ac-prev{left:0;justify-content:flex-start;}' +
     '.ac-next{right:0;justify-content:flex-end;}' +
     '.ac-arrow.is-hidden{display:none;}' +
-    '.ac-arrow svg{width:17px;height:17px;filter:drop-shadow(0 0 6px var(--ac-fade,#fff)) drop-shadow(0 0 3px var(--ac-fade,#fff));}' +
+    /* Denser halo (fade color) so the glyph stays high-contrast over the chips. */
+    '.ac-arrow svg{width:18px;height:18px;filter:drop-shadow(0 0 9px var(--ac-fade,#fff)) drop-shadow(0 0 6px var(--ac-fade,#fff)) drop-shadow(0 0 3px var(--ac-fade,#fff));}' +
     '.ac-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .22s ease,margin-top .3s cubic-bezier(.4,0,.2,1);}' +
     '.ac-panel.is-open{opacity:1;margin-top:14px;}' +
     '.ac-card{border:1px solid #dfe1e4;border-radius:4px;background:#fff;overflow:hidden;}' +
@@ -105,8 +106,8 @@
     document.head.appendChild(s);
   }
 
-  var CHEV_L = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
-  var CHEV_R = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+  var CHEV_L = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
+  var CHEV_R = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
 
   function mount(opts) {
     ensureStyle();
@@ -117,6 +118,7 @@
 
     host.classList.add('ac');
     if (opts.fade) host.style.setProperty('--ac-fade', opts.fade);
+    if (opts.arrowColor) host.style.setProperty('--ac-arrow', opts.arrowColor);
     host.innerHTML =
       '<div class="ac-row">' +
         '<button class="ac-arrow ac-prev is-hidden" type="button" aria-label="Scroll left">' + CHEV_L + '</button>' +
