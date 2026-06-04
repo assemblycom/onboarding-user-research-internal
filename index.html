@@ -628,7 +628,7 @@
     // Fresh signup → reset onboarding progress so a new user starts with a
     // clean Getting-started checklist (state lives in localStorage, which
     // would otherwise persist from a previous session in the same browser).
-    try { localStorage.removeItem('onb.ftux'); localStorage.removeItem('onb.portalIntroSeen'); localStorage.removeItem('onb.buildApp'); } catch (e) {}
+    try { localStorage.removeItem('onb.ftux'); localStorage.removeItem('onb.portalIntroSeen'); localStorage.removeItem('onb.buildApp'); localStorage.removeItem('onb.buildApps'); } catch (e) {}
     // Land on the in-portal "Add App" build page first. The prompt the
     // user typed (or chose via a chip) carries over and pre-fills the
     // field there; if they entered nothing the field starts empty.
