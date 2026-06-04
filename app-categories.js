@@ -155,17 +155,28 @@
       });
     }
 
+    var isOpen = false;
     function openPanel() {
+      // Already open (switching categories): heights match, so just keep it
+      // unconstrained — avoids re-clipping the card's bottom border.
+      if (isOpen) { panel.style.maxHeight = 'none'; return; }
+      isOpen = true;
       panel.classList.add('is-open');
       panel.style.maxHeight = panel.scrollHeight + 'px';
     }
     function closePanel() {
+      isOpen = false;
       // Lock current height, then collapse so the transition has a start value.
       panel.style.maxHeight = panel.scrollHeight + 'px';
       void panel.offsetHeight;
       panel.classList.remove('is-open');
       panel.style.maxHeight = '0px';
     }
+    // Once the open animation finishes, drop the max-height cap so the bottom
+    // border is never sub-pixel clipped by overflow:hidden.
+    panel.addEventListener('transitionend', function (e) {
+      if (e.propertyName === 'max-height' && isOpen) panel.style.maxHeight = 'none';
+    });
 
     function closeActive() {
       if (!activeId) return;
@@ -210,7 +221,7 @@
     scroller.addEventListener('scroll', updateArrows);
     window.addEventListener('resize', function () {
       updateArrows();
-      if (activeId) panel.style.maxHeight = panel.scrollHeight + 'px';
+      if (activeId) panel.style.maxHeight = 'none';
     });
     updateArrows();
   }
