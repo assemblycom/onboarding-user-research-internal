@@ -75,7 +75,7 @@
     '.ac-row{position:relative;}' +
     '.ac-scroller{display:flex;gap:8px;overflow-x:auto;scroll-behavior:smooth;min-width:0;scrollbar-width:none;-ms-overflow-style:none;padding:1px;}' +
     '.ac-scroller::-webkit-scrollbar{display:none;}' +
-    '.ac-chip{flex:0 0 auto;font-size:13px;font-weight:500;color:#1a1a1a;background:#fff;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s,border-color .12s;}' +
+    '.ac-chip{flex:0 0 auto;font-size:13px;font-weight:500;color:#1a1a1a;background:#fff;border:1px solid rgba(0,0,0,0.12);border-radius:4px;padding:6px 12px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s,border-color .12s;}' +
     '.ac-chip:hover{background:rgba(0,0,0,0.035);}' +
     '.ac-chip.is-active{background:#ececea;border-color:rgba(0,0,0,0.18);}' +
     /* The scroller itself is masked so chips fade softly to transparent at the
