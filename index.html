@@ -235,8 +235,8 @@
           Continue with Google
         </button>
         <div class="studio-or">OR</div>
-        <button class="studio-oauth" id="studioEmail" type="button">Continue with email</button>
-        <button class="studio-primary" id="studioContinue1" type="button" style="margin-top:19px">Continue</button>
+        <label class="studio-field" style="margin-top:4px"><span>Email</span><input type="email" id="welcomeEmail" placeholder="you@company.com" /></label>
+        <button class="studio-primary" id="studioContinue1" type="button" style="margin-top:19px" disabled>Continue with email</button>
       </div>
     </div>
 
@@ -513,9 +513,20 @@
   let authVia = 'email';
 
   // Step 1: "Continue with email" / "Continue" → email + password step; Google → fake Google sign-in
-  ['studioEmail','studioContinue1'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.addEventListener('click', () => { authVia = 'email'; showAuthStep('email'); });
+  const welcomeEmail = document.getElementById('welcomeEmail');
+  const studioContinue1 = document.getElementById('studioContinue1');
+  function syncWelcomeContinue() {
+    const ok = welcomeEmail.value.trim().length > 0;
+    studioContinue1.disabled = !ok;
+    studioContinue1.style.opacity = ok ? '1' : '0.45';
+    studioContinue1.style.cursor = ok ? 'pointer' : 'default';
+  }
+  if (welcomeEmail) { welcomeEmail.addEventListener('input', syncWelcomeContinue); syncWelcomeContinue(); }
+  if (studioContinue1) studioContinue1.addEventListener('click', () => {
+    if (studioContinue1.disabled) return;
+    authVia = 'email';
+    const ue = document.getElementById('userEmail'); if (ue) ue.value = welcomeEmail.value;
+    showAuthStep('email');
   });
   // Email + password → workspace details (name / company)
   document.getElementById('emailContinue').addEventListener('click', () => showAuthStep(2));
