@@ -58,6 +58,12 @@
     .studio-field > span { font-size:13px;letter-spacing:0.07em;color:#000 }
     .studio-field input { width:100%;height:46px;background:rgba(251,251,245,0.5);border:1px solid #dfe1e4;border-radius:5px;padding:0 16px;font-family:inherit;font-size:14px;color:#1a1a1a;caret-color:#1a1a1a;box-sizing:border-box }
     .studio-field input::placeholder { color:#90959d }
+.studio-url { display:flex;align-items:center;height:46px;background:rgba(251,251,245,0.5);border:1px solid #dfe1e4;border-radius:5px;padding:0 14px;box-sizing:border-box }
+.studio-url:focus-within { border-color:#b9bcc1 }
+.studio-url input { flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:inherit;font-size:14px;color:#1a1a1a;padding:0;height:100% }
+.studio-url-suffix { font-size:14px;color:#1a1a1a;white-space:nowrap }
+.studio-url-ok { margin-left:10px;font-size:12px;font-weight:500;color:#1d7a45;white-space:nowrap;display:none;align-items:center;gap:4px }
+.studio-url-ok.show { display:inline-flex }
     .studio-field input:focus { outline:none;border-color:#b9bcc1 }
     /* Keep typed/autofilled text dark (Chrome autofill otherwise overrides the color) */
     .studio-field input:-webkit-autofill,
@@ -257,8 +263,14 @@
       <div class="studio-mark"><img src="assets/studio-mark.svg" alt="Studio" /></div>
       <div class="studio-fields">
         <label class="studio-field"><span>Your name</span><input type="text" id="userName" placeholder="John Doe" /></label>
-        <label class="studio-field"><span>Company name</span><input type="text" id="companyName" placeholder="name.company@com" /></label>
-        <label class="studio-field"><span>Portal URL</span><input type="text" placeholder="yourcompany.mystudio.com" /></label>
+        <label class="studio-field"><span>Company name</span><input type="text" id="companyName" placeholder="Your company" /></label>
+        <label class="studio-field"><span>Portal URL</span>
+          <div class="studio-url">
+            <input type="text" id="portalSub" placeholder="yourcompany" />
+            <span class="studio-url-suffix">.mystudio.com</span>
+            <span class="studio-url-ok" id="portalOk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Available</span>
+          </div>
+        </label>
       </div>
       <button class="studio-primary" id="studioContinue2" type="button" style="margin-top:30px">Continue</button>
     </div>
@@ -550,6 +562,20 @@
   googleAuth.addEventListener('click', e => { if (e.target === googleAuth) googleAuth.classList.remove('visible'); });
   // Step 2 (workspace details) Continue → personalize step (same as the Google flow)
   document.getElementById('studioContinue2').addEventListener('click', () => showAuthStep(3));
+
+  // Portal URL auto-derives from the company name (slug + .mystudio.com),
+  // and shows an "Available" check once there's a subdomain.
+  (function () {
+    const coInput = document.getElementById('companyName');
+    const sub = document.getElementById('portalSub');
+    const ok = document.getElementById('portalOk');
+    if (!coInput || !sub) return;
+    let edited = false;
+    const slug = s => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const refreshOk = () => { if (ok) ok.classList.toggle('show', sub.value.trim().length > 0); };
+    coInput.addEventListener('input', () => { if (!edited) { sub.value = slug(coInput.value); refreshOk(); } });
+    sub.addEventListener('input', () => { edited = true; refreshOk(); });
+  })();
 
   // Resolve the absolute URL of a sibling file ("builder", etc.) in
   // the same directory as this page, robust to `serve`'s clean-URL
