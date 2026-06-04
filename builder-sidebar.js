@@ -249,8 +249,11 @@
     if (document.getElementById('asm-load-cover')) return;
     var c = document.createElement('div');
     c.id = 'asm-load-cover';
-    if (IN_APP) {
-      // In-app: neutral skeleton, no website branding.
+    if (window.__asmResumePublished) {
+      // Returning to a finished/published app — quiet plain cover that just
+      // fades to the app. No skeleton/loader; it shouldn't read as "building".
+    } else if (IN_APP) {
+      // In-app build: neutral skeleton, no website branding.
       c.className = 'asm-skel';
       c.innerHTML = '<div class="asm-cover-skel" aria-hidden="true"><span></span><span></span><span></span></div>';
     } else {

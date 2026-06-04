@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       var _one = JSON.parse(localStorage.getItem('onb.buildApp'));
       if (_one) _apps.push(_one);
       for (var _i = 0; _i < _apps.length; _i++) {
-        if (_apps[_i] && (_apps[_i].name || '').toLowerCase() === _nm && _apps[_i].status === 'published') { FF = '3'; break; }
+        if (_apps[_i] && (_apps[_i].name || '').toLowerCase() === _nm && _apps[_i].status === 'published') { FF = '3'; window.__asmResumePublished = true; break; }
       }
     } catch (e) {}
   }
