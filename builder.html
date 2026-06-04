@@ -1024,6 +1024,15 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-req-card:not(.expanded) .asm-req-body { flex:1 1 auto; min-height:0; }',
       '.asm-scroll--reqfill .asm-req-msg.asm-req-msg--expanded { flex:0 0 auto; }',
       '.asm-req-card.expanded .asm-req-body { overflow:visible; }',
+      // Once the build starts (and after it finishes), the Requirements
+      // card is no longer the focus: it stops filling the pane and settles
+      // into the chat as a compact card (~5-10 lines), with the Build app
+      // timeline sitting directly below it. Overrides the fill rules above
+      // so there is no squish/overlap when the timeline mounts.
+      'body.asm-phase-building .asm-req-msg, body.asm-phase-done .asm-req-msg { flex:0 0 auto !important; display:block !important; }',
+      'body.asm-phase-building .asm-req-msg .asm-req-card, body.asm-phase-done .asm-req-msg .asm-req-card { flex:0 0 auto !important; }',
+      'body.asm-phase-building .asm-req-card .asm-req-body, body.asm-phase-done .asm-req-card .asm-req-body { flex:0 0 auto !important; min-height:126px; max-height:210px; overflow:hidden !important; }',
+      'body.asm-phase-building .asm-req-card .asm-req-body::after, body.asm-phase-done .asm-req-card .asm-req-body::after { content:""; position:absolute; left:0; right:0; bottom:0; height:56px; background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 92%); pointer-events:none; }',
       '.asm-req-card.asm-req-overflow:not(.expanded) .asm-req-body::after { content:""; position:absolute; left:0; right:0; bottom:0; height:56px; background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 92%); pointer-events:none; }',
       '.asm-req-body > *:first-child { margin-top:0; }',
       '.asm-req-body p { margin:0 0 8px; }',
@@ -1298,6 +1307,28 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-carousel::before { content: ""; position: absolute; inset: 16px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(16,16,16,0.04), 0 8px 24px rgba(16,16,16,0.05); z-index: 0; pointer-events: none; }',
       '.asm-carousel > * { position: relative; z-index: 1; }',
       '.asm-carousel.hide { opacity:0; pointer-events:none; }',
+      // ── Build shimmer skeleton ───────────────────────────────────
+      // While the app builds, the right pane shows a shimmering wireframe
+      // of the app being assembled (topbar tabs → toolbar → data table)
+      // so the user sees the layout take shape, with a live status caption
+      // beneath. Replaces the old marketing carousel.
+      '.asm-cv-appskel { width:100%; max-width:520px; display:flex; flex-direction:column; gap:16px; }',
+      '.asm-cv-sk { display:block; border-radius:6px; background:linear-gradient(90deg, rgba(16,16,16,0.05) 0%, rgba(16,16,16,0.11) 50%, rgba(16,16,16,0.05) 100%); background-size:200% 100%; animation:asmSkelShimmer 1.5s ease-in-out infinite; }',
+      '.asm-cv-sk-topbar { display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid rgba(16,16,16,0.07); }',
+      '.asm-cv-sk-flex { flex:1; }',
+      '.asm-cv-sk .sk-tab, .asm-cv-sk.sk-tab { width:62px; height:12px; }',
+      '.asm-cv-sk.sk-tab--sm { width:42px; opacity:0.6; }',
+      '.asm-cv-sk.sk-btn { width:74px; height:24px; border-radius:999px; }',
+      '.asm-cv-sk-toolbar { display:flex; align-items:center; gap:8px; }',
+      '.asm-cv-sk.sk-title { width:128px; height:14px; }',
+      '.asm-cv-sk.sk-chip { width:58px; height:20px; border-radius:6px; }',
+      '.asm-cv-sk-table { display:flex; flex-direction:column; gap:14px; margin-top:2px; }',
+      '.asm-cv-sk-row { display:flex; align-items:center; gap:14px; }',
+      '.asm-cv-sk-row--head .asm-cv-sk { opacity:0.5; height:8px; }',
+      '.asm-cv-sk.sk-cell { height:10px; flex:1; }',
+      '.asm-cv-sk.sk-cell--lg { flex:2.4; }',
+      '.asm-cv-sk.sk-cell--sm { flex:0 0 56px; }',
+      '.asm-cv-sk.sk-pill { flex:0 0 44px; height:18px; border-radius:999px; }',
       // Slide order: visual mock first, then eyebrow / headline / subhead
       // beneath. We crossfade + slide on transition for a "stepping
       // through" feel rather than a quick flip.
@@ -2435,8 +2466,32 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
     }
   }
+  // Topbar tab treatment for the prototype preview:
+  //  • Remove the Notifications tab (to the right of Portal) entirely.
+  //  • Dashboard stays the active view, but Dashboard + Portal read as
+  //    disabled — the research prototype isn't meant to switch app views
+  //    from here, so they're dimmed and non-interactive.
+  // Re-applied every tick so it survives the bundle's React re-renders.
+  function styleBundleTabs() {
+    var btns = document.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) {
+      var b = btns[i];
+      var name = (b.textContent || '').trim();
+      if (name === 'Notifications') {
+        if (b.style.display !== 'none') b.style.display = 'none';
+      } else if (name === 'Dashboard' || name === 'Portal') {
+        if (b.getAttribute('data-asm-tab-disabled') !== '1') {
+          b.setAttribute('data-asm-tab-disabled', '1');
+          b.style.opacity = '0.4';
+          b.style.pointerEvents = 'none';
+          b.style.cursor = 'default';
+        }
+      }
+    }
+  }
   function syncNotifPanel() {
     attachTabClickListeners();
+    styleBundleTabs();
     var active = isNotifTabActive();
     STATE.notifTabActive = active;
     document.body.classList.toggle('asm-notif-tab', active);
@@ -3202,89 +3257,50 @@ document.addEventListener('DOMContentLoaded', async function() {
     ov.style.width = rect.width + 'px';
     ov.style.height = rect.height + 'px';
     ov.innerHTML =
-      '<div class="asm-cv-stage">' +
-      SLIDES.map(function(s, i) {
-        return '<div class="asm-cv-slide' + (i === 0 ? ' active' : '') + '" data-i="' + i + '">' +
-               '<div class="asm-cv-eyebrow">' + s.eyebrow + '</div>' +
-               '<div class="asm-cv-headline">' + s.headline + '</div>' +
-               '<div class="asm-cv-subhead">' + s.subhead + '</div>' +
-               buildSlideMock(s.mock) +
-               '</div>';
-      }).join('') +
-      '</div>' +
-      '<div class="asm-cv-nav">' +
-        '<button type="button" class="asm-cv-arrow" id="asm-cv-prev" aria-label="Previous">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
-        '</button>' +
-        '<div class="asm-cv-dots">' + SLIDES.map(function(_, i) { return '<button type="button" class="asm-cv-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Slide ' + (i + 1) + '"><span class="asm-cv-dot-fill"></span></button>'; }).join('') + '</div>' +
-        '<button type="button" class="asm-cv-arrow" id="asm-cv-next" aria-label="Next">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
-        '</button>' +
+      '<div class="asm-cv-appskel" aria-hidden="true">' +
+        '<div class="asm-cv-sk-topbar">' +
+          '<span class="asm-cv-sk sk-tab"></span>' +
+          '<span class="asm-cv-sk sk-tab sk-tab--sm"></span>' +
+          '<span class="asm-cv-sk sk-tab sk-tab--sm"></span>' +
+          '<span class="asm-cv-sk-flex"></span>' +
+          '<span class="asm-cv-sk sk-btn"></span>' +
+        '</div>' +
+        '<div class="asm-cv-sk-toolbar">' +
+          '<span class="asm-cv-sk sk-title"></span>' +
+          '<span class="asm-cv-sk-flex"></span>' +
+          '<span class="asm-cv-sk sk-chip"></span>' +
+          '<span class="asm-cv-sk sk-chip"></span>' +
+        '</div>' +
+        '<div class="asm-cv-sk-table">' +
+          '<div class="asm-cv-sk-row asm-cv-sk-row--head">' +
+            '<span class="asm-cv-sk sk-cell sk-cell--lg"></span><span class="asm-cv-sk sk-cell"></span><span class="asm-cv-sk sk-cell"></span><span class="asm-cv-sk sk-cell sk-cell--sm"></span><span class="asm-cv-sk sk-cell sk-cell--sm"></span>' +
+          '</div>' +
+          [0,1,2,3,4,5].map(function() {
+            return '<div class="asm-cv-sk-row">' +
+              '<span class="asm-cv-sk sk-cell sk-cell--lg"></span><span class="asm-cv-sk sk-cell"></span><span class="asm-cv-sk sk-cell"></span><span class="asm-cv-sk sk-cell sk-cell--sm"></span><span class="asm-cv-sk sk-pill"></span>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
       '</div>' +
       '<div class="asm-cv-status">' + SLIDES[0].status + '</div>';
     document.body.appendChild(ov);
 
+    // The carousel is now a single shimmering app-layout skeleton. We only
+    // cycle the status caption beneath it so the pane reads as live build
+    // progress (no slides, arrows, or dots).
     var idx = 0;
-    var autoMs = 5500;
     var interval = null;
-    var userInteracted = false;
+    var statuses = SLIDES.map(function(s) { return s.status; });
 
-    function render(newIdx, dir) {
-      var prevIdx = idx;
-      idx = (newIdx + SLIDES.length) % SLIDES.length;
-      ov.querySelectorAll('.asm-cv-slide').forEach(function(el) {
-        var i = parseInt(el.getAttribute('data-i'), 10);
-        el.classList.remove('active', 'exit-left');
-        if (i === idx) {
-          el.classList.add('active');
-        } else if (dir === 'next' && i === prevIdx) {
-          el.classList.add('exit-left');
-        }
-      });
-      ov.querySelectorAll('.asm-cv-dot').forEach(function(el, i) {
-        el.classList.toggle('active', i === idx);
-      });
-      // Restart the progress-fill animation on the new active dot so
-      // it always plays from 0 → 100% (whether reached by auto-advance,
-      // arrow click, or jumping to a specific dot).
-      var activeDot = ov.querySelector('.asm-cv-dot.active');
-      var fill = activeDot ? activeDot.querySelector('.asm-cv-dot-fill') : null;
-      if (fill) {
-        fill.style.animation = 'none';
-        // Force reflow so the next assignment re-triggers the animation.
-        void fill.offsetWidth;
-        fill.style.animation = '';
-      }
+    function setStatus() {
       var st = ov.querySelector('.asm-cv-status');
-      if (st) st.textContent = SLIDES[idx].status;
-    }
-
-    function startAuto() {
-      if (interval) clearInterval(interval);
-      interval = setInterval(function() { render(idx + 1, 'next'); }, autoMs);
+      if (st) st.textContent = statuses[idx % statuses.length];
     }
     function stopAuto() {
       if (interval) { clearInterval(interval); interval = null; }
     }
-    function resetAuto() { startAuto(); }
-
-    ov.querySelector('#asm-cv-prev').addEventListener('click', function() {
-      render(idx - 1, 'prev');
-      resetAuto();
-    });
-    ov.querySelector('#asm-cv-next').addEventListener('click', function() {
-      render(idx + 1, 'next');
-      resetAuto();
-    });
-    ov.querySelectorAll('.asm-cv-dot').forEach(function(d) {
-      d.addEventListener('click', function() {
-        var target = parseInt(d.getAttribute('data-i'), 10);
-        render(target, target > idx ? 'next' : 'prev');
-        resetAuto();
-      });
-    });
-
-    startAuto();
+    setStatus();
+    interval = setInterval(function() { idx++; setStatus(); }, 4200);
 
     var api = {
       el: ov,
