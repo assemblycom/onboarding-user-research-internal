@@ -42,7 +42,7 @@
     /* Messages layout */
     .msg-layout { flex: 1; display: flex; min-width: 0; }
 
-    .conv-list { width: 300px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+    .conv-list { width: 360px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
     .pane-head { display: flex; align-items: center; height: 52px; flex-shrink: 0; padding: 0 20px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
     .conv { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
     .conv:hover, .conv.active { background: var(--bg-soft); }
@@ -84,11 +84,12 @@
     .tool:hover { background: var(--bg-hover); }
     .tool svg { width: 14px; height: 14px; }
     .tool img { display: block; }
-    .composer-body { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; }
-    .composer-body textarea { flex: 1; border: none; outline: none; resize: none; font-family: inherit; font-size: 13.5px; color: var(--text); min-height: 40px; max-height: 140px; background: transparent; }
+    .composer-body { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
+    .composer-body textarea { width: 100%; border: none; outline: none; resize: none; font-family: inherit; font-size: 13.5px; color: var(--text); min-height: 38px; max-height: 140px; background: transparent; }
     .composer-body textarea::placeholder { color: #9aa0a6; }
-    .composer-actions { display: flex; align-items: center; gap: 6px; }
-    .send-btn { width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--dark); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .composer-foot { display: flex; align-items: center; justify-content: space-between; }
+    .send-btn { width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--bg-hover); color: #9aa0a6; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .send-btn:hover { background: #e4e7eb; }
 
     .right-rail { width: 48px; flex-shrink: 0; border-left: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 6px; }
     .right-rail .rr-av { width: 28px; height: 28px; border-radius: 50%; font-size: 11px; font-weight: 400; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
@@ -189,7 +190,7 @@
             </div>
             <div class="composer-body">
               <textarea rows="1" placeholder="Message your client"></textarea>
-              <div class="composer-actions">
+              <div class="composer-foot">
                 <button class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
                 <button class="send-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
               </div>
