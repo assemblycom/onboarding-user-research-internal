@@ -90,17 +90,20 @@
     /* Templates */
     .templates { max-width: 1180px; margin: 0 auto; width: 100%; padding: 36px 24px 60px; }
     .templates-panel { border: 1px solid var(--border); border-radius: 16px; padding: 22px 24px 26px; }
-    .templates-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .templates-head { margin-bottom: 18px; }
     .templates-title { font-size: 15px; font-weight:500; }
-    .templates-nav { display: flex; gap: 8px; }
-    .templates-nav button { width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 8px; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .templates-nav button:hover { background: var(--bg-hover); }
     /* Auto-fitting columns so cards reflow (4-ish wide → 2 → 1) instead of clipping. */
-    .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
-    .template-card { cursor: pointer; }
-    .template-thumb { border: 1px solid var(--border); border-radius: 12px; height: 138px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: #aab0b8; font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
-    .template-name { font-size: 14px; font-weight:500; margin: 12px 0 4px; }
-    .template-desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
+    .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 16px; }
+    /* Remix card: framed app screenshot that bleeds into a soft gray header,
+       with the name + description below. */
+    .template-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+    .template-card:hover { border-color: #c9cdd4; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .template-top { background: #eff1f4; border-bottom: 1px solid var(--border); padding: 12px 12px 0; }
+    .template-thumb { height: 116px; border-radius: 2px 2px 0 0; overflow: hidden; }
+    .template-thumb img { width: 100%; height: 116px; object-fit: cover; object-position: top; display: block; }
+    .template-body { padding: 8px 12px; }
+    .template-name { font-size: 13px; font-weight: 500; line-height: 21px; color: var(--text); }
+    .template-desc { font-size: 12px; line-height: 20px; color: var(--muted); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* ── Responsive ── */
     /* Tablet: tighten the wide template gutter so cards keep their size. */
@@ -193,21 +196,8 @@
           <div class="templates-panel">
             <div class="templates-head">
               <div class="templates-title">Remix from app templates</div>
-              <div class="templates-nav">
-                <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-                <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-              </div>
             </div>
-            <div class="template-grid">
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-              <div class="template-card"><div class="template-thumb">Placeholder</div><div class="template-name">Placeholder</div><div class="template-desc">Placeholder description for this template card.</div></div>
-            </div>
+            <div class="template-grid" id="templateGrid"></div>
           </div>
         </div>
       </div>
@@ -290,6 +280,46 @@
         }
       });
     }
+
+    // Remix-from-templates gallery. Drop screenshots into assets/templates/
+    // matching the `img` paths below; until then the soft gray header shows.
+    const TEMPLATES = [
+      { name: 'Proposal Builder', desc: 'Create, send, and track client proposals', img: 'assets/templates/proposal-builder.png', prompt: 'A proposal builder to create, send, and track client proposals' },
+      { name: 'Time Tracker', desc: 'Log hours and review time across projects', img: 'assets/templates/time-tracker.png', prompt: 'A time tracker to log hours and review time across projects' },
+      { name: 'Pizza Tracker', desc: 'Real-time order status from kitchen to door', img: 'assets/templates/pizza-tracker.png', prompt: 'An order tracker showing real-time status from kitchen to door' },
+      { name: 'Client Dashboard', desc: 'A branded overview of status and activity', img: 'assets/templates/dashboard.png', prompt: 'A branded client dashboard with an overview of status and activity' },
+      { name: 'Appointments', desc: 'Let clients book and manage appointments', img: 'assets/templates/appointments.png', prompt: 'An appointments app where clients book and manage appointments' },
+      { name: 'Document Manager', desc: 'Organize, request, and share documents', img: 'assets/templates/documents.png', prompt: 'A document manager to organize, request, and share documents' },
+      { name: 'Order Tracker', desc: 'Track orders from request to delivery', img: 'assets/templates/orders.png', prompt: 'An order tracker that follows orders from request to delivery' },
+      { name: 'Invoices', desc: 'Send invoices and collect payments', img: 'assets/templates/invoices.png', prompt: 'An invoicing app to send invoices and collect payments' }
+    ];
+    (function renderTemplates() {
+      const grid = document.getElementById('templateGrid');
+      if (!grid) return;
+      TEMPLATES.forEach(function (t) {
+        const card = document.createElement('div');
+        card.className = 'template-card';
+        card.innerHTML =
+          '<div class="template-top"><div class="template-thumb">' +
+            '<img src="' + t.img + '" alt="" onerror="this.style.display=\'none\'" />' +
+          '</div></div>' +
+          '<div class="template-body">' +
+            '<div class="template-name"></div>' +
+            '<div class="template-desc"></div>' +
+          '</div>';
+        card.querySelector('.template-name').textContent = t.name;
+        card.querySelector('.template-desc').textContent = t.desc;
+        card.addEventListener('click', function () {
+          promptField.value = t.prompt;
+          autosize();
+          updateStart();
+          markPromptEntered();
+          promptField.focus();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        grid.appendChild(card);
+      });
+    })();
 
     // Start Building → kick off the existing build process (plan mode etc.)
     function startBuilding() {
