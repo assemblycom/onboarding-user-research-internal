@@ -957,6 +957,37 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-plan-version-badge--current { background:rgba(125,164,255,0.18); color:#2B4D9C; }',
       '.asm-plan-version-badge--approved { background:rgba(17,91,59,0.10); color:#115B3B; }',
 
+      // ── Todos timeline (re-skin of the V4 plan-todos) ───────────
+      // The checklist becomes a single-green timeline: a head node in
+      // the header, a rail that fills + darkens as each step finishes,
+      // and a terminal "App built" node that resolves on completion.
+      // One green hue (#115B3B) at opacity steps; text-primary #212B36,
+      // text-secondary #6B6F76. Rail is centered under the head node.
+      '.asm-plan-todos--tl { background:#FFFFFF; }',
+      '.asm-plan-todos--tl .asm-plan-todos-icon { width:14px; height:14px; border:2px solid #115B3B; border-radius:50%; box-sizing:border-box; }',
+      '.asm-plan-todos--tl .asm-plan-todos-icon svg { display:none; }',
+      '.asm-plan-todos--tl .asm-plan-todos-label { color:#212B36; }',
+      '.asm-plan-todos--tl .asm-plan-todos-check { display:none; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row { margin:0 -8px 0 6px; padding:8px 8px 8px 16px; border-left:2px solid transparent; border-radius:0; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row + .asm-plan-todos-row { border-top:0; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="queued"] { border-left-color:rgba(17,91,59,0.22); }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="inprogress"] { border-left-color:rgba(17,91,59,0.55); background:rgba(17,91,59,0.06); }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="inprogress"]::before { background-image:linear-gradient(105deg, transparent 36%, rgba(17,91,59,0.20) 50%, transparent 64%); }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="done"] { border-left-color:rgba(17,91,59,0.9); }',
+      '.asm-plan-todos--tl .asm-plan-todos-row-title { color:#212B36; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row-detail { color:#6B6F76; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="queued"] .asm-plan-todos-row-title { color:#6B6F76; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="done"] .asm-plan-todos-row-title { color:#212B36; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row--rich[data-status="done"] .asm-plan-todos-row-detail { color:#6B6F76; }',
+      // Terminal "App built" node — rail ends at the last step; node sits
+      // below with a matching gap (symmetric), filling green + check.
+      '.asm-plan-todos--tl .asm-plan-todos-end { position:relative; border-left:0 !important; background:transparent !important; padding:10px 8px 10px 16px; align-items:center; }',
+      '.asm-plan-todos--tl .asm-plan-todos-end::before { display:none !important; }',
+      '.asm-plan-todos--tl .asm-plan-todos-endnode { position:absolute; left:-6px; top:50%; transform:translateY(-50%); width:14px; height:14px; border-radius:50%; border:2px solid rgba(17,91,59,0.22); background:#fff; box-sizing:border-box; display:grid; place-items:center; transition:background 0.25s ease, border-color 0.25s ease; }',
+      '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endnode { background:#115B3B; border-color:#115B3B; }',
+      '.asm-plan-todos--tl .asm-plan-todos-endcheck { width:8px; height:8px; opacity:0; transition:opacity 0.2s ease; }',
+      '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endcheck { opacity:1; }',
+
       // ── Recap chips (after Q&A done) ─────────────────────
       '.asm-recap { display:flex; flex-direction:column; gap:6px; align-self:stretch; }',
       '.asm-recap-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#6B6F76; padding:6px 10px; background:#F8F9FB; border-radius:8px; }',
@@ -3982,10 +4013,10 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Dispatch — called every tick. No-op outside the plan phase
   // (and tears down stale UI when leaving the phase).
   function renderPlan(shell) {
-    // During 'building' we deliberately keep the plan UI mounted so it
-    // can morph into a progress component (driven by updateBuildProgress).
-    // Only tear down when leaving plan AND build entirely (qa or done).
-    if (STATE.phase === 'building') return;
+    // During 'building' AND 'done' we keep the Todos timeline mounted —
+    // it carries the build progress and the terminal "App built" node, so
+    // it should stay as the completion record. Only tear down on reset (qa).
+    if (STATE.phase === 'building' || STATE.phase === 'done') return;
     if (STATE.phase !== 'plan') {
       removePlanTodosV9();
       removePlanSkeleton();
@@ -4131,14 +4162,21 @@ document.addEventListener('DOMContentLoaded', async function() {
           '</div>' +
         '</div>';
       }).join('');
+      // Terminal "App built" node — caps the timeline, lights up green
+      // with a check when the build finishes (see updateBuildProgress).
+      var endRow =
+        '<div class="asm-plan-todos-row asm-plan-todos-end" data-end="1" data-status="pending">' +
+          '<span class="asm-plan-todos-endnode"><svg class="asm-plan-todos-endcheck" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+          '<div class="asm-plan-todos-row-text"><span class="asm-plan-todos-row-title">App built</span></div>' +
+        '</div>';
       var html =
-        '<div class="asm-plan-todos" id="' + panelId + '">' +
+        '<div class="asm-plan-todos asm-plan-todos--tl" id="' + panelId + '">' +
           '<div class="asm-plan-todos-header">' +
-            '<span class="asm-plan-todos-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>' +
-            '<span class="asm-plan-todos-label">Build Plan</span>' +
+            '<span class="asm-plan-todos-icon"></span>' +
+            '<span class="asm-plan-todos-label">To do</span>' +
             '<button type="button" class="asm-plan-todos-toggle" aria-label="Collapse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>' +
           '</div>' +
-          '<div class="asm-plan-todos-body">' + rows + '</div>' +
+          '<div class="asm-plan-todos-body">' + rows + endRow + '</div>' +
         '</div>';
       var msgEl = appendMsg(scroll, 'agent', html, flagKey);
       if (msgEl) msgEl.classList.add('asm-msg-agent--fill');
@@ -4473,6 +4511,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (elapsed >= BUILD_DURATION && !buildAppliedDone) {
           buildAppliedDone = true;
           STATE.phase = 'done';
+          // Light up the terminal "App built" node on the Todos timeline.
+          document.querySelectorAll('.asm-plan-todos-end').forEach(function(el) {
+            el.setAttribute('data-status', 'done');
+          });
           // Auto-name the app once it's live. The bundle's preview
           // shows a "Time Tracker" so we mirror that here.
           STATE.appTitle = 'Time Tracker';

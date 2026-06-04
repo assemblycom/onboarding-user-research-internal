@@ -1938,7 +1938,7 @@ body {
 
     <div class="ds-toc-group">
       <div class="ds-toc-label">Plan surface</div>
-      <a class="ds-toc-link" href="#plan">Plan</a>
+      <a class="ds-toc-link" href="#todos">To do</a>
       <a class="ds-toc-link" href="#plan-item">Plan Item</a>
       <a class="ds-toc-link" href="#checkbox">Checkbox</a>
       <a class="ds-toc-link" href="#status-badge">Status Badge</a>
@@ -2110,84 +2110,71 @@ body {
       <!-- ====================================================
            Plan
       ==================================================== -->
-      <section class="ds-section" id="plan">
+      <!-- ════════════════════════════════════════════════════════════
+           COMPONENT — Todos  (timeline; will replace Plan)
+           Self-contained: scoped .tlc-* styles + a small demo script so it
+           doesn't depend on the Plan demo machinery. One green hue
+           (#115B3B), text-primary #212B36 / secondary #6B6F76.
+      ═══════════════════════════════════════════════════════════════ -->
+      <style>
+        .tlc-todos { background:#fff; border:1px solid #DFE1E4; border-radius:8px; overflow:hidden; width:340px; }
+        .tlc-head { display:flex; align-items:center; gap:12px; padding:9px 14px; cursor:pointer; user-select:none; position:relative; }
+        .tlc-todos[data-state="hover"] > .tlc-head, .tlc-head:hover { background:#F8F9FB; }
+        .tlc-node { width:14px; height:14px; border:2px solid #115B3B; border-radius:50%; box-sizing:border-box; flex-shrink:0; }
+        .tlc-title { flex:1; font-size:14px; font-weight:500; line-height:22px; color:#212B36; }
+        .tlc-chev { width:16px; height:16px; color:#6B6F76; display:grid; place-items:center; transition:transform .2s ease; flex-shrink:0; }
+        .tlc-todos[data-collapse="true"] .tlc-chev { transform:rotate(-90deg); }
+        .tlc-body { padding:4px 14px 12px; }
+        .tlc-todos[data-collapse="true"] .tlc-body { display:none; }
+        .tlc-row { display:flex; align-items:center; gap:10px; margin:0 -8px 0 6px; padding:8px 8px 8px 16px; border-left:2px solid transparent; position:relative; transition:background .2s ease, border-color .25s ease; }
+        .tlc-row[data-status="queued"] { border-left-color:rgba(17,91,59,0.22); }
+        .tlc-row[data-status="inprogress"] { border-left-color:rgba(17,91,59,0.55); background:rgba(17,91,59,0.06); overflow:hidden; }
+        .tlc-row[data-status="inprogress"]::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(105deg,transparent 36%,rgba(17,91,59,0.2) 50%,transparent 64%); background-size:240% 240%; background-repeat:no-repeat; animation:tlc-sheen 1.9s ease-in-out infinite; }
+        .tlc-row[data-status="done"] { border-left-color:rgba(17,91,59,0.9); }
+        .tlc-txt { display:flex; flex-direction:column; gap:2px; min-width:0; position:relative; z-index:1; }
+        .tlc-t { font-size:13px; line-height:21px; color:#212B36; }
+        .tlc-d { font-size:12px; line-height:20px; color:#6B6F76; }
+        .tlc-row[data-status="queued"] .tlc-t { color:#6B6F76; }
+        .tlc-row[data-status="inprogress"] .tlc-t { font-weight:500; }
+        .tlc-end { border-left:0; padding:10px 8px 10px 16px; }
+        .tlc-end::after { display:none; }
+        .tlc-endnode { position:absolute; left:-6px; top:50%; transform:translateY(-50%); width:14px; height:14px; border-radius:50%; border:2px solid rgba(17,91,59,0.22); background:#fff; box-sizing:border-box; display:grid; place-items:center; transition:background .25s ease, border-color .25s ease; }
+        .tlc-end[data-status="done"] .tlc-endnode { background:#115B3B; border-color:#115B3B; }
+        .tlc-endcheck { width:8px; height:8px; opacity:0; transition:opacity .2s ease; }
+        .tlc-end[data-status="done"] .tlc-endcheck { opacity:1; }
+        @keyframes tlc-sheen { 0%{background-position:200% 0;} 100%{background-position:-120% 0;} }
+        @media (prefers-reduced-motion: reduce) { .tlc-row[data-status="inprogress"]::after { animation:none; opacity:0; } }
+      </style>
+      <section class="ds-section" id="todos">
         <div class="ds-section-head">
-          <h2 class="ds-section-h">Plan</h2>
+          <h2 class="ds-section-h">To do</h2>
           <span class="ds-section-shadcn">→ ShadCN: &lt;Card&gt; + &lt;Collapsible&gt;</span>
         </div>
         <p class="ds-section-desc">
-          A collapsible container that holds Plan Items. The header shows a status badge
-          (Approved by default) and a chevron that swaps direction when expanded. Two state axes:
-          <code>collapse</code> (true | false) and <code>state</code> (resting | hover).
+          The build checklist as a <b>timeline</b>: a head node anchors the top, the rail fills and
+          darkens as each step moves <i>queued</i> → <i>in progress</i> → <i>done</i> (one green,
+          <code>#115B3B</code>, at opacity steps), and a terminal <b>“App built”</b> node resolves to a
+          check when every step finishes. Completed rows keep their primary text. Two state axes:
+          <code>collapse</code> (true | false) and <code>state</code> (resting | hover). Replaces the
+          legacy checkbox-based plan.
         </p>
 
         <div class="ds-group">
           <div class="ds-group-h">Live demo</div>
-          <div class="ds-group-desc">The plan auto-builds itself on load — each item moves <i>waiting</i> → <i>in progress</i> → <i>completed</i>. Click anywhere on the header to collapse or expand at any time, even mid-build. Tap the corner icon to replay.</div>
+          <div class="ds-group-desc">Auto-builds on load — the rail fills top-to-bottom and lands on “App built”. Click the header to collapse / expand (works mid-build). Tap the corner icon to replay.</div>
           <div class="ds-stage ds-stage--demo">
-            <button type="button" class="ds-demo-btn" id="ds-demo-btn" aria-label="Start over" title="Start over">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 8.5A6 6 0 1 0 4.34 3.66"/>
-                <polyline points="1.75 1.75 1.75 4.5 4.5 4.5"/>
-              </svg>
+            <button type="button" class="ds-demo-btn" id="tlc-demo-replay" aria-label="Replay" title="Replay">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5A6 6 0 1 0 4.34 3.66"/><polyline points="1.75 1.75 1.75 4.5 4.5 4.5"/></svg>
             </button>
             <div class="ds-stage-row">
               <div class="ds-demo-frame">
-                <div class="ds-plan" data-collapse="false" data-state="resting" id="ds-demo-plan">
-                  <div class="ds-plan-header" id="ds-demo-header" role="button" tabindex="0" aria-expanded="true" aria-controls="ds-demo-list">
-                    <div class="ds-plan-title">
-                      <span class="ds-plan-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                      </span>
-                      <span class="ds-plan-label">Build Plan</span>
-                      <span class="ds-badge ds-plan-badge" data-tone="info">Proposal</span>
-                    </div>
-                    <span class="ds-plan-chevron"><svg class="ds-plan-chev-right" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.60288 5.60122C8.82319 5.82153 8.82319 6.17778 8.60288 6.39575L3.91538 11.0833C3.69506 11.3036 3.33881 11.3036 3.12085 11.0833C2.90288 10.8629 2.90053 10.5067 3.12085 10.2887L7.40991 5.99966L3.12085 1.7106C2.90053 1.49028 2.90053 1.13403 3.12085 0.916066C3.34116 0.698097 3.69741 0.695753 3.91538 0.916066L8.60288 5.60357V5.60122Z" fill="#6B6F76"/></svg><svg class="ds-plan-chev-down" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.46328 8.74102C5.68359 8.96133 6.03984 8.96133 6.25781 8.74102L10.9453 4.05352C11.1656 3.8332 11.1656 3.47695 10.9453 3.25898C10.725 3.04102 10.3688 3.03867 10.1508 3.25898L5.86172 7.54805L1.57266 3.25898C1.35234 3.03867 0.996095 3.03867 0.778126 3.25898C0.560157 3.4793 0.557814 3.83555 0.778126 4.05352L5.46563 8.74102H5.46328Z" fill="#6B6F76"/></svg></span>
+                <div class="tlc-todos" data-collapse="false" data-state="resting" id="tlc-demo">
+                  <div class="tlc-head">
+                    <span class="tlc-node"></span>
+                    <span class="tlc-title">To do</span>
+                    <span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                   </div>
-                  <div class="ds-plan-list" id="ds-demo-list">
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Time entries data model</span></div>
-                        <span class="ds-plan-item-subtitle">Date, hours, project, notes</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Quick log entry form</span></div>
-                        <span class="ds-plan-item-subtitle">Project picker, hour input, notes field</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">My Time dashboard</span></div>
-                        <span class="ds-plan-item-subtitle">Weekly hours, recent entries, totals</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Reports + CSV export</span></div>
-                        <span class="ds-plan-item-subtitle">Filter by date or project</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Daily logging reminders</span></div>
-                        <span class="ds-plan-item-subtitle">Email nudge if no entry by 5pm</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Brand and permissions</span></div>
-                        <span class="ds-plan-item-subtitle">Use your colors, gate by role</span>
-                      </div>
-                    </div>
-                  </div>
+                  <div class="tlc-body" id="tlc-demo-body"></div>
                 </div>
               </div>
             </div>
@@ -2196,150 +2183,37 @@ body {
 
         <div class="ds-group">
           <div class="ds-group-h">All four state combinations</div>
-          <div class="ds-group-desc">Resting × Hover × Collapsed × Expanded — matches the Figma frame.</div>
+          <div class="ds-group-desc">Collapse × State — matches the Figma variant matrix (Collapse true/false × Resting/Hover).</div>
           <div class="ds-stage">
             <div class="ds-stage-row">
               <div class="ds-stage-row-cluster">
-                <span class="ds-stage-cell-label">Collapsed · resting · proposal</span>
-                <!-- Plan: collapsed, resting, proposal state -->
-                <div class="ds-plan" data-collapse="true" data-state="resting">
-                  <div class="ds-plan-header">
-                    <div class="ds-plan-title">
-                      <span class="ds-plan-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                      </span>
-                      <span class="ds-plan-label">Build Plan</span>
-                      <span class="ds-badge ds-plan-badge" data-tone="info">Proposal</span>
-                    </div>
-                    <span class="ds-plan-chevron"><svg class="ds-plan-chev-right" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.60288 5.60122C8.82319 5.82153 8.82319 6.17778 8.60288 6.39575L3.91538 11.0833C3.69506 11.3036 3.33881 11.3036 3.12085 11.0833C2.90288 10.8629 2.90053 10.5067 3.12085 10.2887L7.40991 5.99966L3.12085 1.7106C2.90053 1.49028 2.90053 1.13403 3.12085 0.916066C3.34116 0.698097 3.69741 0.695753 3.91538 0.916066L8.60288 5.60357V5.60122Z" fill="#6B6F76"/></svg><svg class="ds-plan-chev-down" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.46328 8.74102C5.68359 8.96133 6.03984 8.96133 6.25781 8.74102L10.9453 4.05352C11.1656 3.8332 11.1656 3.47695 10.9453 3.25898C10.725 3.04102 10.3688 3.03867 10.1508 3.25898L5.86172 7.54805L1.57266 3.25898C1.35234 3.03867 0.996095 3.03867 0.778126 3.25898C0.560157 3.4793 0.557814 3.83555 0.778126 4.05352L5.46563 8.74102H5.46328Z" fill="#6B6F76"/></svg></span>
-                  </div>
+                <span class="ds-stage-cell-label">Collapsed · resting</span>
+                <div class="tlc-todos" data-collapse="true" data-state="resting">
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-body"></div>
                 </div>
               </div>
-
               <div class="ds-stage-row-cluster">
-                <span class="ds-stage-cell-label">Collapsed · hover · proposal 2</span>
-                <!-- Plan: collapsed, hover, second revision -->
-                <div class="ds-plan" data-collapse="true" data-state="hover">
-                  <div class="ds-plan-header">
-                    <div class="ds-plan-title">
-                      <span class="ds-plan-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                      </span>
-                      <span class="ds-plan-label">Build Plan</span>
-                      <span class="ds-badge ds-plan-badge" data-tone="info">Proposal 2</span>
-                    </div>
-                    <span class="ds-plan-chevron"><svg class="ds-plan-chev-right" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.60288 5.60122C8.82319 5.82153 8.82319 6.17778 8.60288 6.39575L3.91538 11.0833C3.69506 11.3036 3.33881 11.3036 3.12085 11.0833C2.90288 10.8629 2.90053 10.5067 3.12085 10.2887L7.40991 5.99966L3.12085 1.7106C2.90053 1.49028 2.90053 1.13403 3.12085 0.916066C3.34116 0.698097 3.69741 0.695753 3.91538 0.916066L8.60288 5.60357V5.60122Z" fill="#6B6F76"/></svg><svg class="ds-plan-chev-down" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.46328 8.74102C5.68359 8.96133 6.03984 8.96133 6.25781 8.74102L10.9453 4.05352C11.1656 3.8332 11.1656 3.47695 10.9453 3.25898C10.725 3.04102 10.3688 3.03867 10.1508 3.25898L5.86172 7.54805L1.57266 3.25898C1.35234 3.03867 0.996095 3.03867 0.778126 3.25898C0.560157 3.4793 0.557814 3.83555 0.778126 4.05352L5.46563 8.74102H5.46328Z" fill="#6B6F76"/></svg></span>
-                  </div>
+                <span class="ds-stage-cell-label">Collapsed · hover</span>
+                <div class="tlc-todos" data-collapse="true" data-state="hover">
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-body"></div>
                 </div>
               </div>
             </div>
-
             <div class="ds-stage-row">
               <div class="ds-stage-row-cluster">
-                <span class="ds-stage-cell-label">Expanded · resting · approved</span>
-                <!-- Plan: expanded, resting, approved (full plan with 5 items) -->
-                <div class="ds-plan" data-collapse="false" data-state="resting">
-                  <div class="ds-plan-header">
-                    <div class="ds-plan-title">
-                      <span class="ds-plan-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                      </span>
-                      <span class="ds-plan-label">Build Plan</span>
-                      <span class="ds-badge ds-plan-badge" data-tone="success"><svg viewBox="0 0 13 13" fill="currentColor"><path d="M6.5 13C4.77609 13 3.12279 12.3152 1.90381 11.0962C0.68482 9.87721 0 8.22391 0 6.5C0 4.77609 0.68482 3.12279 1.90381 1.90381C3.12279 0.68482 4.77609 0 6.5 0C8.22391 0 9.87721 0.68482 11.0962 1.90381C12.3152 3.12279 13 4.77609 13 6.5C13 8.22391 12.3152 9.87721 11.0962 11.0962C9.87721 12.3152 8.22391 13 6.5 13ZM6.5 1.21875C5.09933 1.21875 3.75602 1.77517 2.76559 2.76559C1.77517 3.75602 1.21875 5.09933 1.21875 6.5C1.21875 7.90068 1.77517 9.24398 2.76559 10.2344C3.75602 11.2248 5.09933 11.7813 6.5 11.7813C7.90068 11.7813 9.24398 11.2248 10.2344 10.2344C11.2248 9.24398 11.7813 7.90068 11.7813 6.5C11.7813 5.09933 11.2248 3.75602 10.2344 2.76559C9.24398 1.77517 7.90068 1.21875 6.5 1.21875ZM8.29512 4.31387C8.49317 4.04219 8.87402 3.98125 9.1457 4.1793C9.41738 4.37734 9.47832 4.7582 9.28027 5.02988L6.18008 9.29551C6.07598 9.44024 5.91348 9.53164 5.73574 9.54434C5.55801 9.55703 5.38281 9.49356 5.2584 9.36914L3.83906 7.94981C3.60039 7.71113 3.60039 7.3252 3.83906 7.08906C4.07773 6.85293 4.46367 6.85039 4.69981 7.08906L5.61387 8.00313L8.29512 4.31641V4.31387Z"/></svg>Approved</span>
-                    </div>
-                    <span class="ds-plan-chevron"><svg class="ds-plan-chev-right" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.60288 5.60122C8.82319 5.82153 8.82319 6.17778 8.60288 6.39575L3.91538 11.0833C3.69506 11.3036 3.33881 11.3036 3.12085 11.0833C2.90288 10.8629 2.90053 10.5067 3.12085 10.2887L7.40991 5.99966L3.12085 1.7106C2.90053 1.49028 2.90053 1.13403 3.12085 0.916066C3.34116 0.698097 3.69741 0.695753 3.91538 0.916066L8.60288 5.60357V5.60122Z" fill="#6B6F76"/></svg><svg class="ds-plan-chev-down" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.46328 8.74102C5.68359 8.96133 6.03984 8.96133 6.25781 8.74102L10.9453 4.05352C11.1656 3.8332 11.1656 3.47695 10.9453 3.25898C10.725 3.04102 10.3688 3.03867 10.1508 3.25898L5.86172 7.54805L1.57266 3.25898C1.35234 3.03867 0.996095 3.03867 0.778126 3.25898C0.560157 3.4793 0.557814 3.83555 0.778126 4.05352L5.46563 8.74102H5.46328Z" fill="#6B6F76"/></svg></span>
-                  </div>
-                  <div class="ds-plan-list">
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Time entries data model</span></div>
-                        <span class="ds-plan-item-subtitle">Date, hours, project, notes</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Quick log entry form</span></div>
-                        <span class="ds-plan-item-subtitle">Project picker, hour input, notes field</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">My Time dashboard</span></div>
-                        <span class="ds-plan-item-subtitle">Weekly hours, recent entries, totals</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Reports + CSV export</span></div>
-                        <span class="ds-plan-item-subtitle">Filter by date or project</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Daily logging reminders</span></div>
-                        <span class="ds-plan-item-subtitle">Email nudge if no entry by 5pm</span>
-                      </div>
-                    </div>
-                  </div>
+                <span class="ds-stage-cell-label">Expanded · resting</span>
+                <div class="tlc-todos tlc-sample" data-collapse="false" data-state="resting">
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-body"></div>
                 </div>
               </div>
-
               <div class="ds-stage-row-cluster">
-                <span class="ds-stage-cell-label">Expanded · hover · approved</span>
-                <!-- Plan: expanded, hover, approved (header has darker bg) -->
-                <div class="ds-plan" data-collapse="false" data-state="hover">
-                  <div class="ds-plan-header">
-                    <div class="ds-plan-title">
-                      <span class="ds-plan-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                      </span>
-                      <span class="ds-plan-label">Build Plan</span>
-                      <span class="ds-badge ds-plan-badge" data-tone="success"><svg viewBox="0 0 13 13" fill="currentColor"><path d="M6.5 13C4.77609 13 3.12279 12.3152 1.90381 11.0962C0.68482 9.87721 0 8.22391 0 6.5C0 4.77609 0.68482 3.12279 1.90381 1.90381C3.12279 0.68482 4.77609 0 6.5 0C8.22391 0 9.87721 0.68482 11.0962 1.90381C12.3152 3.12279 13 4.77609 13 6.5C13 8.22391 12.3152 9.87721 11.0962 11.0962C9.87721 12.3152 8.22391 13 6.5 13ZM6.5 1.21875C5.09933 1.21875 3.75602 1.77517 2.76559 2.76559C1.77517 3.75602 1.21875 5.09933 1.21875 6.5C1.21875 7.90068 1.77517 9.24398 2.76559 10.2344C3.75602 11.2248 5.09933 11.7813 6.5 11.7813C7.90068 11.7813 9.24398 11.2248 10.2344 10.2344C11.2248 9.24398 11.7813 7.90068 11.7813 6.5C11.7813 5.09933 11.2248 3.75602 10.2344 2.76559C9.24398 1.77517 7.90068 1.21875 6.5 1.21875ZM8.29512 4.31387C8.49317 4.04219 8.87402 3.98125 9.1457 4.1793C9.41738 4.37734 9.47832 4.7582 9.28027 5.02988L6.18008 9.29551C6.07598 9.44024 5.91348 9.53164 5.73574 9.54434C5.55801 9.55703 5.38281 9.49356 5.2584 9.36914L3.83906 7.94981C3.60039 7.71113 3.60039 7.3252 3.83906 7.08906C4.07773 6.85293 4.46367 6.85039 4.69981 7.08906L5.61387 8.00313L8.29512 4.31641V4.31387Z"/></svg>Approved</span>
-                    </div>
-                    <span class="ds-plan-chevron"><svg class="ds-plan-chev-right" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.60288 5.60122C8.82319 5.82153 8.82319 6.17778 8.60288 6.39575L3.91538 11.0833C3.69506 11.3036 3.33881 11.3036 3.12085 11.0833C2.90288 10.8629 2.90053 10.5067 3.12085 10.2887L7.40991 5.99966L3.12085 1.7106C2.90053 1.49028 2.90053 1.13403 3.12085 0.916066C3.34116 0.698097 3.69741 0.695753 3.91538 0.916066L8.60288 5.60357V5.60122Z" fill="#6B6F76"/></svg><svg class="ds-plan-chev-down" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.46328 8.74102C5.68359 8.96133 6.03984 8.96133 6.25781 8.74102L10.9453 4.05352C11.1656 3.8332 11.1656 3.47695 10.9453 3.25898C10.725 3.04102 10.3688 3.03867 10.1508 3.25898L5.86172 7.54805L1.57266 3.25898C1.35234 3.03867 0.996095 3.03867 0.778126 3.25898C0.560157 3.4793 0.557814 3.83555 0.778126 4.05352L5.46563 8.74102H5.46328Z" fill="#6B6F76"/></svg></span>
-                  </div>
-                  <div class="ds-plan-list">
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Time entries data model</span></div>
-                        <span class="ds-plan-item-subtitle">Date, hours, project, notes</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Quick log entry form</span></div>
-                        <span class="ds-plan-item-subtitle">Project picker, hour input, notes field</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">My Time dashboard</span></div>
-                        <span class="ds-plan-item-subtitle">Weekly hours, recent entries, totals</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Reports + CSV export</span></div>
-                        <span class="ds-plan-item-subtitle">Filter by date or project</span>
-                      </div>
-                    </div>
-                    <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                      <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                      <div class="ds-plan-item-content">
-                        <div class="ds-plan-item-row"><span class="ds-plan-item-title">Daily logging reminders</span></div>
-                        <span class="ds-plan-item-subtitle">Email nudge if no entry by 5pm</span>
-                      </div>
-                    </div>
-                  </div>
+                <span class="ds-stage-cell-label">Expanded · hover</span>
+                <div class="tlc-todos tlc-sample" data-collapse="false" data-state="hover">
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-body"></div>
                 </div>
               </div>
             </div>
@@ -2347,152 +2221,67 @@ body {
         </div>
 
         <div class="ds-group">
-          <div class="ds-group-h">Drafting</div>
-          <div class="ds-group-desc">
-            Shown the moment the assistant starts writing the plan. The badge reads
-            <em>Drafting</em> as a white card on the header, the section can't be
-            collapsed yet, and each row is a shimmering skeleton at a fixed 48px
-            height until the real titles stream in.
-          </div>
-          <div class="ds-stage">
-            <div class="ds-stage-row">
-              <!-- Plan: drafting / skeleton-loading state -->
-              <div class="ds-plan" data-collapse="false" data-state="resting" data-variant="drafting" aria-busy="true" aria-label="Plan is being generated">
-                <div class="ds-plan-header">
-                  <div class="ds-plan-title">
-                    <span class="ds-plan-icon">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <g clip-path="url(#ds-plan-icon-draft-clip)">
-                          <path d="M14.2822 1.83812C14.5431 1.57728 14.9666 1.57726 15.2275 1.83812C15.4883 2.09898 15.4883 2.52257 15.2275 2.78343L8.11579 9.89437C7.85492 10.1551 7.43207 10.1551 7.17126 9.89437L5.03766 7.76077C4.77707 7.49994 4.77704 7.07705 5.03766 6.81624C5.29853 6.55537 5.7221 6.55537 5.98298 6.81624L7.64313 8.47718L14.2822 1.83812Z" fill="currentColor"/>
-                          <path d="M0.575684 12.9782V3.02197C0.575776 2.46774 0.796273 1.93654 1.18818 1.54463C1.58009 1.15272 2.11129 0.932221 2.66553 0.932129H10.4882C10.8571 0.932168 11.1562 1.2312 11.1562 1.6001C11.1562 1.969 10.8571 2.26803 10.4882 2.26807H2.66553C2.46562 2.26816 2.27408 2.3478 2.13271 2.48916C1.99135 2.63052 1.91171 2.82207 1.91162 3.02197V12.9782C1.91171 13.1781 1.99135 13.3697 2.13271 13.511C2.27408 13.6524 2.46562 13.732 2.66553 13.7321H12.6218C12.8217 13.732 13.0132 13.6524 13.1546 13.511C13.296 13.3697 13.3756 13.1781 13.3757 12.9782V8.0001C13.3757 7.63118 13.6747 7.33214 14.0437 7.33213C14.4126 7.33213 14.7116 7.63118 14.7116 8.0001V12.9782C14.7115 13.5325 14.491 14.0637 14.0991 14.4556C13.7072 14.8475 13.176 15.068 12.6218 15.0681H2.66553C2.11129 15.068 1.58009 14.8475 1.18818 14.4556C0.796274 14.0637 0.575771 13.5325 0.575684 12.9782Z" fill="currentColor"/>
-                        </g>
-                        <defs>
-                          <clipPath id="ds-plan-icon-draft-clip"><rect width="16" height="16" fill="white"/></clipPath>
-                        </defs>
-                      </svg>
-                    </span>
-                    <span class="ds-plan-label">Plan</span>
-                    <span class="ds-badge ds-plan-badge" data-tone="muted">Drafting</span>
-                  </div>
-                </div>
-                <div class="ds-plan-list">
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <span class="ds-skel ds-skel--title" style="width: 70%"></span>
-                      <span class="ds-skel ds-skel--sub" style="width: 90%"></span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <span class="ds-skel ds-skel--title" style="width: 55%"></span>
-                      <span class="ds-skel ds-skel--sub" style="width: 80%"></span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <span class="ds-skel ds-skel--title" style="width: 65%"></span>
-                      <span class="ds-skel ds-skel--sub" style="width: 70%"></span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <span class="ds-skel ds-skel--title" style="width: 50%"></span>
-                      <span class="ds-skel ds-skel--sub" style="width: 60%"></span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <span class="ds-skel ds-skel--title" style="width: 45%"></span>
-                      <span class="ds-skel ds-skel--sub" style="width: 65%"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ds-group">
-          <div class="ds-group-h">Live (mid-build)</div>
-          <div class="ds-group-desc">A plan with one item in progress, two completed, two waiting — same surface mid-build.</div>
-          <div class="ds-stage">
-            <div class="ds-stage-row">
-              <div class="ds-plan" id="cap-mid-build" data-collapse="false" data-state="resting">
-                <div class="ds-plan-header">
-                  <div class="ds-plan-title">
-                    <span class="ds-plan-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    </span>
-                    <span class="ds-plan-label">Build Plan</span>
-                    <span class="ds-badge ds-plan-badge" data-tone="success"><svg viewBox="0 0 13 13" fill="currentColor"><path d="M6.5 13C4.77609 13 3.12279 12.3152 1.90381 11.0962C0.68482 9.87721 0 8.22391 0 6.5C0 4.77609 0.68482 3.12279 1.90381 1.90381C3.12279 0.68482 4.77609 0 6.5 0C8.22391 0 9.87721 0.68482 11.0962 1.90381C12.3152 3.12279 13 4.77609 13 6.5C13 8.22391 12.3152 9.87721 11.0962 11.0962C9.87721 12.3152 8.22391 13 6.5 13ZM6.5 1.21875C5.09933 1.21875 3.75602 1.77517 2.76559 2.76559C1.77517 3.75602 1.21875 5.09933 1.21875 6.5C1.21875 7.90068 1.77517 9.24398 2.76559 10.2344C3.75602 11.2248 5.09933 11.7813 6.5 11.7813C7.90068 11.7813 9.24398 11.2248 10.2344 10.2344C11.2248 9.24398 11.7813 7.90068 11.7813 6.5C11.7813 5.09933 11.2248 3.75602 10.2344 2.76559C9.24398 1.77517 7.90068 1.21875 6.5 1.21875ZM8.29512 4.31387C8.49317 4.04219 8.87402 3.98125 9.1457 4.1793C9.41738 4.37734 9.47832 4.7582 9.28027 5.02988L6.18008 9.29551C6.07598 9.44024 5.91348 9.53164 5.73574 9.54434C5.55801 9.55703 5.38281 9.49356 5.2584 9.36914L3.83906 7.94981C3.60039 7.71113 3.60039 7.3252 3.83906 7.08906C4.07773 6.85293 4.46367 6.85039 4.69981 7.08906L5.61387 8.00313L8.29512 4.31641V4.31387Z"/></svg>Approved</span>
-                  </div>
-                  <span class="ds-plan-chevron"><svg class="ds-plan-chev-right" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.60288 5.60122C8.82319 5.82153 8.82319 6.17778 8.60288 6.39575L3.91538 11.0833C3.69506 11.3036 3.33881 11.3036 3.12085 11.0833C2.90288 10.8629 2.90053 10.5067 3.12085 10.2887L7.40991 5.99966L3.12085 1.7106C2.90053 1.49028 2.90053 1.13403 3.12085 0.916066C3.34116 0.698097 3.69741 0.695753 3.91538 0.916066L8.60288 5.60357V5.60122Z" fill="#6B6F76"/></svg><svg class="ds-plan-chev-down" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.46328 8.74102C5.68359 8.96133 6.03984 8.96133 6.25781 8.74102L10.9453 4.05352C11.1656 3.8332 11.1656 3.47695 10.9453 3.25898C10.725 3.04102 10.3688 3.03867 10.1508 3.25898L5.86172 7.54805L1.57266 3.25898C1.35234 3.03867 0.996095 3.03867 0.778126 3.25898C0.560157 3.4793 0.557814 3.83555 0.778126 4.05352L5.46563 8.74102H5.46328Z" fill="#6B6F76"/></svg></span>
-                </div>
-                <div class="ds-plan-list">
-                  <div class="ds-plan-item" data-state="completed" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="completed"><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                    <div class="ds-plan-item-content">
-                      <div class="ds-plan-item-row"><span class="ds-plan-item-title">Time entries data model</span></div>
-                      <span class="ds-plan-item-subtitle">Date, hours, project, notes</span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="completed" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="completed"><span class="ds-checkbox-box"><svg class="ds-checkbox-check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span></span>
-                    <div class="ds-plan-item-content">
-                      <div class="ds-plan-item-row"><span class="ds-plan-item-title">Quick log entry form</span></div>
-                      <span class="ds-plan-item-subtitle">Project picker, hour input, notes field</span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="in-progress" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="in-progress"><span class="ds-checkbox-pulse"></span><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <div class="ds-plan-item-row"><span class="ds-plan-item-title">My Time dashboard</span></div>
-                      <span class="ds-plan-item-subtitle">Weekly hours, recent entries, totals</span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <div class="ds-plan-item-row"><span class="ds-plan-item-title">Reports + CSV export</span></div>
-                      <span class="ds-plan-item-subtitle">Filter by date or project</span>
-                    </div>
-                  </div>
-                  <div class="ds-plan-item" data-state="resting" data-subtitle="true">
-                    <span class="ds-checkbox" data-state="waiting"><span class="ds-checkbox-box"></span></span>
-                    <div class="ds-plan-item-content">
-                      <div class="ds-plan-item-row"><span class="ds-plan-item-title">Daily logging reminders</span></div>
-                      <span class="ds-plan-item-subtitle">Email nudge if no entry by 5pm</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ds-props">
-          <table>
-            <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td class="ds-props-name">collapse</td><td class="ds-props-type">boolean</td><td class="ds-props-default">true</td><td class="ds-props-desc">Closed (header only) or open (header + list).</td></tr>
-              <tr><td class="ds-props-name">state</td><td class="ds-props-type">"resting" | "hover"</td><td class="ds-props-default">"resting"</td><td class="ds-props-desc">Visual state of the entire card. Hover lightens the surface and darkens the header.</td></tr>
-              <tr><td class="ds-props-name">badge</td><td class="ds-props-type">&lt;Badge&gt;</td><td class="ds-props-default">Approved</td><td class="ds-props-desc">Status badge in the header. Approved by default; can be omitted.</td></tr>
-              <tr><td class="ds-props-name">children</td><td class="ds-props-type">PlanItem[]</td><td class="ds-props-default">—</td><td class="ds-props-desc">Plan Items rendered in the body when expanded.</td></tr>
-            </tbody>
+          <div class="ds-group-h">Props</div>
+          <table class="ds-props">
+            <tr><td class="ds-props-name">collapse</td><td class="ds-props-type">boolean</td><td class="ds-props-default">false</td><td class="ds-props-desc">Collapsed shows only the header (head node + title + chevron); the rail lives in the body so it's absent when closed.</td></tr>
+            <tr><td class="ds-props-name">state</td><td class="ds-props-type">"resting" | "hover"</td><td class="ds-props-default">"resting"</td><td class="ds-props-desc">Hover tints the header background.</td></tr>
+            <tr><td class="ds-props-name">items</td><td class="ds-props-type">TodoItem[]</td><td class="ds-props-default">—</td><td class="ds-props-desc">Steps; each has title + detail and a status (queued | inprogress | done).</td></tr>
+            <tr><td class="ds-props-name">built</td><td class="ds-props-type">boolean</td><td class="ds-props-default">false</td><td class="ds-props-desc">When true, the terminal “App built” node fills green with a check.</td></tr>
           </table>
         </div>
-
-        <pre class="ds-code"><span class="c">// React (when ported)</span>
-&lt;<span class="k">Plan</span> <span class="a">collapse</span>=<span class="s">{false}</span> <span class="a">state</span>=<span class="s">"resting"</span>&gt;
-  &lt;<span class="k">PlanItem</span> <span class="a">title</span>=<span class="s">"Time entries data model"</span> <span class="a">subtitle</span>=<span class="s">"…"</span>/&gt;
-  &lt;<span class="k">PlanItem</span> <span class="a">title</span>=<span class="s">"My Time dashboard"</span> <span class="a">state</span>=<span class="s">"in-progress"</span>/&gt;
-&lt;/<span class="k">Plan</span>&gt;</pre>
       </section>
+
+      <script>
+        (function () {
+          var ITEMS = [
+            { title: 'Time entries data model', detail: 'Date, hours, project, notes' },
+            { title: 'Quick log entry form', detail: 'Project picker, hour input, notes field' },
+            { title: 'My Time dashboard', detail: 'Weekly hours, recent entries, totals' },
+            { title: 'Reports + CSV export', detail: 'Filter by date or project' },
+            { title: 'Daily logging reminders', detail: 'Email nudge if no entry by 5pm' },
+            { title: 'Brand and permissions', detail: 'Use your colors, gate by role' }
+          ];
+          var CHECK = '<svg class="tlc-endcheck" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+          function rowHtml(it, status) {
+            return '<div class="tlc-row" data-step data-status="' + status + '"><div class="tlc-txt"><span class="tlc-t">' + it.title + '</span><span class="tlc-d">' + it.detail + '</span></div></div>';
+          }
+          function endHtml(status) {
+            return '<div class="tlc-row tlc-end" data-status="' + status + '"><span class="tlc-endnode">' + CHECK + '</span><div class="tlc-txt"><span class="tlc-t">App built</span></div></div>';
+          }
+          // Static samples — fully built timeline.
+          Array.prototype.forEach.call(document.querySelectorAll('.tlc-sample .tlc-body'), function (body) {
+            body.innerHTML = ITEMS.map(function (it) { return rowHtml(it, 'done'); }).join('') + endHtml('done');
+          });
+          // Live demo.
+          var demo = document.getElementById('tlc-demo');
+          var demoBody = document.getElementById('tlc-demo-body');
+          if (demo && demoBody) {
+            demoBody.innerHTML = ITEMS.map(function (it) { return rowHtml(it, 'queued'); }).join('') + endHtml('pending');
+            var steps = demoBody.querySelectorAll('.tlc-row[data-step]');
+            var end = demoBody.querySelector('.tlc-end');
+            var timers = [];
+            function run() {
+              timers.forEach(clearTimeout); timers = [];
+              steps.forEach(function (r) { r.setAttribute('data-status', 'queued'); });
+              if (end) end.setAttribute('data-status', 'pending');
+              var t = 500;
+              steps.forEach(function (r) {
+                timers.push(setTimeout(function () { r.setAttribute('data-status', 'inprogress'); }, t));
+                timers.push(setTimeout(function () { r.setAttribute('data-status', 'done'); }, t + 1100));
+                t += 1100;
+              });
+              timers.push(setTimeout(function () { if (end) end.setAttribute('data-status', 'done'); }, t + 300));
+            }
+            demo.querySelector('.tlc-head').addEventListener('click', function () {
+              demo.setAttribute('data-collapse', demo.getAttribute('data-collapse') === 'true' ? 'false' : 'true');
+            });
+            var rb = document.getElementById('tlc-demo-replay');
+            if (rb) rb.addEventListener('click', function (e) { e.stopPropagation(); run(); });
+            run();
+          }
+        })();
+      </script>
+
 
       <!-- ====================================================
            Plan Item
