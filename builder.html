@@ -318,6 +318,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     return null;
   }
   var FF = parseFF();
+  // Returning to an app that was already published? Boot straight into the
+  // done/published state instead of replaying the plan-approval flow. We reuse
+  // the FF=3 ("done + published") path by setting FF here.
+  if (!FF) {
+    try {
+      var _nm = (APP_NAME || '').toLowerCase();
+      var _apps = JSON.parse(localStorage.getItem('onb.buildApps'));
+      if (!Array.isArray(_apps)) _apps = [];
+      var _one = JSON.parse(localStorage.getItem('onb.buildApp'));
+      if (_one) _apps.push(_one);
+      for (var _i = 0; _i < _apps.length; _i++) {
+        if (_apps[_i] && (_apps[_i].name || '').toLowerCase() === _nm && _apps[_i].status === 'published') { FF = '3'; break; }
+      }
+    } catch (e) {}
+  }
 
   // ============================================================
   // Q&A questions (rendered inline as a chat card)
@@ -5008,28 +5023,23 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     if (FF === '3') {
-      // Done state, app published. Open the bundle's version history
-      // overlay so the full-screen takeover is captured.
+      // Done state, app already published (and up to date). Used both for
+      // capture and for resuming a published app the user navigated back into.
       STATE.phase = 'done';
       STATE.isPublished = true;
+      STATE.upToDate = true; // already published, nothing to re-publish
       STATE.appTitle = APP_NAME;
       // Mount plan v1 + advance progress to "all done" so the chat shows
-      // the full plan before publishing.
+      // the full plan as completed.
       renderPlanTodosV9(shell);
       document.querySelectorAll('[data-step]').forEach(function(el) {
         el.setAttribute('data-status', 'done');
       });
-      // Defer the history click — bundle has to finish rendering the
-      // 'done' app preview before its history button exists.
-      var tries = 0;
-      var openHistory = function() {
-        tries++;
-        var btn = findBundleHistoryBtn();
-        if (btn) { invokeReactOnClick(btn); return; }
-        if (window.__vhOpen) { window.__vhOpen(0); return; }
-        if (tries < 40) setTimeout(openHistory, 250);
-      };
-      setTimeout(openHistory, 800);
+      // Record a published checkpoint so the app reads as published
+      // (clears the sidebar "Draft" badge, which keys off this).
+      STATE.appVersion = 1;
+      document.body.classList.add('asm-published');
+      appendVersionBlock(scroll, 'Initial version published', 'publish-v1');
       return;
     }
 
