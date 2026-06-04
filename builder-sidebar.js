@@ -89,11 +89,11 @@
     // service-request intake instead of the Time Tracker artboard.
     ".asm-sri-app{display:flex;flex-direction:column;height:100%;background:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#212b36;overflow:hidden;letter-spacing:normal;}" +
     '.asm-sri-app *{box-sizing:border-box;}' +
-    '.asm-sri-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0;}' +
-    '.asm-sri-title{font-size:17px;font-weight:500;letter-spacing:-0.01em;}' +
-    '.asm-sri-new{display:inline-flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;}' +
-    '.asm-sri-tabs{display:flex;gap:18px;padding:0 20px;border-bottom:1px solid #dfe1e4;flex-shrink:0;}' +
-    '.asm-sri-tab{padding:8px 2px;font-size:13.5px;color:#6b6f76;border-bottom:1.5px solid transparent;margin-bottom:-1px;cursor:pointer;}' +
+    '.asm-sri-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 12px;flex-shrink:0;}' +
+    '.asm-sri-title{flex:1;min-width:0;font-size:17px;font-weight:500;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+    '.asm-sri-new{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;}' +
+    '.asm-sri-tabs{display:flex;gap:18px;padding:0 20px;border-bottom:1px solid #dfe1e4;flex-shrink:0;overflow:hidden;}' +
+    '.asm-sri-tab{padding:8px 2px;font-size:13.5px;color:#6b6f76;border-bottom:1.5px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap;}' +
     '.asm-sri-tab.active{color:#212b36;font-weight:500;border-bottom-color:#1a1a1a;}' +
     '.asm-sri-body{flex:1;overflow:auto;padding:8px 16px 16px;}' +
     '.asm-sri-table{width:100%;border-collapse:collapse;}' +
