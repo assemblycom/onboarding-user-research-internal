@@ -1111,9 +1111,9 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-plan-todos--tl .asm-plan-todos-icon svg { display:none; }',
       '.asm-plan-todos--tl .asm-plan-todos-label { color:#212B36; }',
       '.asm-plan-todos--tl .asm-plan-todos-check { display:none; }',
-      '.asm-plan-todos--tl .asm-plan-todos-row { margin:0 -8px 0 6px; padding:8px 8px 8px 16px; border-left:2px solid transparent; border-radius:0; }',
+      '.asm-plan-todos--tl .asm-plan-todos-row { margin:0 -8px 0 6px; padding:8px 8px 8px 16px; border-left:2px solid rgba(16,16,16,0.14); border-radius:0; }',
       '.asm-plan-todos--tl .asm-plan-todos-row + .asm-plan-todos-row { border-top:0; }',
-      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="queued"] { border-left-color:rgba(17,91,59,0.22); }',
+      '.asm-plan-todos--tl .asm-plan-todos-row[data-status="queued"] { border-left-color:rgba(16,16,16,0.14); }',
       '.asm-plan-todos--tl .asm-plan-todos-row[data-status="inprogress"] { border-left-color:rgba(17,91,59,0.55); background:rgba(17,91,59,0.06); }',
       '.asm-plan-todos--tl .asm-plan-todos-row[data-status="inprogress"]::before { background-image:linear-gradient(105deg, transparent 36%, rgba(17,91,59,0.20) 50%, transparent 64%); }',
       '.asm-plan-todos--tl .asm-plan-todos-row[data-status="done"] { border-left-color:rgba(17,91,59,0.9); }',
@@ -1130,25 +1130,24 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endnode { background:#115B3B; border-color:#115B3B; }',
       '.asm-plan-todos--tl .asm-plan-todos-endcheck { width:8px; height:8px; opacity:0; transition:opacity 0.2s ease; }',
       '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endcheck { opacity:1; }',
-      // ── Sticky build header: planning vs building mode, progress, current step ──
-      // Stays pinned to the top of the chat scroll so that — however far the
-      // user has scrolled through a long, progressively-built plan — they can
-      // always see whether the system is planning or building, overall
-      // progress, and which step is active. overflow:visible lets it stick.
+      // ── Sticky build header — deliberately minimal ──────────────
+      // Just the "Build app" label and the circle node on its left, which
+      // fills clockwise (conic gradient set in JS) as the build progresses:
+      // empty while planning, full when built. No badge / count / progress
+      // bar / current-step line. overflow:visible lets the header stick to
+      // the top of the chat scroll so the filling node stays visible.
       '.asm-plan-todos--tl { overflow: visible; }',
-      '.asm-plan-todos--tl .asm-plan-todos-header { position: sticky; top: 0; z-index: 6; background: #FFFFFF; flex-direction: column; align-items: stretch; gap: 9px; padding: 11px 14px; border-bottom: 1px solid rgba(16,16,16,0.06); border-radius: 10px 10px 0 0; }',
+      '.asm-plan-todos--tl .asm-plan-todos-header { position: sticky; top: 0; z-index: 6; background: #FFFFFF; border-bottom: 1px solid rgba(16,16,16,0.06); border-radius: 10px 10px 0 0; }',
       '.asm-plan-todos--tl.collapsed .asm-plan-todos-header { border-bottom: 0; border-radius: 10px; }',
-      '.asm-plan-todos-headtop { display: flex; align-items: center; gap: 10px; }',
-      '.asm-plan-todos-phase { font-family: var(--font-mono, ui-monospace, monospace); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 99px; line-height: 1.45; }',
-      '.asm-plan-todos-phase[data-mode="planning"] { color: #0C41BB; background: #EAF0FF; }',
-      '.asm-plan-todos-phase[data-mode="building"] { color: #115B3B; background: #E3F0E9; }',
-      '.asm-plan-todos-phase[data-mode="done"] { color: #115B3B; background: #D6EADF; }',
-      '.asm-plan-todos-progress { height: 4px; border-radius: 99px; background: rgba(16,16,16,0.08); overflow: hidden; }',
-      '.asm-plan-todos-progress-fill { display: block; height: 100%; width: 0%; background: #115B3B; border-radius: 99px; transition: width 0.45s cubic-bezier(0.22,1,0.36,1); }',
-      '.asm-plan-todos-current { font-size: 12px; line-height: 1.4; color: #6B6F76; display: flex; align-items: center; gap: 7px; }',
-      '.asm-plan-todos-current[hidden] { display: none; }',
-      '.asm-plan-todos-current b { color: #212B36; font-weight: 500; }',
-      '.asm-plan-todos-current-dot { width: 7px; height: 7px; border-radius: 50%; background: #115B3B; flex-shrink: 0; animation: asmPulse 1.2s ease-in-out infinite; }',
+      '.asm-plan-todos--tl .asm-plan-todos-icon { background: conic-gradient(#115B3B 0%, transparent 0); transition: background 0.2s linear; }',
+      // ── Progressive step reveal: steps slide in one-by-one, each with a
+      // brief shimmer "loading" state, mirroring how the plan is generated.
+      '.asm-plan-todos--tl .asm-plan-todos-row { max-height: 200px; transition: max-height 0.32s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease; }',
+      '.asm-plan-todos-row.asm-row-hidden { max-height: 0 !important; opacity: 0; padding-top: 0 !important; padding-bottom: 0 !important; overflow: hidden; }',
+      '.asm-plan-todos-row--loading .asm-plan-todos-row-text { opacity: 0; }',
+      '.asm-plan-todos-row--loading { position: relative; }',
+      '.asm-plan-todos-row--loading::after { content: ""; position: absolute; left: 16px; top: 13px; width: 58%; height: 9px; border-radius: 5px; background: linear-gradient(90deg, rgba(16,16,16,0.06) 0%, rgba(16,16,16,0.12) 50%, rgba(16,16,16,0.06) 100%); background-size: 200% 100%; animation: asmSkelShimmer 1.2s ease-in-out infinite; }',
+      '.asm-plan-todos-row-text { transition: opacity 0.28s ease; }',
 
       // ── Q&A recap (after Q&A done) — "Summarizes questions" ──────
       // One grouped gray card: each item stacks the question (primary)
@@ -3489,7 +3488,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 600);
 
     setTimeout(function() {
-      var html = '<div class="asm-email"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg> I\'ll email you when it\'s ready — feel free to step away.</div>';
+      var html = '<div class="asm-email"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg> Feel free to step away — we\'ll notify you once it\'s complete.</div>';
       appendMsg(scroll, 'agent', html, 'email');
     }, 1400);
 
@@ -4144,7 +4143,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     //    the next ensureShell() narrows the shell and reveals the preview
     //    pane on the right.
     STATE.phase = 'building';
-    STATE.buildStart = Date.now();
+    // Offset the clock so step execution begins only after the steps have
+    // progressively revealed (shimmered in) — planning finishes, then build.
+    STATE.buildStart = Date.now() + 2400;
     STATE.buildProgress = -1;
     STATE.buildPaused = false;
     STATE.buildPauseStart = 0;
@@ -4227,51 +4228,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     return document.getElementById('asm-plan-todosv9-msg-v' + (STATE.planVersion || 1));
   }
 
-  // Keep the sticky build header in sync: planning vs building vs built,
-  // overall progress (bar + count), and the step currently being worked on.
+  // Keep the build header's circle node filled in proportion to overall
+  // progress — empty while planning, filling clockwise through the build,
+  // full when built. That single node is the only progress indicator.
   function updateBuildHeader(panel) {
     panel = panel || currentPlanTodosPanel();
     if (!panel) return;
-    var total = STATE.planItems.length;
-    if (!total) return;
-    var isDone = STATE.phase === 'done';
-    var isBuilding = STATE.phase === 'building';
-    // STATE.buildProgress = index of the in-progress step (steps before it
-    // are done); -1 before build, >= total once finished.
-    var idx = STATE.buildProgress;
-    var done, active;
-    if (isDone) { done = total; active = -1; }
-    else if (isBuilding) {
-      var cur = idx < 0 ? 0 : idx;
-      done = Math.min(total, cur);
-      active = cur < total ? cur : -1;
-    } else { done = 0; active = -1; }
-    var mode = isDone ? 'done' : (isBuilding ? 'building' : 'planning');
-
-    var phaseEl = panel.querySelector('.asm-plan-todos-phase');
-    if (phaseEl) {
-      phaseEl.setAttribute('data-mode', mode);
-      phaseEl.textContent = mode === 'done' ? 'Built' : (mode === 'building' ? 'Building' : 'Planning');
-    }
-    var countEl = panel.querySelector('.asm-plan-todos-count');
-    if (countEl) countEl.textContent = (isDone ? total : done) + '/' + total;
-    var fillEl = panel.querySelector('.asm-plan-todos-progress-fill');
-    if (fillEl) fillEl.style.width = (isDone ? 100 : Math.round((done / total) * 100)) + '%';
-
-    var curEl = panel.querySelector('.asm-plan-todos-current');
-    if (curEl) {
-      if (isBuilding && active >= 0 && STATE.planItems[active]) {
-        curEl.hidden = false;
-        curEl.innerHTML = '<span class="asm-plan-todos-current-dot"></span>Building <b>' + escapeHtml(STATE.planItems[active].title) + '</b>';
-      } else if (isDone) {
-        curEl.hidden = false;
-        curEl.innerHTML = '<b>App built</b> — all ' + total + ' steps complete';
-      } else {
-        // Planning / review: keep the header clean (badge + bar say enough).
-        curEl.hidden = true;
-        curEl.innerHTML = '';
-      }
-    }
+    var icon = panel.querySelector('.asm-plan-todos-icon');
+    if (!icon) return;
+    var pct;
+    if (STATE.phase === 'done') pct = 100;
+    else if (STATE.phase === 'building') pct = Math.max(0, Math.min(100, Math.round((buildElapsed() / BUILD_DURATION) * 100)));
+    else pct = 0;
+    icon.style.background = 'conic-gradient(#115B3B ' + pct + '%, transparent 0)';
   }
 
   // ── V3 plan-preview exploration ─────────────────────────────────
@@ -4696,26 +4665,37 @@ document.addEventListener('DOMContentLoaded', async function() {
       var html =
         '<div class="asm-plan-todos asm-plan-todos--tl" id="' + panelId + '">' +
           '<div class="asm-plan-todos-header">' +
-            '<div class="asm-plan-todos-headtop">' +
-              '<span class="asm-plan-todos-icon"></span>' +
-              '<span class="asm-plan-todos-label">Build app</span>' +
-              '<span class="asm-plan-todos-phase" data-mode="planning">Planning</span>' +
-              '<span class="asm-plan-todos-count">0/' + STATE.planItems.length + '</span>' +
-              '<button type="button" class="asm-plan-todos-toggle" aria-label="Collapse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>' +
-            '</div>' +
-            '<div class="asm-plan-todos-progress" aria-hidden="true"><span class="asm-plan-todos-progress-fill"></span></div>' +
-            '<div class="asm-plan-todos-current" hidden></div>' +
+            '<span class="asm-plan-todos-icon"></span>' +
+            '<span class="asm-plan-todos-label">Build app</span>' +
+            '<button type="button" class="asm-plan-todos-toggle" aria-label="Collapse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>' +
           '</div>' +
           '<div class="asm-plan-todos-body">' + rows + endRow + '</div>' +
         '</div>';
       var msgEl = appendMsg(scroll, 'agent', html, flagKey);
       if (msgEl) msgEl.classList.add('asm-msg-agent--fill');
       var panel = document.getElementById(panelId);
-      var header = panel && panel.querySelector('.asm-plan-todos-headtop');
+      var header = panel && panel.querySelector('.asm-plan-todos-header');
       if (header) header.addEventListener('click', function() {
         if (panel.classList.contains('asm-plan-todos--archived')) return;
         panel.classList.toggle('collapsed');
       });
+      // Progressive reveal: steps slide in one-by-one with a brief shimmer,
+      // mirroring how the plan is generated in real life. Skipped under FF
+      // (fast-forward capture states jump straight to a built/mid state).
+      if (panel && !FF) {
+        var stepRows = [].slice.call(panel.querySelectorAll('.asm-plan-todos-row[data-step]'));
+        var endRowEl = panel.querySelector('.asm-plan-todos-end');
+        var allRows = stepRows.concat(endRowEl ? [endRowEl] : []);
+        var stagger = Math.min(360, Math.round(2000 / Math.max(1, allRows.length)));
+        allRows.forEach(function(r) { r.classList.add('asm-row-hidden'); });
+        stepRows.forEach(function(r) { r.classList.add('asm-plan-todos-row--loading'); });
+        allRows.forEach(function(r, i) {
+          setTimeout(function() { r.classList.remove('asm-row-hidden'); }, i * stagger);
+        });
+        stepRows.forEach(function(r, i) {
+          setTimeout(function() { r.classList.remove('asm-plan-todos-row--loading'); }, i * stagger + 480);
+        });
+      }
       updateBuildHeader(panel);
     }
     // Note: the approve strip (ensurePlanStripV9) is intentionally NOT
