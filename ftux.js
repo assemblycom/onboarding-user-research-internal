@@ -44,7 +44,9 @@
       '.inv-em{font-size:12.5px;color:#6b6f76;line-height:1.3;}' +
       '.inv-foot{padding:16px 22px 22px;flex-shrink:0;}' +
       '.inv-btn{width:100%;height:44px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}' +
-      '.inv-btn:hover{background:#000;}';
+      '.inv-btn:hover{background:#000;}' +
+      '.inv-later{display:block;width:100%;margin-top:8px;padding:8px;background:none;border:none;font-family:inherit;font-size:13px;color:#6b6f76;cursor:pointer;}' +
+      '.inv-later:hover{color:#212b36;}';
     document.head.appendChild(css);
   }
 
@@ -69,17 +71,21 @@
       '<div class="inv-input-row"><input type="email" placeholder="name@company.com" /><span class="inv-role">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
       '<div class="inv-list">' + listHtml + '</div>' +
       '</div>' +
-      '<div class="inv-foot"><button class="inv-btn">Invite</button></div>' +
+      '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
       '</div>';
     document.body.appendChild(ov);
-    ov.addEventListener('click', function (e) { if (e.target === ov) closeInvite(); });
-    ov.querySelector('.inv-btn').addEventListener('click', closeInvite);
+    // Clicking the backdrop or "Maybe later" just dismisses (no completion);
+    // only "Invite" marks the checklist item done.
+    ov.addEventListener('click', function (e) { if (e.target === ov) dismissInvite(); });
+    ov.querySelector('.inv-btn').addEventListener('click', completeInvite);
+    ov.querySelector('.inv-later').addEventListener('click', dismissInvite);
     return ov;
   }
   function openInvite() { ensureModal().classList.add('show'); }
-  function closeInvite() {
-    var ov = document.querySelector('.inv-overlay');
-    if (ov) ov.classList.remove('show');
+  function hideInvite() { var ov = document.querySelector('.inv-overlay'); if (ov) ov.classList.remove('show'); }
+  function dismissInvite() { hideInvite(); }
+  function completeInvite() {
+    hideInvite();
     var s = get(); if (!s.invite) { s.invite = 'done'; save(s); render(); }
   }
 
