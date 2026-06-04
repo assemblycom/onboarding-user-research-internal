@@ -95,6 +95,17 @@
     return document.body && /version published/i.test(document.body.innerText);
   }
 
+  // Persist the current app so it stays in the sidebar on every other page —
+  // letting the user navigate away and click back into the build.
+  var lastPersist = '';
+  function persistApp() {
+    try {
+      var rec = { name: appTitle() || DRAFT_APP, status: isPublished() ? 'published' : 'draft', hash: location.hash || '' };
+      var json = JSON.stringify(rec);
+      if (json !== lastPersist) { localStorage.setItem('onb.buildApp', json); lastPersist = json; }
+    } catch (e) {}
+  }
+
   // Keep the draft entry's name in sync with the builder, and drop the
   // Draft badge once published.
   function syncDraft(host) {
@@ -105,6 +116,7 @@
       if (badge) badge.remove();
       if (window.ftuxMarkPublishDone) window.ftuxMarkPublishDone();
     }
+    persistApp();
   }
 
   function buildHTML() {
