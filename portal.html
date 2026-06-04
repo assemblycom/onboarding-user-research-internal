@@ -231,10 +231,14 @@
 
     // First-visit interstitial: dismiss + remember so it only shows once,
     // regardless of whether the portal was opened via FTUX or "Open Portal".
-    document.getElementById('introLaunch').addEventListener('click', function () {
+    function dismissIntro() {
       try { localStorage.setItem('onb.portalIntroSeen', '1'); } catch (e) {}
       document.documentElement.classList.remove('show-portal-intro');
-    });
+    }
+    document.getElementById('introLaunch').addEventListener('click', dismissIntro);
+    // Clicking the backdrop (outside the card) also dismisses it.
+    const portalIntro = document.getElementById('portalIntro');
+    if (portalIntro) portalIntro.addEventListener('click', function (e) { if (e.target === portalIntro) dismissIntro(); });
   </script>
   <script src="ftux.js"></script>
 </body>
