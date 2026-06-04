@@ -164,8 +164,8 @@
           </thead>
           <tbody>
             <tr>
-              <td><div class="cell-name"><span class="avatar">TU</span><div><div class="nm">Test User</div><div class="em">test.user@brandmages.com</div></div></div></td>
-              <td><div class="cell-co"><span class="co-ic" style="background:#f0f1f3;color:#5a6068;font-size:11px;font-weight:500">B</span>BrandMages (Test Company)</div></td>
+              <td><div class="cell-name"><span class="avatar" id="crmAv1">TU</span><div><div class="nm" id="crmName1">Test User</div><div class="em" id="crmEmail1">test.user@studio.com</div></div></div></td>
+              <td><div class="cell-co"><span class="co-ic" id="crmCoAv1" style="background:#f0f1f3;color:#5a6068;font-size:11px;font-weight:500">S</span><span id="crmCo1">Studio (Test Company)</span></div></td>
               <td><span class="badge badge-inactive">Inactive</span></td>
               <td class="date">6/1/2026</td>
               <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
@@ -210,6 +210,22 @@
       document.getElementById('wsAvatar').textContent = company.trim()[0].toUpperCase();
     }
     paintAvatar(document.getElementById('wsAvatar'), wsDisplay);
+
+    // First contact row mirrors the signed-in identity + company (no stray
+    // "BrandMages" — keep one consistent brand across the prototype).
+    const COMMON_DOMAINS = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com', 'live.com', 'aol.com'];
+    const coDomain = (function () {
+      if (uEmail && uEmail.indexOf('@') > -1) { const d = uEmail.split('@')[1].toLowerCase().trim(); if (d && COMMON_DOMAINS.indexOf(d) === -1) return d; }
+      return (wsDisplay.toLowerCase().replace(/[^a-z0-9]/g, '') || 'studio') + '.com';
+    })();
+    function initials(n) { const p = (n || '').trim().split(/\s+/); return (((p[0] || '')[0] || '') + ((p[1] || '')[0] || '')).toUpperCase() || 'TU'; }
+    const rowName = uName || 'Test User';
+    document.getElementById('crmName1').textContent = rowName;
+    document.getElementById('crmAv1').textContent = initials(rowName);
+    document.getElementById('crmEmail1').textContent = uEmail || ('test.user@' + coDomain);
+    document.getElementById('crmCo1').textContent = wsDisplay + ' (Test Company)';
+    document.getElementById('crmCoAv1').textContent = wsDisplay.trim()[0].toUpperCase();
+
     // Paint each contact avatar from the allowed palette, keyed by the contact's name.
     document.querySelectorAll('.crm-table tbody tr').forEach(tr => {
       const av = tr.querySelector('.cell-name .avatar');
