@@ -78,7 +78,9 @@
     .start-btn { background: var(--dark); color: #fff; border: none; border-radius: 4px; padding: 9px 16px; font-family: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
     .start-btn:hover { opacity: 0.88; }
 
-    .chips { display: flex; gap: 8px; margin-top: 16px; flex-wrap: nowrap; overflow: hidden; }
+    /* Single row, but scroll instead of clipping when it doesn't fit. */
+    .chips { display: flex; gap: 8px; margin-top: 16px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; }
+    .chips::-webkit-scrollbar { display: none; }
     .chip { flex-shrink: 0; font-size: 13px; color: var(--text); background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 7px 13px; cursor: pointer; font-family: inherit; transition: background 0.12s, border-color 0.12s; }
     .chip:hover { background: var(--bg-soft); border-color: #c7ccd3; }
     .chip-more { width: 34px; padding: 7px 0; display: flex; align-items: center; justify-content: center; color: var(--muted); }
@@ -91,11 +93,33 @@
     .templates-nav { display: flex; gap: 8px; }
     .templates-nav button { width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 8px; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .templates-nav button:hover { background: var(--bg-hover); }
-    .template-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 18px; }
+    /* Auto-fitting columns so cards reflow (4-ish wide → 2 → 1) instead of clipping. */
+    .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
     .template-card { cursor: pointer; }
     .template-thumb { border: 1px solid var(--border); border-radius: 12px; height: 138px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: #aab0b8; font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
     .template-name { font-size: 14px; font-weight:500; margin: 12px 0 4px; }
     .template-desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+    /* ── Responsive ── */
+    /* Tablet: tighten the wide template gutter so cards keep their size. */
+    @media (max-width: 1024px) {
+      .templates { padding: 28px 24px 56px; }
+    }
+    /* Narrow / mobile: drop the sidebar so the build flow gets the full width,
+       and pull in the generous desktop paddings. */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .topbar, .tabs { padding: 0 18px; }
+      .content { padding: 36px 18px 40px; }
+      .greeting { font-size: 22px; margin-bottom: 16px; }
+      .templates { padding: 24px 18px 48px; }
+      .templates-panel { padding: 18px 16px 22px; }
+      .templates-head { margin-bottom: 14px; }
+    }
+    @media (max-width: 420px) {
+      .promptbox textarea { font-size: 14px; }
+      .greeting { font-size: 20px; }
+    }
   </style>
 </head>
 <body>
