@@ -278,6 +278,24 @@
     nodes.forEach(function (t) { t.nodeValue = t.nodeValue.split('BrandMages').join(co); });
   }
 
+  // Relabel the bundle's "Time Tracker" text (e.g. the client-portal nav item
+  // and app titles) to "Service Requests". Skips our own sidebar/overlay/popover.
+  function relabelTimeTracker() {
+    if (!document.body || document.body.innerText.indexOf('Time Tracker') === -1) return;
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentNode;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        if (p.nodeName === 'SCRIPT' || p.nodeName === 'STYLE') return NodeFilter.FILTER_REJECT;
+        if (p.closest && (p.closest('.asm-sb') || p.closest('#asm-sri-overlay') || p.closest('#asm-publish-popover'))) return NodeFilter.FILTER_REJECT;
+        return n.nodeValue.indexOf('Time Tracker') !== -1 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      }
+    });
+    var nodes = [], n;
+    while ((n = w.nextNode())) nodes.push(n);
+    nodes.forEach(function (t) { t.nodeValue = t.nodeValue.split('Time Tracker').join('Service Requests'); });
+  }
+
   function ensureCover() {
     if (document.getElementById('asm-load-cover')) return;
     var c = document.createElement('div');
@@ -308,7 +326,7 @@
   // the compiled bundle, so swap just the icon paths in place — same size, so
   // layout/resize is untouched. Re-runs each tick to survive React re-renders.
   var PREVIEW_ICONS = {
-    'Time Tracker': '<circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path>',
+    'Service Requests': '<rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"></path><path d="M9 12h6"></path><path d="M9 16h4"></path>',
     'Helpdesk': '<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3.4"></circle><path d="m4.9 4.9 4.3 4.3"></path><path d="m14.8 14.8 4.3 4.3"></path><path d="m19.1 4.9-4.3 4.3"></path><path d="m9.2 14.8-4.3 4.3"></path>'
   };
   function fixPreviewIcons() {
@@ -393,13 +411,17 @@
       var e = els[i];
       var own = '';
       for (var c = 0; c < e.childNodes.length; c++) { if (e.childNodes[c].nodeType === 3) own += e.childNodes[c].textContent; }
-      if (own.trim() !== 'Time Tracker') continue;
+      var label = own.trim();
+      // Title may already be relabelled to "Service Requests" by the time this
+      // runs. Our own overlay has no "log time"/"description", so it's excluded.
+      if (label !== 'Time Tracker' && label !== 'Service Requests') continue;
+      if (e.closest('#asm-sri-overlay')) continue;
       var r = e.getBoundingClientRect();
       if (r.width === 0 || r.left < 320) continue; // hidden VH modal or left chrome
       var node = e;
       for (var d = 0; d < 9 && node.parentElement; d++) {
         node = node.parentElement;
-        if (/\+\s*Log time/.test(node.textContent) && /Description/.test(node.textContent)) return node;
+        if (/\+\s*log time/i.test(node.textContent) && /description/i.test(node.textContent)) return node;
       }
     }
     return null;
@@ -421,13 +443,35 @@
     return active;
   }
 
+  // Right edge of the dark client-portal nav (the column holding Messages …
+  // Helpdesk), so the SRI overlay can sit beside it rather than over it.
+  function portalNavRight() {
+    var hd = null;
+    var els = document.querySelectorAll('div,span,a');
+    for (var i = 0; i < els.length; i++) {
+      var own = '';
+      for (var c = 0; c < els[i].childNodes.length; c++) { if (els[i].childNodes[c].nodeType === 3) own += els[i].childNodes[c].textContent; }
+      if (own.trim() === 'Helpdesk') { hd = els[i]; break; }
+    }
+    if (!hd) return null;
+    var node = hd;
+    for (var d = 0; d < 6 && node.parentElement; d++) {
+      node = node.parentElement;
+      if (/Messages/.test(node.textContent) && /Files/.test(node.textContent)) {
+        var r = node.getBoundingClientRect();
+        if (r.width > 0) return r.right;
+      }
+    }
+    return null;
+  }
+
   // Overlay (not innerHTML replace) so we never fight the bundle's React
   // reconciliation. Only shown on the Dashboard preview tab — the wide
   // client-portal artboard (Portal tab) lays out differently.
   function injectSriApp() {
     var ov = document.getElementById('asm-sri-overlay');
     var tab = activePreviewTab();
-    var card = (tab === null || tab === 'Dashboard') ? findAppCard() : null;
+    var card = (tab === null || tab === 'Dashboard' || tab === 'Portal') ? findAppCard() : null;
     if (!card) { if (ov) ov.style.display = 'none'; return; }
     if (!ov) {
       ov = document.createElement('div');
@@ -445,6 +489,12 @@
       if (btns[i].textContent.trim() === 'Dashboard' && (btns[i].getAttribute('style') || '').indexOf('padding: 4px 10px') > -1) { dashTab = btns[i]; break; }
     }
     if (dashTab) { var tr = dashTab.getBoundingClientRect(); if (tr.left - 16 > left) left = tr.left - 16; }
+    // In the client-portal (Portal) view, keep the overlay right of the dark
+    // portal nav so the client-portal sidebar stays visible.
+    if (tab === 'Portal') {
+      var nr = portalNavRight();
+      if (nr != null && nr > left) left = nr;
+    }
     var width = Math.max(0, r.right - left);
     ov.style.cssText = 'position:fixed;z-index:140;background:#fff;overflow:hidden;border-radius:' + radius +
       ';left:' + left + 'px;top:' + r.top + 'px;width:' + width + 'px;height:' + r.height + 'px;display:block;';
@@ -453,6 +503,7 @@
   function apply() {
     ensureStyle();
     rebrandText();
+    relabelTimeTracker();
     fixPreviewIcons();
     disableNotifTab();
     injectSriApp();
