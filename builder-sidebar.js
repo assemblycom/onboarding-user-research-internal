@@ -78,7 +78,12 @@
     // Workspace switcher isn't built for the prototype — tooltip on hover.
     '.asm-sb .ws[data-asm-tip]{position:relative;cursor:default;}' +
     '.asm-sb .ws[data-asm-tip]::after{content:attr(data-asm-tip);position:absolute;top:calc(100% + 6px);left:8px;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;line-height:1;padding:7px 10px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:300;}' +
-    '.asm-sb .ws[data-asm-tip]:hover::after{opacity:1;}';
+    '.asm-sb .ws[data-asm-tip]:hover::after{opacity:1;}' +
+    // Footer settings/help buttons aren't built for the prototype — tooltip
+    // above (they sit at the bottom of the sidebar).
+    '.asm-sb .icon-btn[data-asm-tip]{position:relative;cursor:default;}' +
+    '.asm-sb .icon-btn[data-asm-tip]::after{content:attr(data-asm-tip);position:absolute;bottom:calc(100% + 8px);left:0;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;line-height:1;padding:7px 10px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:300;}' +
+    '.asm-sb .icon-btn[data-asm-tip]:hover::after{opacity:1;}';
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -208,8 +213,8 @@
       '</div>' +
       '<div class="sidebar-foot">' +
         '<div class="foot-actions">' +
-          '<button class="icon-btn" type="button"><img src="assets/settings.svg" alt="Settings" width="16" height="16" /></button>' +
-          '<button class="icon-btn" type="button"><img src="assets/helpcenter.svg" alt="Help" width="16" height="16" /></button>' +
+          '<button class="icon-btn" type="button" data-asm-tip="Not part of this prototype"><img src="assets/settings.svg" alt="Settings" width="16" height="16" /></button>' +
+          '<button class="icon-btn" type="button" data-asm-tip="Not part of this prototype"><img src="assets/helpcenter.svg" alt="Help" width="16" height="16" /></button>' +
         '</div>' +
         '<button class="open-portal" type="button">Open Portal <img src="assets/openportal.svg" alt="" width="12" height="12" /></button>' +
       '</div>' +

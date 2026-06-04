@@ -10,7 +10,7 @@
    with data-live="1" to opt it out. */
 (function () {
   // Things that actually do something — never hint these.
-  var LIVE = '[data-nav],[data-live],.open-portal,.checklist-item,' +
+  var LIVE = '[data-nav],[data-live],.nav-item,.open-portal,.checklist-item,' +
     '.start-btn,#startBuilding,.template-card,.ac-chip,.ac-item,.ac-arrow,' +
     '.studio-primary,.studio-google,.studio-theme,' +
     // FTUX flows are real, working modals — never hint inside them.
