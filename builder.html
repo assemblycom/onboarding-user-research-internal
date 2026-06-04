@@ -2555,7 +2555,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         var prev = nmEl.textContent;
         nmEl.setAttribute('contenteditable', 'true');
         nmEl.focus();
-        var r = document.createRange(); r.selectNodeContents(nmEl);
+        // Place a blinking caret at the end (collapsed) rather than selecting
+        // all — so it reads as a live text field you can type into.
+        var r = document.createRange(); r.selectNodeContents(nmEl); r.collapse(false);
         var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
         function finish() {
           nmEl.removeAttribute('contenteditable');
