@@ -78,8 +78,9 @@
     /* Always 2 columns; 4-across only when there's room — never a 3+1 row. */
     .doc-actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     @media (min-width: 1400px) { .doc-actions-grid { grid-template-columns: repeat(4, 1fr); } }
-    .doc-action { min-width: 0; display: flex; align-items: center; gap: 9px; padding: 16px 18px; font-size: 14px; background: #fff; border: 1px solid var(--border); border-radius: 10px; }
+    .doc-action { min-width: 0; display: flex; align-items: center; gap: 9px; padding: 16px 18px; font-size: 14px; background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     .doc-action svg { width: 17px; height: 17px; color: var(--muted); flex-shrink: 0; }
+    .doc-action-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .token-sm { background: #fff; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; font-weight: 500; }
 
     /* Customization panel */
@@ -148,10 +149,10 @@
               <div class="doc-actions">
                 <div class="doc-actions-label">Your actions</div>
                 <div class="doc-actions-grid">
-                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Pay <span class="token-sm">{{N}}</span> invoices</div>
-                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Sign <span class="token-sm">{{N}}</span> contracts</div>
-                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Submit <span class="token-sm">{{N}}</span> forms</div>
-                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Complete <span class="token-sm">{{N}}</span> tasks</div>
+                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span class="doc-action-text">Pay <span class="token-sm">{{N}}</span> invoices</span></div>
+                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="doc-action-text">Sign <span class="token-sm">{{N}}</span> contracts</span></div>
+                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg><span class="doc-action-text">Submit <span class="token-sm">{{N}}</span> forms</span></div>
+                  <div class="doc-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="doc-action-text">Complete <span class="token-sm">{{N}}</span> tasks</span></div>
                 </div>
               </div>
               <h2 class="doc-h2">Heading</h2>
