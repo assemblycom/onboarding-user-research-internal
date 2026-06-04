@@ -31,7 +31,7 @@
       '.inv-overlay{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
       '.inv-overlay.show{opacity:1;pointer-events:auto;}' +
       '.inv-modal{width:448px;max-width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.28);max-height:90vh;display:flex;flex-direction:column;}' +
-      '.inv-banner{height:150px;flex-shrink:0;background:#aeb8e8 url("assets/invite-banner.png") center center / cover no-repeat;}' +
+      '.inv-banner{height:150px;flex-shrink:0;background:#aeb8e8;}' +
       '.inv-body{padding:22px 22px 0;overflow-y:auto;color:#212b36;}' +
       '.inv-title{font-size:18px;font-weight:500;margin:0 0 6px;}' +
       '.inv-sub{font-size:13.5px;color:#6b6f76;line-height:1.5;margin:0 0 18px;}' +
