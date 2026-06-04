@@ -1163,37 +1163,37 @@ body {
 
 /* ================================================================
    ░░░  COMPONENT — Q&A Recap  ░░░
-   Compact list of "Q[N] · answer" rows the agent shows after the
-   user works through a Q&A surface — confirms what was captured
-   before the plan is drafted. One soft chip per question; the Q[N]
-   label sits in primary text, the answer in secondary so the eye
-   reads the answer first when scanning a column of these.
+   The "Summarizes questions" card the agent shows after the user
+   works through a Q&A surface — confirms what was captured before
+   the plan is drafted. One soft gray card holding the full list:
+   each item stacks the question (primary text) over the chosen
+   answer (secondary), so the reader sees what was asked and how
+   they answered.
 ================================================================ */
 .ds-qa-recap {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
   width: 100%;
   flex-shrink: 0;
-}
-.ds-qa-recap-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
   background: var(--gray-100);
-  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+}
+.ds-qa-recap-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ds-qa-recap-q {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-primary);
+}
+.ds-qa-recap-a {
   font-size: 13px;
   line-height: 21px;
   color: var(--text-secondary);
-}
-.ds-qa-recap-row b {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-.ds-qa-recap-row-sep {
-  color: var(--text-placeholder);
-  flex-shrink: 0;
 }
 
 /* ─── Toggle controls (the playground knobs) ─────────────────── */
@@ -1938,7 +1938,7 @@ body {
 
     <div class="ds-toc-group">
       <div class="ds-toc-label">Plan surface</div>
-      <a class="ds-toc-link" href="#todos">To do</a>
+      <a class="ds-toc-link" href="#todos">Build app</a>
       <a class="ds-toc-link" href="#plan-item">Plan Item</a>
       <a class="ds-toc-link" href="#checkbox">Checkbox</a>
       <a class="ds-toc-link" href="#status-badge">Status Badge</a>
@@ -2147,7 +2147,7 @@ body {
       </style>
       <section class="ds-section" id="todos">
         <div class="ds-section-head">
-          <h2 class="ds-section-h">To do</h2>
+          <h2 class="ds-section-h">Build app</h2>
           <span class="ds-section-shadcn">→ ShadCN: &lt;Card&gt; + &lt;Collapsible&gt;</span>
         </div>
         <p class="ds-section-desc">
@@ -2171,7 +2171,7 @@ body {
                 <div class="tlc-todos" data-collapse="false" data-state="resting" id="tlc-demo">
                   <div class="tlc-head">
                     <span class="tlc-node"></span>
-                    <span class="tlc-title">To do</span>
+                    <span class="tlc-title">Build app</span>
                     <span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                   </div>
                   <div class="tlc-body" id="tlc-demo-body"></div>
@@ -2189,14 +2189,14 @@ body {
               <div class="ds-stage-row-cluster">
                 <span class="ds-stage-cell-label">Collapsed · resting</span>
                 <div class="tlc-todos" data-collapse="true" data-state="resting">
-                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">Build app</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
                   <div class="tlc-body"></div>
                 </div>
               </div>
               <div class="ds-stage-row-cluster">
                 <span class="ds-stage-cell-label">Collapsed · hover</span>
                 <div class="tlc-todos" data-collapse="true" data-state="hover">
-                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">Build app</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
                   <div class="tlc-body"></div>
                 </div>
               </div>
@@ -2205,14 +2205,14 @@ body {
               <div class="ds-stage-row-cluster">
                 <span class="ds-stage-cell-label">Expanded · resting</span>
                 <div class="tlc-todos tlc-sample" data-collapse="false" data-state="resting">
-                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">Build app</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
                   <div class="tlc-body"></div>
                 </div>
               </div>
               <div class="ds-stage-row-cluster">
                 <span class="ds-stage-cell-label">Expanded · hover</span>
                 <div class="tlc-todos tlc-sample" data-collapse="false" data-state="hover">
-                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">To do</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+                  <div class="tlc-head"><span class="tlc-node"></span><span class="tlc-title">Build app</span><span class="tlc-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
                   <div class="tlc-body"></div>
                 </div>
               </div>
@@ -2883,17 +2883,17 @@ body {
           <h2 class="ds-section-h">Q&amp;A Recap</h2>
           <span class="ds-section-shadcn">→ ShadCN: list primitive (custom)</span>
         </div>
-        <p class="ds-section-desc">Compact summary the agent shows once a multi-question Q&amp;A finishes, so the user can confirm what was captured before the plan is drafted. One soft chip per question — <code>Q[N]</code> in primary text, the answer in secondary, with a center-dot separator.</p>
+        <p class="ds-section-desc">The summary the agent shows once a multi-question Q&amp;A finishes, so the user can confirm what was captured before the plan is drafted. One soft gray card holding every question/answer pair — the question in primary text, the chosen answer in secondary beneath it.</p>
 
         <div class="ds-group">
           <div class="ds-group-h">Default</div>
           <div class="ds-group-desc">Three-question recap from the "Build me a client portal" flow.</div>
           <div class="ds-stage">
             <div class="ds-stage-row">
-              <div class="ds-qa-recap" style="max-width:340px;">
-                <div class="ds-qa-recap-row"><b>Q1</b><span class="ds-qa-recap-row-sep">·</span>Internal-only</div>
-                <div class="ds-qa-recap-row"><b>Q2</b><span class="ds-qa-recap-row-sep">·</span>Imported from a spreadsheet</div>
-                <div class="ds-qa-recap-row"><b>Q3</b><span class="ds-qa-recap-row-sep">·</span>My whole org</div>
+              <div class="ds-qa-recap" style="max-width:408px;">
+                <div class="ds-qa-recap-item"><div class="ds-qa-recap-q">Should this app be visible to your clients?</div><div class="ds-qa-recap-a">Internal-only</div></div>
+                <div class="ds-qa-recap-item"><div class="ds-qa-recap-q">How will the data get into the app?</div><div class="ds-qa-recap-a">Imported from a spreadsheet</div></div>
+                <div class="ds-qa-recap-item"><div class="ds-qa-recap-q">Who else on your team needs access?</div><div class="ds-qa-recap-a">My whole org</div></div>
               </div>
             </div>
           </div>
@@ -2903,13 +2903,13 @@ body {
           <table>
             <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td class="ds-props-name">items</td><td class="ds-props-type">{ q: string; answer: string }[]</td><td class="ds-props-default">—</td><td class="ds-props-desc">Ordered list of question/answer pairs. <code>q</code> is rendered as the bold prefix, <code>answer</code> is the body text.</td></tr>
+              <tr><td class="ds-props-name">items</td><td class="ds-props-type">{ q: string; answer: string }[]</td><td class="ds-props-default">—</td><td class="ds-props-desc">Ordered list of question/answer pairs. <code>q</code> renders as the primary line, <code>answer</code> as the secondary line beneath it.</td></tr>
             </tbody>
           </table>
         </div>
 
         <pre class="ds-code"><span class="c">// React (when ported)</span>
-&lt;<span class="k">QaRecap</span> <span class="a">items</span>=<span class="s">{[{ q: "Q1", answer: "Internal-only" }, …]}</span>/&gt;</pre>
+&lt;<span class="k">QaRecap</span> <span class="a">items</span>=<span class="s">{[{ q: "Should this app be visible to your clients?", answer: "Internal-only" }, …]}</span>/&gt;</pre>
       </section>
 
       <!-- ====================================================
@@ -4454,7 +4454,7 @@ body {
     // plan. Items: [{ q, answer }, …].
     function buildQaRecap(items) {
       var rows = items.map(function(it) {
-        return '<div class="ds-qa-recap-row"><b>' + escapeHtml(it.q) + '</b><span class="ds-qa-recap-row-sep">·</span>' + escapeHtml(it.answer) + '</div>';
+        return '<div class="ds-qa-recap-item"><div class="ds-qa-recap-q">' + escapeHtml(it.q) + '</div><div class="ds-qa-recap-a">' + escapeHtml(it.answer) + '</div></div>';
       }).join('');
       return '<div class="ds-qa-recap">' + rows + '</div>';
     }
@@ -4495,9 +4495,9 @@ body {
         // Turn 4 — Q&A Recap confirms what was captured
         buildAiText('<p>Here\'s what I picked up:</p>') +
         buildQaRecap([
-          { q: 'Q1', answer: 'Internal-only' },
-          { q: 'Q2', answer: 'Imported from a spreadsheet' },
-          { q: 'Q3', answer: 'My whole org' }
+          { q: 'Should this app be visible to your clients?', answer: 'Internal-only' },
+          { q: 'How will the data get into the app?', answer: 'Imported from a spreadsheet' },
+          { q: 'Who else on your team needs access?', answer: 'My whole org' }
         ]) +
         // Turn 5 — agent drops the first plan as a Proposal (collapsed)
         buildAiText('<p>Here\'s the plan I drafted — review before I build.</p>') +

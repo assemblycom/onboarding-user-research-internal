@@ -988,10 +988,17 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-plan-todos--tl .asm-plan-todos-endcheck { width:8px; height:8px; opacity:0; transition:opacity 0.2s ease; }',
       '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endcheck { opacity:1; }',
 
-      // ── Recap chips (after Q&A done) ─────────────────────
-      '.asm-recap { display:flex; flex-direction:column; gap:6px; align-self:stretch; }',
-      '.asm-recap-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#6B6F76; padding:6px 10px; background:#F8F9FB; border-radius:8px; }',
-      '.asm-recap-row b { color:#101010; font-weight:500; }',
+      // ── Q&A recap (after Q&A done) — "Summarizes questions" ──────
+      // One grouped gray card: each item stacks the question (primary)
+      // over the chosen answer (secondary). Mirrors the Figma
+      // "Summarizes questions" component (fills, 12px/16px padding, 12px
+      // item gap, 2px q/a gap, body/sm type), adapted to this project's
+      // agent-side card convention (squared top-left tail, like the
+      // Requirements card).
+      '.asm-recap { display:flex; flex-direction:column; gap:12px; align-self:stretch; background:#F8F9FB; padding:12px 16px; border-radius:0 8px 8px 8px; }',
+      '.asm-recap-item { display:flex; flex-direction:column; gap:2px; }',
+      '.asm-recap-q { font-size:14px; line-height:22px; color:#212B36; }',
+      '.asm-recap-a { font-size:13px; line-height:21px; color:#6B6F76; }',
 
       // ── Requirements card (AI output in the thread; approve here) ──
       // White bordered card matching the Figma "Requirements" component.
@@ -3012,7 +3019,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Recap chips
     var recap = '<div class="asm-recap">' + STATE.qaAnswers.map(function(a, i) {
-      return '<div class="asm-recap-row"><b>Q' + (i + 1) + '</b> · ' + a + '</div>';
+      var q = QA_QUESTIONS[i] ? QA_QUESTIONS[i].question : ('Question ' + (i + 1));
+      return '<div class="asm-recap-item"><div class="asm-recap-q">' + escapeHtml(q) + '</div><div class="asm-recap-a">' + escapeHtml(a) + '</div></div>';
     }).join('') + '</div>';
     appendMsg(scroll, 'agent', recap, 'recap');
 
@@ -3590,7 +3598,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     ensurePlanItems();
     var scroll = shell.querySelector('#asm-scroll');
     var recap = '<div class="asm-recap">' + STATE.qaAnswers.map(function(a, i) {
-      return '<div class="asm-recap-row"><b>Q' + (i + 1) + '</b> · ' + escapeHtml(a) + '</div>';
+      var q = QA_QUESTIONS[i] ? QA_QUESTIONS[i].question : ('Question ' + (i + 1));
+      return '<div class="asm-recap-item"><div class="asm-recap-q">' + escapeHtml(q) + '</div><div class="asm-recap-a">' + escapeHtml(a) + '</div></div>';
     }).join('') + '</div>';
     appendMsg(scroll, 'agent', recap, 'recap');
     // Stream a Codex/Claude-style reasoning block (shimmering header +
@@ -4210,7 +4219,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         '<div class="asm-plan-todos asm-plan-todos--tl" id="' + panelId + '">' +
           '<div class="asm-plan-todos-header">' +
             '<span class="asm-plan-todos-icon"></span>' +
-            '<span class="asm-plan-todos-label">To do</span>' +
+            '<span class="asm-plan-todos-label">Build app</span>' +
             '<button type="button" class="asm-plan-todos-toggle" aria-label="Collapse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>' +
           '</div>' +
           '<div class="asm-plan-todos-body">' + rows + endRow + '</div>' +
@@ -4637,7 +4646,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Q&A recap (matches the natural enterPlanPhase output).
     var recapHtml = '<div class="asm-recap">' + STATE.qaAnswers.map(function(a, i) {
-      return '<div class="asm-recap-row"><b>Q' + (i + 1) + '</b> · ' + escapeHtml(a) + '</div>';
+      var q = QA_QUESTIONS[i] ? QA_QUESTIONS[i].question : ('Question ' + (i + 1));
+      return '<div class="asm-recap-item"><div class="asm-recap-q">' + escapeHtml(q) + '</div><div class="asm-recap-a">' + escapeHtml(a) + '</div></div>';
     }).join('') + '</div>';
     appendMsg(scroll, 'agent', recapHtml, 'recap');
     appendMsg(scroll, 'agent', "Here's the plan I drafted — review before I build.", 'plan-intro');
