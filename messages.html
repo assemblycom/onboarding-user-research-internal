@@ -84,6 +84,7 @@
     .tool:hover { background: var(--bg-hover); }
     .tool svg { width: 18px; height: 18px; }
     .tool img { display: block; width: 18px; height: 18px; }
+    .composer-toolbar .t-sep { width: 1px; height: 18px; background: var(--border); margin: 0 6px; flex-shrink: 0; }
     .composer-body { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
     .composer-body textarea { width: 100%; border: none; outline: none; resize: none; font-family: inherit; font-size: 13.5px; color: var(--text); min-height: 38px; max-height: 140px; background: transparent; }
     .composer-body textarea::placeholder { color: #9aa0a6; }
@@ -184,8 +185,10 @@
               <button class="tool"><img src="assets/Menu-item.svg" width="15" height="15" alt="Bold" /></button>
               <button class="tool"><img src="assets/ff.svg" width="15" height="15" alt="Italic" /></button>
               <button class="tool"><img src="assets/underline.svg" width="15" height="15" alt="Underline" /></button>
+              <span class="t-sep"></span>
               <button class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
               <button class="tool"><img src="assets/d.svg" width="15" height="15" alt="Numbered list" /></button>
+              <span class="t-sep"></span>
               <button class="tool"><img src="assets/link.svg" width="15" height="15" alt="Link" /></button>
             </div>
             <div class="composer-body">
