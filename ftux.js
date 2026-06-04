@@ -90,20 +90,32 @@
     if (!cl) return;
     var items = [].slice.call(cl.querySelectorAll('.checklist-item'));
     var st = get();
-    var doneCount = 0, firstIncomplete = -1;
-    keys.forEach(function (k, i) { if (st[k]) doneCount++; else if (firstIncomplete < 0) firstIncomplete = i; });
+    var doneCount = 0;
+    keys.forEach(function (k) { if (st[k] === 'done') doneCount++; });
     items.forEach(function (it, i) {
       var k = keys[i];
       var img = it.querySelector('img');
       it.classList.remove('ftux-done', 'active');
       var src;
-      if (st[k]) { src = 'assets/check-green.svg'; it.classList.add('ftux-done'); }
-      else if (i === firstIncomplete) { src = 'assets/progress-indication.svg'; it.classList.add('active'); }
+      // Done → green check. "Publish" shows in-progress only once a prompt
+      // has been entered (st.publish === 'progress'); otherwise everything
+      // defaults to todo (a fresh user who hasn't started building yet).
+      if (st[k] === 'done') { src = 'assets/check-green.svg'; it.classList.add('ftux-done'); }
+      else if (k === 'publish' && st.publish === 'progress') { src = 'assets/progress-indication.svg'; it.classList.add('active'); }
       else { src = 'assets/todo.svg'; }
       if (img) img.setAttribute('src', src);
     });
     var fill = cl.querySelector('.ftux-bar-fill');
     if (fill) fill.style.width = Math.max(7, Math.round(doneCount / keys.length * 100)) + '%';
+  }
+
+  // Mark "Publish your first app" as in-progress (a prompt was entered) or done
+  // (the app was published). Never downgrade a completed item.
+  function markPublish(state) {
+    var s = get();
+    if (s.publish === 'done') return;
+    if (state === 'progress' && s.publish === 'progress') return;
+    s.publish = state; save(s); render();
   }
 
   function ftuxInit() {
@@ -145,6 +157,8 @@
 
   window.ftuxInit = ftuxInit;
   window.ftuxOpenInvite = openInvite;
+  window.ftuxMarkPublishProgress = function () { markPublish('progress'); };
+  window.ftuxMarkPublishDone = function () { markPublish('done'); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ftuxInit);
   else ftuxInit();
 })();

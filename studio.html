@@ -127,7 +127,7 @@
 
       <div class="checklist">
         <div class="checklist-title">Getting started</div>
-        <div class="checklist-item active"><img class="ic" src="assets/progress-indication.svg" alt="" width="14" height="14" />Publish your first app</div>
+        <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Publish your first app</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Explore the client experience</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Invite your team</div>
       </div>
@@ -241,13 +241,20 @@
       startBtn.style.cursor = has ? 'pointer' : 'default';
     }
 
+    // A prompt (typed, chip-selected, or carried from the website) flips the
+    // "Publish your first app" FTUX item from todo to in-progress.
+    function markPromptEntered() {
+      if (window.ftuxMarkPublishProgress) { window.ftuxMarkPublishProgress(); return; }
+      try { var s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (!s.publish) { s.publish = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {}
+    }
+
     // Pre-fill from the website prompt if one was entered/chosen
     const initial = getHashParam('prompt');
-    if (initial) promptField.value = initial;
+    if (initial) { promptField.value = initial; markPromptEntered(); }
     autosize();
     updateStart();
 
-    promptField.addEventListener('input', () => { autosize(); updateStart(); });
+    promptField.addEventListener('input', () => { autosize(); updateStart(); if (promptField.value.trim()) markPromptEntered(); });
 
     // Chips below let them pick a starting prompt if they didn't type one
     document.querySelectorAll('#chips .chip[data-prompt]').forEach(chip => {
@@ -255,6 +262,7 @@
         promptField.value = chip.dataset.prompt;
         autosize();
         updateStart();
+        markPromptEntered();
         promptField.focus();
       });
     });

@@ -99,6 +99,7 @@
     if (isPublished()) {
       var badge = host.querySelector('.draft-badge');
       if (badge) badge.remove();
+      if (window.ftuxMarkPublishDone) window.ftuxMarkPublishDone();
     }
   }
 
@@ -125,7 +126,7 @@
       '<div class="spacer"></div>' +
       '<div class="checklist">' +
         '<div class="checklist-title">Getting started</div>' +
-        '<div class="checklist-item active"><img class="ic" src="assets/progress-indication.svg" alt="" width="14" height="14" />Publish your first app</div>' +
+        '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Publish your first app</div>' +
         '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Explore the client experience</div>' +
         '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Invite your team</div>' +
       '</div>' +
@@ -186,8 +187,10 @@
     sb.style.boxShadow = 'none';
     sb.innerHTML = buildHTML();
     wire(sb);
-    syncDraft(sb);
     if (typeof window.ftuxInit === 'function') window.ftuxInit();
+    // Reaching the builder means a prompt was entered → publish is in-progress.
+    if (window.ftuxMarkPublishProgress) window.ftuxMarkPublishProgress();
+    syncDraft(sb);
   }
 
   setInterval(apply, 200);
