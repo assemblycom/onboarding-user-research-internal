@@ -9,6 +9,14 @@
     #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
     #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #FBFBF5; z-index: 9999; }
     #__bundler_thumbnail svg { display: none; }
+    /* In-app builds (an app already exists) skip the branded loading and go
+       straight to a neutral shimmer skeleton — see the inline check below. */
+    #__bundler_thumbnail .asm-thumb-skel { display: none; }
+    #__bundler_thumbnail.asm-skel .asm-thumb-skel { display: flex; flex-direction: column; gap: 16px; position: absolute; top: 64px; left: 244px; width: 520px; max-width: calc(100% - 300px); }
+    #__bundler_thumbnail .asm-thumb-skel span { display: block; height: 13px; border-radius: 6px; background: linear-gradient(90deg, rgba(16,16,16,0.06) 0%, rgba(16,16,16,0.11) 50%, rgba(16,16,16,0.06) 100%); background-size: 200% 100%; animation: asmThumbShim 1.4s ease-in-out infinite; }
+    #__bundler_thumbnail .asm-thumb-skel span:nth-child(2) { width: 78%; }
+    #__bundler_thumbnail .asm-thumb-skel span:nth-child(3) { width: 54%; }
+    @keyframes asmThumbShim { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     #__bundler_placeholder { color: #999; font-size: 14px; }
   </style>
   <noscript>
@@ -65,8 +73,25 @@
     <!-- Charcoal Restore pill -->
     <rect x="900" y="548" width="220" height="40" rx="10" fill="#212B36"></rect>
   </svg>
+  <div class="asm-thumb-skel" aria-hidden="true"><span></span><span></span><span></span></div>
 </div>
   <div id="__bundler_loading">Unpacking...</div>
+  <script>
+    // If an app already exists (in-app "Add app" flow), skip the branded
+    // off-white loading and show a neutral skeleton from the first frame —
+    // the website/first-run flow keeps the branded loading.
+    (function () {
+      try {
+        var l = JSON.parse(localStorage.getItem('onb.buildApps'));
+        if (Array.isArray(l) && l.length) {
+          var t = document.getElementById('__bundler_thumbnail');
+          if (t) t.className = 'asm-skel';
+          var ld = document.getElementById('__bundler_loading');
+          if (ld) ld.style.display = 'none';
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <script>
     

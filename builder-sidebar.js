@@ -16,6 +16,13 @@
   function navSuffix() { var p = []; ['company', 'name', 'email', 'theme'].forEach(function (k) { var v = hashParam(k); if (v) p.push(k + '=' + encodeURIComponent(v)); }); return p.length ? '#' + p.join('&') : ''; }
   function company() { return hashParam('company') || 'Studio'; }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  // In-app build (an app already exists) → skip the branded loading cover and
+  // show a neutral skeleton instead. The website/first-run flow (no apps yet)
+  // keeps the branded "Setting up the builder…" loading.
+  var IN_APP = (function () {
+    try { var l = JSON.parse(localStorage.getItem('onb.buildApps')); return Array.isArray(l) && l.length > 0; }
+    catch (e) { return false; }
+  })();
 
   var CSS =
     '.asm-sb{--text:#212b36;--muted:#6b6f76;--border:#dfe1e4;--bg-hover:#eff1f4;--dark:#1a1a1a;' +
@@ -57,6 +64,11 @@
     '.asm-load-mark{width:38px;height:38px;animation:asmLoadPulse 1.4s ease-in-out infinite;}' +
     ".asm-load-text{font-size:13px;color:#6b6f76;font-family:'Inter',system-ui,-apple-system,sans-serif;}" +
     '@keyframes asmLoadPulse{0%,100%{opacity:0.4;transform:scale(0.97);}50%{opacity:1;transform:scale(1);}}' +
+    // Neutral skeleton variant of the cover (in-app builds) — no branding.
+    '#asm-load-cover.asm-skel .asm-cover-skel{display:flex;flex-direction:column;gap:16px;position:absolute;top:64px;left:244px;width:520px;max-width:calc(100% - 300px);}' +
+    '#asm-load-cover .asm-cover-skel span{display:block;height:13px;border-radius:6px;background:linear-gradient(90deg,rgba(16,16,16,0.06) 0%,rgba(16,16,16,0.11) 50%,rgba(16,16,16,0.06) 100%);background-size:200% 100%;animation:asmLoadShimmer 1.4s ease-in-out infinite;}' +
+    '#asm-load-cover .asm-cover-skel span:nth-child(2){width:78%;}#asm-load-cover .asm-cover-skel span:nth-child(3){width:54%;}' +
+    '@keyframes asmLoadShimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}' +
     // Notifications preview tab is disabled in the prototype — tooltip on hover.
     '.asm-notif-disabled{position:relative;cursor:default !important;}' +
     '.asm-notif-disabled::after{content:"Not part of this prototype";position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-2px);background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;line-height:1;padding:7px 10px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:300;}' +
@@ -233,9 +245,15 @@
     if (document.getElementById('asm-load-cover')) return;
     var c = document.createElement('div');
     c.id = 'asm-load-cover';
-    c.innerHTML = '<div class="asm-load-inner">' +
-      '<img class="asm-load-mark" src="assets/studio-mark.svg" alt="" />' +
-      '<div class="asm-load-text">Setting up the builder…</div></div>';
+    if (IN_APP) {
+      // In-app: neutral skeleton, no website branding.
+      c.className = 'asm-skel';
+      c.innerHTML = '<div class="asm-cover-skel" aria-hidden="true"><span></span><span></span><span></span></div>';
+    } else {
+      c.innerHTML = '<div class="asm-load-inner">' +
+        '<img class="asm-load-mark" src="assets/studio-mark.svg" alt="" />' +
+        '<div class="asm-load-text">Setting up the builder…</div></div>';
+    }
     document.body.appendChild(c);
   }
   function removeCover() {
