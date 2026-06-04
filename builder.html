@@ -1130,6 +1130,25 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endnode { background:#115B3B; border-color:#115B3B; }',
       '.asm-plan-todos--tl .asm-plan-todos-endcheck { width:8px; height:8px; opacity:0; transition:opacity 0.2s ease; }',
       '.asm-plan-todos--tl .asm-plan-todos-end[data-status="done"] .asm-plan-todos-endcheck { opacity:1; }',
+      // ── Sticky build header: planning vs building mode, progress, current step ──
+      // Stays pinned to the top of the chat scroll so that — however far the
+      // user has scrolled through a long, progressively-built plan — they can
+      // always see whether the system is planning or building, overall
+      // progress, and which step is active. overflow:visible lets it stick.
+      '.asm-plan-todos--tl { overflow: visible; }',
+      '.asm-plan-todos--tl .asm-plan-todos-header { position: sticky; top: 0; z-index: 6; background: #FFFFFF; flex-direction: column; align-items: stretch; gap: 9px; padding: 11px 14px; border-bottom: 1px solid rgba(16,16,16,0.06); border-radius: 10px 10px 0 0; }',
+      '.asm-plan-todos--tl.collapsed .asm-plan-todos-header { border-bottom: 0; border-radius: 10px; }',
+      '.asm-plan-todos-headtop { display: flex; align-items: center; gap: 10px; }',
+      '.asm-plan-todos-phase { font-family: var(--font-mono, ui-monospace, monospace); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 99px; line-height: 1.45; }',
+      '.asm-plan-todos-phase[data-mode="planning"] { color: #0C41BB; background: #EAF0FF; }',
+      '.asm-plan-todos-phase[data-mode="building"] { color: #115B3B; background: #E3F0E9; }',
+      '.asm-plan-todos-phase[data-mode="done"] { color: #115B3B; background: #D6EADF; }',
+      '.asm-plan-todos-progress { height: 4px; border-radius: 99px; background: rgba(16,16,16,0.08); overflow: hidden; }',
+      '.asm-plan-todos-progress-fill { display: block; height: 100%; width: 0%; background: #115B3B; border-radius: 99px; transition: width 0.45s cubic-bezier(0.22,1,0.36,1); }',
+      '.asm-plan-todos-current { font-size: 12px; line-height: 1.4; color: #6B6F76; display: flex; align-items: center; gap: 7px; }',
+      '.asm-plan-todos-current[hidden] { display: none; }',
+      '.asm-plan-todos-current b { color: #212B36; font-weight: 500; }',
+      '.asm-plan-todos-current-dot { width: 7px; height: 7px; border-radius: 50%; background: #115B3B; flex-shrink: 0; animation: asmPulse 1.2s ease-in-out infinite; }',
 
       // ── Q&A recap (after Q&A done) — "Summarizes questions" ──────
       // One grouped gray card: each item stacks the question (primary)
@@ -4126,7 +4145,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     //    pane on the right.
     STATE.phase = 'building';
     STATE.buildStart = Date.now();
-    STATE.buildProgress = 0;
+    STATE.buildProgress = -1;
     STATE.buildPaused = false;
     STATE.buildPauseStart = 0;
     STATE.buildPausedTotalMs = 0;
@@ -4201,6 +4220,58 @@ document.addEventListener('DOMContentLoaded', async function() {
       var status = i < idx ? 'done' : (i === idx ? 'inprogress' : 'queued');
       el.setAttribute('data-status', status);
     });
+  }
+
+  // Current "Build app" panel (the active, non-archived version).
+  function currentPlanTodosPanel() {
+    return document.getElementById('asm-plan-todosv9-msg-v' + (STATE.planVersion || 1));
+  }
+
+  // Keep the sticky build header in sync: planning vs building vs built,
+  // overall progress (bar + count), and the step currently being worked on.
+  function updateBuildHeader(panel) {
+    panel = panel || currentPlanTodosPanel();
+    if (!panel) return;
+    var total = STATE.planItems.length;
+    if (!total) return;
+    var isDone = STATE.phase === 'done';
+    var isBuilding = STATE.phase === 'building';
+    // STATE.buildProgress = index of the in-progress step (steps before it
+    // are done); -1 before build, >= total once finished.
+    var idx = STATE.buildProgress;
+    var done, active;
+    if (isDone) { done = total; active = -1; }
+    else if (isBuilding) {
+      var cur = idx < 0 ? 0 : idx;
+      done = Math.min(total, cur);
+      active = cur < total ? cur : -1;
+    } else { done = 0; active = -1; }
+    var mode = isDone ? 'done' : (isBuilding ? 'building' : 'planning');
+
+    var phaseEl = panel.querySelector('.asm-plan-todos-phase');
+    if (phaseEl) {
+      phaseEl.setAttribute('data-mode', mode);
+      phaseEl.textContent = mode === 'done' ? 'Built' : (mode === 'building' ? 'Building' : 'Planning');
+    }
+    var countEl = panel.querySelector('.asm-plan-todos-count');
+    if (countEl) countEl.textContent = (isDone ? total : done) + '/' + total;
+    var fillEl = panel.querySelector('.asm-plan-todos-progress-fill');
+    if (fillEl) fillEl.style.width = (isDone ? 100 : Math.round((done / total) * 100)) + '%';
+
+    var curEl = panel.querySelector('.asm-plan-todos-current');
+    if (curEl) {
+      if (isBuilding && active >= 0 && STATE.planItems[active]) {
+        curEl.hidden = false;
+        curEl.innerHTML = '<span class="asm-plan-todos-current-dot"></span>Building <b>' + escapeHtml(STATE.planItems[active].title) + '</b>';
+      } else if (isDone) {
+        curEl.hidden = false;
+        curEl.innerHTML = '<b>App built</b> — all ' + total + ' steps complete';
+      } else {
+        // Planning / review: keep the header clean (badge + bar say enough).
+        curEl.hidden = true;
+        curEl.innerHTML = '';
+      }
+    }
   }
 
   // ── V3 plan-preview exploration ─────────────────────────────────
@@ -4625,20 +4696,27 @@ document.addEventListener('DOMContentLoaded', async function() {
       var html =
         '<div class="asm-plan-todos asm-plan-todos--tl" id="' + panelId + '">' +
           '<div class="asm-plan-todos-header">' +
-            '<span class="asm-plan-todos-icon"></span>' +
-            '<span class="asm-plan-todos-label">Build app</span>' +
-            '<button type="button" class="asm-plan-todos-toggle" aria-label="Collapse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>' +
+            '<div class="asm-plan-todos-headtop">' +
+              '<span class="asm-plan-todos-icon"></span>' +
+              '<span class="asm-plan-todos-label">Build app</span>' +
+              '<span class="asm-plan-todos-phase" data-mode="planning">Planning</span>' +
+              '<span class="asm-plan-todos-count">0/' + STATE.planItems.length + '</span>' +
+              '<button type="button" class="asm-plan-todos-toggle" aria-label="Collapse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>' +
+            '</div>' +
+            '<div class="asm-plan-todos-progress" aria-hidden="true"><span class="asm-plan-todos-progress-fill"></span></div>' +
+            '<div class="asm-plan-todos-current" hidden></div>' +
           '</div>' +
           '<div class="asm-plan-todos-body">' + rows + endRow + '</div>' +
         '</div>';
       var msgEl = appendMsg(scroll, 'agent', html, flagKey);
       if (msgEl) msgEl.classList.add('asm-msg-agent--fill');
       var panel = document.getElementById(panelId);
-      var header = panel && panel.querySelector('.asm-plan-todos-header');
+      var header = panel && panel.querySelector('.asm-plan-todos-headtop');
       if (header) header.addEventListener('click', function() {
         if (panel.classList.contains('asm-plan-todos--archived')) return;
         panel.classList.toggle('collapsed');
       });
+      updateBuildHeader(panel);
     }
     // Note: the approve strip (ensurePlanStripV9) is intentionally NOT
     // mounted here. During the plan phase the strip is driven by
@@ -4950,6 +5028,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         var app = findBundleApp();
         if (app) { ensureCarousel(app); ensureLoadingTabs(app); }
         updateBuildProgress();
+        updateBuildHeader();
 
         // Use buildElapsed() so pause freezes the entire build clock —
         // thinking labels stop advancing and the BUILD_DURATION threshold
@@ -4968,6 +5047,9 @@ document.addEventListener('DOMContentLoaded', async function() {
           document.querySelectorAll('.asm-plan-todos-end').forEach(function(el) {
             el.setAttribute('data-status', 'done');
           });
+          // Flip the sticky header to its "Built" / 100% state.
+          document.querySelectorAll('[data-step]').forEach(function(el) { el.setAttribute('data-status', 'done'); });
+          updateBuildHeader();
           // App is live — keep the name derived from the prompt.
           var nameBtnEl = document.getElementById('asm-title-name');
           if (nameBtnEl) nameBtnEl.textContent = STATE.appTitle;
