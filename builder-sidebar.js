@@ -87,7 +87,7 @@
     // ── Service Request Intake app preview (hand-built, Assembly UI) ──
     // Injected over the bundle's preview pane so the built app reads as a
     // service-request intake instead of the Time Tracker artboard.
-    ".asm-sri-app{display:flex;flex-direction:column;height:100%;background:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#212b36;overflow:hidden;letter-spacing:normal;}" +
+    ".asm-sri-app{display:flex;flex-direction:column;height:100%;background:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#212b36;overflow:hidden;letter-spacing:normal;container-type:inline-size;}" +
     '.asm-sri-app *{box-sizing:border-box;}' +
     '.asm-sri-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 12px;flex-shrink:0;}' +
     '.asm-sri-title{flex:1;min-width:0;font-size:17px;font-weight:500;letter-spacing:-0.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
@@ -125,7 +125,19 @@
     '.asm-sri-pnav .pn-item.active svg{color:#1a1a1a;}' +
     '.asm-sri-portal .asm-sri-app{flex:1;min-width:0;}' +
     '.asm-sri-body{flex:1;overflow:auto;}' +
-    '.asm-sri-table{min-width:520px;}';
+    '.asm-sri-table{min-width:520px;}' +
+    // Narrow preview pane → switch the requests table to a stacked card layout
+    // (mobile view). Container query keys off the app width, not the viewport.
+    '@container (max-width: 460px){' +
+      '.asm-sri-table{min-width:0;}' +
+      '.asm-sri-table thead{display:none;}' +
+      '.asm-sri-table tbody tr{display:block;border:1px solid #e8eaed;border-radius:10px;padding:10px 12px;margin-bottom:10px;}' +
+      '.asm-sri-table tbody tr:hover{background:#fff;}' +
+      '.asm-sri-table td{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0;border:0;}' +
+      '.asm-sri-table td::before{content:attr(data-label);color:#6b6f76;font-size:12px;font-weight:500;}' +
+      '.asm-sri-table td.asm-sri-req{display:block;font-size:14px;font-weight:500;margin-bottom:4px;}' +
+      '.asm-sri-table td.asm-sri-req::before{display:none;}' +
+    '}';
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -405,10 +417,10 @@
   var PRIO_COLOR = { High: '#d9634a', Normal: '#c69b3c', Low: '#9aa0a6' };
   function sriAppHTML() {
     var rows = SRI_ROWS.map(function (r) {
-      return '<tr><td class="asm-sri-req">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td>' +
-        '<td class="asm-sri-muted">' + r[3] + '</td>' +
-        '<td><span class="asm-sri-prio"><span class="asm-sri-dot" style="background:' + (PRIO_COLOR[r[4]] || '#9aa0a6') + '"></span>' + r[4] + '</span></td>' +
-        '<td><span class="asm-sri-badge ' + r[5] + '">' + r[6] + '</span></td></tr>';
+      return '<tr><td class="asm-sri-req" data-label="Request">' + r[0] + '</td><td data-label="Client">' + r[1] + '</td><td data-label="Type">' + r[2] + '</td>' +
+        '<td class="asm-sri-muted" data-label="Submitted">' + r[3] + '</td>' +
+        '<td data-label="Priority"><span class="asm-sri-prio"><span class="asm-sri-dot" style="background:' + (PRIO_COLOR[r[4]] || '#9aa0a6') + '"></span>' + r[4] + '</span></td>' +
+        '<td data-label="Status"><span class="asm-sri-badge ' + r[5] + '">' + r[6] + '</span></td></tr>';
     }).join('');
     return '<div class="asm-sri-app">' +
       '<div class="asm-sri-head"><div class="asm-sri-title">Service Requests</div>' +
@@ -466,15 +478,11 @@
     var initial = ((co.trim()[0]) || 'A').toUpperCase();
     var S = function (p, fill) { return '<svg viewBox="0 0 24 24" fill="' + (fill ? 'currentColor' : 'none') + '" stroke="' + (fill ? 'none' : 'currentColor') + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; };
     var ICONS = {
+      home: S('<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>'),
       msg: S('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'),
-      files: S('<path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z"/>'),
-      req: S('<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/>'),
-      forms: S('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'),
-      billing: S('<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>'),
-      help: S('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="m4.9 4.9 4.3 4.3M14.8 14.8l4.3 4.3M19.1 4.9l-4.3 4.3M9.2 14.8l-4.3 4.3"/>'),
-      more: S('<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>', true)
+      req: S('<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>')
     };
-    var items = [['msg', 'Messages', ''], ['files', 'Files', ''], ['req', 'Service Requests', 'active'], ['forms', 'Forms', ''], ['billing', 'Billing', ''], ['help', 'Helpdesk', ''], ['more', 'More', '']];
+    var items = [['home', 'Home', ''], ['msg', 'Messages', ''], ['req', 'Service Requests', 'active']];
     var nav = items.map(function (n) { return '<div class="pn-item ' + n[2] + '">' + ICONS[n[0]] + '<span>' + n[1] + '</span></div>'; }).join('');
     return '<div class="asm-sri-portal">' +
       '<div class="asm-sri-pnav"><div class="pn-ws"><div class="pn-ws-av">' + initial + '</div><span class="pn-ws-name">' + co + '</span></div>' + nav + '</div>' +
