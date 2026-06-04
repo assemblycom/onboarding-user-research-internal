@@ -360,6 +360,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     appTitle: APP_NAME,
     appIcon: 'clock',            // sidebar icon key
     isPublished: false,
+    upToDate: false,             // true right after a publish, until the next change
     appVersion: 0,               // increments on each publish
     liveMode: false,             // true while the bundle\'s Live toggle is active
     notifTabActive: false,       // bundle Notifications tab is the active right-pane view
@@ -1792,6 +1793,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (STATE.phase === 'plan') {
           handlePlanRefine(text);
         } else {
+          // A new refinement means there are unpublished changes again.
+          STATE.upToDate = false;
           handleFollowup(text);
         }
       }
@@ -2116,9 +2119,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
       });
     }
-    // Publish is greyed until the live preview is ready (i.e. done phase).
+    // Publish is greyed until the live preview is ready (done phase), and once
+    // published with no further changes it reads "Published" and disables —
+    // the app is up to date. A later refinement re-enables it.
     var pub = bar.querySelector('#asm-topbar-publish');
-    if (pub) pub.disabled = (STATE.phase !== 'done');
+    if (pub) {
+      if (STATE.phase !== 'done') { pub.disabled = true; if (pub.textContent !== 'Publish app') pub.textContent = 'Publish app'; }
+      else if (STATE.isPublished && STATE.upToDate) { pub.disabled = true; if (pub.textContent !== 'Published') pub.textContent = 'Published'; }
+      else { pub.disabled = false; if (pub.textContent !== 'Publish app') pub.textContent = 'Publish app'; }
+    }
   }
 
   // ============================================================
@@ -2608,6 +2617,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   function confirmPublish() {
     STATE.appVersion += 1;
     STATE.isPublished = true;
+    STATE.upToDate = true; // nothing left to publish until the next change
     document.body.classList.add('asm-published');
     // Post a Version block to the chat scroll documenting this publish.
     var scroll = document.querySelector('#asm-scroll');
