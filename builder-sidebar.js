@@ -64,7 +64,9 @@
     '.asm-load-mark{width:38px;height:38px;animation:asmLoadPulse 1.4s ease-in-out infinite;}' +
     ".asm-load-text{font-size:13px;color:#6b6f76;font-family:'Inter',system-ui,-apple-system,sans-serif;}" +
     '@keyframes asmLoadPulse{0%,100%{opacity:0.4;transform:scale(0.97);}50%{opacity:1;transform:scale(1);}}' +
-    // Neutral skeleton variant of the cover (in-app builds) — no branding.
+    // Neutral skeleton variant of the cover (in-app builds) — white, no
+    // branding and no off-white wash, so it reads as the app skeleton loader.
+    '#asm-load-cover.asm-skel{background:#FFFFFF;}' +
     '#asm-load-cover.asm-skel .asm-cover-skel{display:flex;flex-direction:column;gap:16px;position:absolute;top:64px;left:244px;width:520px;max-width:calc(100% - 300px);}' +
     '#asm-load-cover .asm-cover-skel span{display:block;height:13px;border-radius:6px;background:linear-gradient(90deg,rgba(16,16,16,0.06) 0%,rgba(16,16,16,0.11) 50%,rgba(16,16,16,0.06) 100%);background-size:200% 100%;animation:asmLoadShimmer 1.4s ease-in-out infinite;}' +
     '#asm-load-cover .asm-cover-skel span:nth-child(2){width:78%;}#asm-load-cover .asm-cover-skel span:nth-child(3){width:54%;}' +
