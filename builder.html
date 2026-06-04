@@ -1002,15 +1002,30 @@ document.addEventListener('DOMContentLoaded', async function() {
       '@keyframes asmReqIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }',
       '.asm-req-title { font-size:14px; font-weight:500; line-height:22px; color:#212B36; }',
       '.asm-req-body { position:relative; font-size:13px; line-height:21px; color:#212B36; overflow:hidden; }',
-      '.asm-req-card:not(.expanded) .asm-req-body { max-height:300px; }',
-      '.asm-req-card:not(.expanded) .asm-req-body::after { content:""; position:absolute; left:0; right:0; bottom:0; height:56px; background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 92%); pointer-events:none; }',
+      // The Requirements card fills the available reading pane instead of
+      // sitting in a short box above empty space — we want reviewers to
+      // read the whole thing and sign off. The message wrapper + card +
+      // body flex-grow to claim all the height between the top and the
+      // approve composer (.asm-scroll--reqfill reclaims the normal wide
+      // 200px bottom dead-zone). The fade + "Show more" only appear when
+      // the plan is genuinely taller than that filled area
+      // (.asm-req-overflow, measured in JS). Expanding lets the card grow
+      // past the viewport and the thread scrolls.
+      '.asm-scroll--reqfill { padding-bottom:24px !important; }',
+      '.asm-scroll--reqfill .asm-req-msg { flex:1 1 auto; min-height:0; display:flex; }',
+      '.asm-scroll--reqfill .asm-req-msg .asm-req-card { flex:1 1 auto; min-height:0; }',
+      '.asm-req-card:not(.expanded) .asm-req-body { flex:1 1 auto; min-height:0; }',
+      '.asm-scroll--reqfill .asm-req-msg.asm-req-msg--expanded { flex:0 0 auto; }',
+      '.asm-req-card.expanded .asm-req-body { overflow:visible; }',
+      '.asm-req-card.asm-req-overflow:not(.expanded) .asm-req-body::after { content:""; position:absolute; left:0; right:0; bottom:0; height:56px; background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 92%); pointer-events:none; }',
       '.asm-req-body > *:first-child { margin-top:0; }',
       '.asm-req-body p { margin:0 0 8px; }',
       '.asm-req-body p:last-child { margin-bottom:0; }',
       '.asm-req-h { font-weight:500; color:#212B36; margin:14px 0 2px; }',
       '.asm-req-body ul { margin:0 0 8px; padding-left:18px; }',
       '.asm-req-body li { margin:3px 0; }',
-      '.asm-req-showmore { align-self:flex-start; background:none; border:0; padding:0; font-family:inherit; font-size:14px; line-height:22px; color:#0C41BB; cursor:pointer; }',
+      '.asm-req-showmore { display:none; align-self:flex-start; background:none; border:0; padding:0; font-family:inherit; font-size:14px; line-height:22px; color:#0C41BB; cursor:pointer; }',
+      '.asm-req-card.asm-req-overflow .asm-req-showmore { display:inline-block; }',
       '.asm-req-showmore:hover { text-decoration:underline; }',
 
       // ── Plan list ────────────────────────────────────────
@@ -4115,22 +4130,44 @@ document.addEventListener('DOMContentLoaded', async function() {
         '<button type="button" class="asm-req-showmore" id="asm-req-showmore">Show more</button>' +
       '</div>';
     var msgEl = appendMsg(scroll, 'agent', html, 'requirements');
-    if (msgEl) msgEl.classList.add('asm-msg-agent--fill');
+    if (msgEl) msgEl.classList.add('asm-msg-agent--fill', 'asm-req-msg');
+    // Flag the thread so the card flex-fills the reading pane (and the
+    // wide-mode 200px bottom dead-zone is reclaimed).
+    scroll.classList.add('asm-scroll--reqfill');
 
     var card = document.getElementById('asm-req-card');
     var toggle = document.getElementById('asm-req-showmore');
+    var body = document.getElementById('asm-req-body');
+
+    // Only surface the fade + "Show more" when the requirements actually
+    // overflow the filled reading area. If the whole plan fits, there's
+    // nothing to hide — no premature cutoff. Re-measured on resize and
+    // after layout settles since the fill height is flex-derived.
+    function measureReqOverflow() {
+      if (!card || !body || card.classList.contains('expanded')) return;
+      var overflowing = (body.scrollHeight - body.clientHeight) > 2;
+      card.classList.toggle('asm-req-overflow', overflowing);
+    }
+    requestAnimationFrame(measureReqOverflow);
+    setTimeout(measureReqOverflow, 120);
+    window.addEventListener('resize', measureReqOverflow);
+
     if (toggle && card) {
+      // One-way reveal: "Show more" expands the full plan and is then
+      // removed (no "Show less"). The auto-scroll pins the "Requirements"
+      // title near the top of the reading pane — enough to reveal more of
+      // the plan, but never so far that the title scrolls out of view.
+      // The reader takes it from there manually.
       toggle.addEventListener('click', function() {
-        var expanding = !card.classList.contains('expanded');
-        card.classList.toggle('expanded', expanding);
-        toggle.textContent = expanding ? 'Show less' : 'Show more';
-        if (expanding) {
-          // Auto-scroll so the now fully-expanded plan is visible.
-          requestAnimationFrame(function() {
-            var sc = shell.querySelector('#asm-scroll');
-            if (sc) sc.scrollTop = sc.scrollHeight;
-          });
-        }
+        card.classList.add('expanded');
+        if (msgEl) msgEl.classList.add('asm-req-msg--expanded');
+        toggle.style.display = 'none';
+        requestAnimationFrame(function() {
+          var sc = shell.querySelector('#asm-scroll');
+          if (!sc) return;
+          var delta = card.getBoundingClientRect().top - sc.getBoundingClientRect().top;
+          sc.scrollTo({ top: Math.max(0, sc.scrollTop + delta - 12), behavior: 'smooth' });
+        });
       });
     }
     scrollToBottom(scroll);
