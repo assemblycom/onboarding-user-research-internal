@@ -15,6 +15,7 @@
   function hashParam(n) { var m = location.hash.match(new RegExp('[#&]' + n + '=([^&]*)')); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; }
   function navSuffix() { var p = []; ['company', 'name', 'email', 'theme'].forEach(function (k) { var v = hashParam(k); if (v) p.push(k + '=' + encodeURIComponent(v)); }); return p.length ? '#' + p.join('&') : ''; }
   function company() { return hashParam('company') || 'Studio'; }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
   var CSS =
     '.asm-sb{--text:#212b36;--muted:#6b6f76;--border:#dfe1e4;--bg-hover:#eff1f4;--dark:#1a1a1a;' +
@@ -33,7 +34,7 @@
     '.asm-sb .nav-item svg{color:var(--muted);flex-shrink:0;}' +
     '.asm-sb .nav-item .ic,.asm-sb .ws-caret-img,.asm-sb .checklist-item .ic{display:block;flex-shrink:0;}' +
     '.asm-sb .nav-item.add{color:var(--muted);}' +
-    '.asm-sb .nav-item.draft .draft-label{flex:1;}' +
+    '.asm-sb .nav-item.draft .draft-label,.asm-sb .nav-item.built .draft-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
     '.asm-sb .draft-badge{font-size:11px;font-weight:400;color:var(--muted);background:#f0f1f3;border-radius:5px;padding:1px 7px;}' +
     '.asm-sb .spacer{flex:1;}' +
     '.asm-sb .checklist{border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:10px;}' +
@@ -101,14 +102,28 @@
     return document.body && /version published/i.test(document.body.innerText);
   }
 
-  // Persist the current app so it stays in the sidebar on every other page —
-  // letting the user navigate away and click back into the build.
+  // Persist EVERY built app (keyed by name) so they all stay in the sidebar
+  // across pages — the user can build any number of apps and navigate freely
+  // without losing them. Re-building the same app updates its entry rather
+  // than appending a duplicate.
   var lastPersist = '';
+  function readApps() {
+    try { var l = JSON.parse(localStorage.getItem('onb.buildApps')); return Array.isArray(l) ? l : []; }
+    catch (e) { return []; }
+  }
   function persistApp() {
     try {
-      var rec = { name: appTitle() || DRAFT_APP, status: isPublished() ? 'published' : 'draft', hash: location.hash || '' };
-      var json = JSON.stringify(rec);
-      if (json !== lastPersist) { localStorage.setItem('onb.buildApp', json); lastPersist = json; }
+      var name = appTitle() || DRAFT_APP;
+      if (!name) return;
+      var rec = { name: name, status: isPublished() ? 'published' : 'draft', hash: location.hash || '' };
+      var list = readApps();
+      var found = false;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i] && list[i].name && list[i].name.toLowerCase() === name.toLowerCase()) { list[i] = rec; found = true; break; }
+      }
+      if (!found) list.push(rec);
+      var json = JSON.stringify(list);
+      if (json !== lastPersist) { localStorage.setItem('onb.buildApps', json); lastPersist = json; }
     } catch (e) {}
   }
 
@@ -125,6 +140,23 @@
     persistApp();
   }
 
+  // The app currently being built (active) followed by every other built
+  // app, so the full list lives in the builder sidebar too. Built apps link
+  // back to their builder session via the stored hash.
+  function appsNavHTML() {
+    var current = appTitle() || DRAFT_APP;
+    var seen = {}; seen[current.toLowerCase()] = 1;
+    var html = '<a class="nav-item draft active">' + CLOCK + '<span class="draft-label">' + esc(current) + '</span><span class="draft-badge">Draft</span></a>';
+    readApps().forEach(function (a) {
+      if (!a || !a.name) return;
+      var lc = a.name.toLowerCase();
+      if (seen[lc]) return;
+      seen[lc] = 1;
+      html += '<a class="nav-item built" href="builder.html' + (a.hash || '') + '">' + CLOCK + '<span class="draft-label">' + esc(a.name) + '</span>' + (a.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '') + '</a>';
+    });
+    return html;
+  }
+
   function buildHTML() {
     var co = company();
     var initial = ((co.trim()[0]) || 'S').toUpperCase();
@@ -139,7 +171,7 @@
         '<div class="nav-group-label">Apps</div>' +
         '<a class="nav-item" data-nav="home.html"><img class="ic" src="assets/home.svg" alt="" width="18" height="18" />Home</a>' +
         '<a class="nav-item" data-nav="messages.html"><img class="ic" src="assets/message.svg" alt="" width="18" height="18" />Messages</a>' +
-        '<a class="nav-item draft active">' + CLOCK + '<span class="draft-label">' + DRAFT_APP + '</span><span class="draft-badge">Draft</span></a>' +
+        appsNavHTML() +
         '<a class="nav-item add" data-nav="studio.html"><img class="ic" src="assets/pls.svg" alt="" width="15" height="15" />Add app</a>' +
         '<div class="nav-group-label">Customize</div>' +
         '<a class="nav-item" data-nav="brand.html"><img class="ic" src="assets/brand.svg" alt="" width="18" height="18" />Brand</a>' +
