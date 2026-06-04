@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       'div[style*="left: 0px"][style*="top: 44px"][style*="width: 328px"], [data-asm-bundle-chat] { visibility: hidden !important; }',
       // ── Widen the bundle sidebar so app titles like "Time Tracker"
       //    don\'t wrap. Override the bundle\'s inline width: 180px.
-      'div[style*="width: 180px"][style*="min-width: 180px"] { width: 220px !important; min-width: 220px !important; }',
+      'div[style*="width: 180px"][style*="min-width: 180px"] { width: 248px !important; min-width: 248px !important; }',
       // ── Hide bundle preview during the QA phase ──────────
       'body.asm-phase-qa [data-asm-bundle-app], body.asm-phase-qa div[style*="inset: 44px 0px 0px 328px"] { visibility: hidden !important; }',
       // ── Hide our resize handle entirely during QA ────────
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       //   bundle\'s real toggle / tabs / publish / history are visible.
       // z-index 150 sits above the chat shell (100) so the dropdown
       // menu can overlap the chat area below the title.
-      '.asm-topbar { position: fixed; top: 0; left: 220px; right: 0; height: 44px; background: #fff; border-bottom: 1px solid rgba(20, 24, 35, 0.10); z-index: 150; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; box-sizing: border-box; font-family: var(--font-sans, system-ui); pointer-events: none; }',
+      '.asm-topbar { position: fixed; top: 0; left: 248px; right: 0; height: 44px; background: #fff; border-bottom: 1px solid rgba(20, 24, 35, 0.10); z-index: 150; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; box-sizing: border-box; font-family: var(--font-sans, system-ui); pointer-events: none; }',
       // In done phase the asm-topbar bg goes transparent so the bundle's
       // toggle and tabs shine through; right-side actions (history +
       // publish) stay visible because we always use ours, not the
