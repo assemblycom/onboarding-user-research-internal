@@ -55,7 +55,11 @@
     '.asm-load-inner{display:flex;flex-direction:column;align-items:center;gap:14px;}' +
     '.asm-load-mark{width:38px;height:38px;animation:asmLoadPulse 1.4s ease-in-out infinite;}' +
     ".asm-load-text{font-size:13px;color:#6b6f76;font-family:'Inter',system-ui,-apple-system,sans-serif;}" +
-    '@keyframes asmLoadPulse{0%,100%{opacity:0.4;transform:scale(0.97);}50%{opacity:1;transform:scale(1);}}';
+    '@keyframes asmLoadPulse{0%,100%{opacity:0.4;transform:scale(0.97);}50%{opacity:1;transform:scale(1);}}' +
+    // Notifications preview tab is disabled in the prototype — tooltip on hover.
+    '.asm-notif-disabled{position:relative;cursor:default !important;}' +
+    '.asm-notif-disabled::after{content:"Not part of this prototype";position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-2px);background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;line-height:1;padding:7px 10px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:300;}' +
+    '.asm-notif-disabled:hover::after{opacity:1;transform:translateX(-50%) translateY(0);}';
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -238,10 +242,34 @@
     }
   }
 
+  // The Dashboard/Portal/Notifications preview tabs are bundle buttons. The
+  // Notifications tab isn't built for the prototype — neutralise its click and
+  // show a "Not part of this prototype" tooltip on hover. Re-runs each tick so
+  // it survives the bundle's React re-renders.
+  function disableNotifTab() {
+    var btns = document.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) {
+      var b = btns[i];
+      var txt = '';
+      for (var c = 0; c < b.childNodes.length; c++) { if (b.childNodes[c].nodeType === 3) txt += b.childNodes[c].textContent; }
+      if (txt.trim() !== 'Notifications') continue;
+      var st = b.getAttribute('style') || '';
+      // Top-tab signature (padding 4px 10px + 12px) — avoids matching anything else.
+      if (st.indexOf('padding: 4px 10px') === -1 || st.indexOf('font-size: 12px') === -1) continue;
+      if (!b.classList.contains('asm-notif-disabled')) b.classList.add('asm-notif-disabled');
+      if (!b.hasAttribute('data-asm-noclick')) {
+        b.setAttribute('data-asm-noclick', '1');
+        // Capture phase + stopImmediatePropagation beats the bundle's onClick.
+        b.addEventListener('click', function (e) { e.preventDefault(); e.stopImmediatePropagation(); }, true);
+      }
+    }
+  }
+
   function apply() {
     ensureStyle();
     rebrandText();
     fixPreviewIcons();
+    disableNotifTab();
     var sb = findBundleSidebar();
     if (!sb) { ensureCover(); return; }
     // Already replaced and still intact — just keep the draft entry in sync.
