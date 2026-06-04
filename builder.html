@@ -446,6 +446,9 @@ document.addEventListener('DOMContentLoaded', async function() {
       // rule keyed off `body:not(.asm-published)` handles the toggle.
       'body.asm-phase-qa div[style*="display: flex"][style*="align-items: center"][style*="gap: 4px"]:has(> button[style*="font-size: 12px"]), body.asm-phase-building div[style*="display: flex"][style*="align-items: center"][style*="gap: 4px"]:has(> button[style*="font-size: 12px"]) { opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }',
       'body:not(.asm-published) div[style*="background: rgb(242, 243, 246)"][style*="border-radius: 7px"] { opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }',
+      // Dashboard/Portal/Notifications active (and hover) tab pill — use the
+      // product\'s approved gray (#eff1f4) in place of the bundle\'s warm tone.
+      'button[style*="background: rgb(239, 239, 234)"][style*="border-radius: 6px"][style*="font-size: 12px"] { background: #eff1f4 !important; }',
       // Hide the bundle's Publish + Version-history buttons — our own
       // (in `.asm-topbar-right`) cover them across all phases. Tagged via
       // data attributes from JS.
