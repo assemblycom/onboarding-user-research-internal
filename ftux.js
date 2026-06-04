@@ -87,11 +87,23 @@
   function ensureModal() {
     var ov = document.querySelector('.inv-overlay');
     if (ov) return ov;
+    // Suggested teammates use generic names and emails on the user's own
+    // domain (from their signup email) — or the company domain for Google /
+    // personal-email signups.
+    var inviteDomain = (function () {
+      var COMMON = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com', 'live.com', 'aol.com', 'proton.me'];
+      var email = hashParam('email');
+      if (email && email.indexOf('@') > -1) {
+        var d = email.split('@')[1].toLowerCase().trim();
+        if (d && COMMON.indexOf(d) === -1) return d;
+      }
+      var co = (hashParam('company') || 'Studio').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      return (co || 'studio') + '.com';
+    })();
     var people = [
-      ['Neil Raina', 'neil@assembly.com'], ['Adam Schwartz', 'adam@assembly.com'],
-      ['Dovid Baum', 'dovid@assembly.com'], ['Amelia Riely', 'amelia@assembly.com'],
-      ['Ellie Spigelman', 'ellie@assembly.com']
-    ];
+      ['Jordan Lee', 'jordan'], ['Sam Carter', 'sam'], ['Riley Chen', 'riley'],
+      ['Taylor Brooks', 'taylor'], ['Morgan Diaz', 'morgan']
+    ].map(function (p) { return [p[0], p[1] + '@' + inviteDomain]; });
     function initials(n) { var p = n.trim().split(/\s+/); return ((p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '')).toUpperCase(); }
     var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div></div>'; }).join('');
     ov = document.createElement('div');
