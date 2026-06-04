@@ -100,7 +100,6 @@
     .ip-head2 { height: 10px; width: 38%; border-radius: 4px; background: #eef0f2; margin-top: 6px; }
     @media (max-width: 640px) { .intro-right { display: none; } }
   </style>
-  <script>(function(){ try { if (!localStorage.getItem('onb.portalIntroSeen')) document.documentElement.classList.add('show-portal-intro'); } catch (e) { document.documentElement.classList.add('show-portal-intro'); } })();</script>
 </head>
 <body>
   <a class="exit-preview" id="exitPreview" href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Studio</a>
@@ -158,43 +157,6 @@
     </main>
   </div>
 
-  <!-- First-visit interstitial -->
-  <div class="intro" id="portalIntro">
-    <div class="intro-card">
-      <div class="intro-left">
-        <h1 class="intro-title">Explore the client experience</h1>
-        <p class="intro-copy">This is your Client Portal — the experience your clients log in to. We've set up a test client so you can step inside and see it exactly as they would, on any app you build or enable.</p>
-        <button class="intro-btn" id="introLaunch" type="button">Launch client view</button>
-      </div>
-      <div class="intro-right">
-        <div class="intro-portal">
-          <div class="ip-side">
-            <div class="ip-ws"><span class="ip-avatar" id="ipAvatar">S</span><span id="ipWs">Studio</span></div>
-            <div class="ip-nav">
-              <span class="ip-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Home</span>
-              <span class="ip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</span>
-              <span class="ip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Files</span>
-            </div>
-            <div class="ip-client"><span class="ip-cav">TC</span><span class="ip-cname"><span>Viewing as</span><b>Test Client</b></span></div>
-          </div>
-          <div class="ip-main">
-            <div class="ip-greet">Good morning</div>
-            <div class="ip-sub"></div>
-            <div class="ip-hero"></div>
-            <div class="ip-line"></div>
-            <div class="ip-line short"></div>
-            <div class="ip-head2"></div>
-            <div class="ip-line"></div>
-            <div class="ip-line"></div>
-            <div class="ip-line short"></div>
-            <div class="ip-line"></div>
-            <div class="ip-line short"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
     function getHashParam(name) { const m = location.hash.match(new RegExp('[#&]' + name + '=([^&]*)')); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; }
     const AVATAR_COLORS = [['#f4f5f7','#1f1f1f'],['#e4f1eb','#44856f'],['#ece8f6','#7a6cb2'],['#f6e5e6','#ac5462'],['#efe9d2','#a5812b'],['#dce9f0','#6e96ad'],['#e8eee0','#8a9070'],['#f2e6f1','#9c4f92']];
@@ -228,17 +190,6 @@
     const navParams = [];
     ['company','name','email','theme'].forEach(k => { const v = getHashParam(k); if (v) navParams.push(k + '=' + encodeURIComponent(v)); });
     document.getElementById('exitPreview').setAttribute('href', 'studio.html' + (navParams.length ? '#' + navParams.join('&') : ''));
-
-    // First-visit interstitial: dismiss + remember so it only shows once,
-    // regardless of whether the portal was opened via FTUX or "Open Portal".
-    function dismissIntro() {
-      try { localStorage.setItem('onb.portalIntroSeen', '1'); } catch (e) {}
-      document.documentElement.classList.remove('show-portal-intro');
-    }
-    document.getElementById('introLaunch').addEventListener('click', dismissIntro);
-    // Clicking the backdrop (outside the card) also dismisses it.
-    const portalIntro = document.getElementById('portalIntro');
-    if (portalIntro) portalIntro.addEventListener('click', function (e) { if (e.target === portalIntro) dismissIntro(); });
   </script>
   <script src="ftux.js"></script>
 </body>

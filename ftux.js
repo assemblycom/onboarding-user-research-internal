@@ -46,7 +46,38 @@
       '.inv-btn{width:100%;height:44px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}' +
       '.inv-btn:hover{background:#000;}' +
       '.inv-later{display:block;width:100%;margin-top:8px;padding:8px;background:none;border:none;font-family:inherit;font-size:13px;color:#6b6f76;cursor:pointer;}' +
-      '.inv-later:hover{color:#212b36;}';
+      '.inv-later:hover{color:#212b36;}' +
+      // ── "Explore the client experience" interstitial (shown before the portal) ──
+      '.pi-ov{position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
+      '.pi-ov.show{opacity:1;pointer-events:auto;}' +
+      '.pi-card{width:720px;max-width:100%;max-height:90vh;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.28);display:flex;}' +
+      '.pi-left{flex:1;min-width:0;padding:32px;display:flex;flex-direction:column;}' +
+      '.pi-title{font-size:21px;font-weight:500;letter-spacing:-0.01em;line-height:1.25;margin:0 0 14px;color:#212b36;}' +
+      '.pi-copy{font-size:14px;line-height:1.6;color:#6b6f76;margin:0 0 28px;}' +
+      '.pi-btn{align-self:flex-start;margin-top:auto;background:#1a1a1a;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}' +
+      '.pi-btn:hover{background:#000;}' +
+      '.pi-right{width:340px;flex-shrink:0;background:#f3f4ef;border-left:1px solid #dfe1e4;padding:30px 0 0 30px;overflow:hidden;display:flex;align-items:stretch;}' +
+      '.pi-portal{width:100%;height:400px;background:#fff;border:1px solid #dfe1e4;border-right:none;border-bottom:none;border-radius:12px 0 0 0;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,0.12);display:flex;}' +
+      '.pi-side{width:132px;flex-shrink:0;background:var(--pi-side,#d9def9);padding:13px 10px;display:flex;flex-direction:column;gap:8px;}' +
+      '.pi-ws{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:500;color:var(--pi-tx,#2f3650);}' +
+      '.pi-av{width:20px;height:20px;border-radius:6px;background:#f0f1f3;color:#5a6068;font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+      '.pi-nav{display:flex;flex-direction:column;gap:4px;margin-top:8px;}' +
+      '.pi-item{font-size:11px;color:var(--pi-tx,#2f3650);padding:6px 7px;border-radius:6px;display:flex;align-items:center;gap:7px;}' +
+      '.pi-item.active{background:rgba(255,255,255,0.75);}' +
+      '.pi-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.85;}' +
+      '.pi-client{margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px;border-radius:9px;background:rgba(255,255,255,0.6);}' +
+      '.pi-cav{width:24px;height:24px;border-radius:50%;background:#e4f1eb;color:#44856f;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+      '.pi-cname{min-width:0;flex:1;color:var(--pi-tx,#2f3650);line-height:1.3;}' +
+      '.pi-cname b{display:block;font-size:10.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
+      '.pi-cname span{display:block;font-size:8.5px;opacity:0.6;white-space:nowrap;}' +
+      '.pi-main{flex:1;padding:16px;display:flex;flex-direction:column;gap:11px;min-width:0;}' +
+      '.pi-greet{font-size:15px;font-weight:500;color:#1a1a1a;}' +
+      '.pi-sub{height:7px;width:68%;border-radius:4px;background:#eef0f2;}' +
+      '.pi-hero{height:104px;border-radius:10px 0 0 10px;margin-right:-16px;background:linear-gradient(115deg,#1c1f26,#5b6675 70%,#aeb6c2);flex-shrink:0;}' +
+      '.pi-line{height:8px;border-radius:4px;background:#eef0f2;}' +
+      '.pi-line.short{width:56%;}' +
+      '.pi-head2{height:10px;width:38%;border-radius:4px;background:#eef0f2;margin-top:6px;}' +
+      '@media (max-width:640px){.pi-right{display:none;}}';
     document.head.appendChild(css);
   }
 
@@ -124,6 +155,55 @@
     s.publish = state; save(s); render();
   }
 
+  // ── "Explore the client experience" interstitial ──
+  var PI_THEME = { brand: ['#d9def9', '#2f3650'], dark: ['#1f1f22', '#d6d6db'], light: ['#e8eee0', '#3a3a3a'] };
+  function ensurePortalIntro() {
+    var ov = document.querySelector('.pi-ov');
+    if (ov) return ov;
+    var co = hashParam('company') || 'Studio';
+    var coShort = co.trim().split(/\s+/)[0];
+    var initial = (co.trim()[0] || 'S').toUpperCase();
+    var t = PI_THEME[hashParam('theme')] || PI_THEME.brand;
+    var HOME = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>';
+    var MSG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+    var FILES = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+    var lines = '<div class="pi-line"></div><div class="pi-line short"></div><div class="pi-head2"></div><div class="pi-line"></div><div class="pi-line"></div><div class="pi-line short"></div><div class="pi-line"></div><div class="pi-line short"></div>';
+    ov = document.createElement('div');
+    ov.className = 'pi-ov';
+    ov.style.setProperty('--pi-side', t[0]);
+    ov.style.setProperty('--pi-tx', t[1]);
+    ov.innerHTML = '<div class="pi-card">' +
+      '<div class="pi-left">' +
+        '<h2 class="pi-title">Explore the client experience</h2>' +
+        '<p class="pi-copy">This is your Client Portal — the experience your clients log in to. We\'ve set up a test client so you can step inside and see it exactly as they would, on any app you build or enable.</p>' +
+        '<button class="pi-btn" type="button">Launch client view</button>' +
+      '</div>' +
+      '<div class="pi-right"><div class="pi-portal">' +
+        '<div class="pi-side">' +
+          '<div class="pi-ws"><span class="pi-av">' + initial + '</span><span>' + coShort + '</span></div>' +
+          '<div class="pi-nav"><span class="pi-item active">' + HOME + 'Home</span><span class="pi-item">' + MSG + 'Messages</span><span class="pi-item">' + FILES + 'Files</span></div>' +
+          '<div class="pi-client"><span class="pi-cav">TC</span><span class="pi-cname"><span>Viewing as</span><b>Test Client</b></span></div>' +
+        '</div>' +
+        '<div class="pi-main"><div class="pi-greet">Good morning</div><div class="pi-sub"></div><div class="pi-hero"></div>' + lines + '</div>' +
+      '</div></div>' +
+    '</div>';
+    document.body.appendChild(ov);
+    ov.querySelector('.pi-btn').addEventListener('click', function () {
+      try { localStorage.setItem('onb.portalIntroSeen', '1'); } catch (e) {}
+      location.href = 'portal.html' + navSuffix();
+    });
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('show'); });
+    return ov;
+  }
+  // Show the interstitial first; if already seen, go straight to the portal.
+  function openPortalIntro() {
+    var seen; try { seen = localStorage.getItem('onb.portalIntroSeen'); } catch (e) {}
+    if (seen) { location.href = 'portal.html' + navSuffix(); return; }
+    var ov = ensurePortalIntro();
+    requestAnimationFrame(function () { ov.classList.add('show'); });
+  }
+  window.ftuxOpenPortalIntro = openPortalIntro;
+
   function ftuxInit() {
     ensureStyle();
 
@@ -153,10 +233,20 @@
       clone.setAttribute('data-ftux-bound', '1');
       clone.addEventListener('click', function () {
         if (i === 0) location.href = 'studio.html' + suffix;      // Publish your first app → build
-        else if (i === 1) location.href = 'portal.html' + suffix; // Explore the client experience → client portal
+        else if (i === 1) openPortalIntro();                      // Explore → interstitial → client portal
         else openInvite();                                        // Invite your team → modal
       });
     });
+
+    // "Open Portal" buttons go through the same interstitial. Clone to strip
+    // any page-level handler that would navigate directly.
+    var op = document.querySelector('.open-portal');
+    if (op && op.getAttribute('data-ftux-bound') !== '1') {
+      var opc = op.cloneNode(true);
+      op.parentNode.replaceChild(opc, op);
+      opc.setAttribute('data-ftux-bound', '1');
+      opc.addEventListener('click', function (e) { e.preventDefault(); openPortalIntro(); });
+    }
 
     render();
   }
