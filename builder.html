@@ -1107,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       // One green hue (#115B3B) at opacity steps; text-primary #212B36,
       // text-secondary #6B6F76. Rail is centered under the head node.
       '.asm-plan-todos--tl { background:#FFFFFF; }',
-      '.asm-plan-todos--tl .asm-plan-todos-icon { width:14px; height:14px; border:2px solid #115B3B; border-radius:50%; box-sizing:border-box; }',
+      '.asm-plan-todos--tl .asm-plan-todos-icon { width:15px; height:15px; border:0; border-radius:50%; box-sizing:border-box; -webkit-mask:radial-gradient(circle, transparent 60%, #000 62%); mask:radial-gradient(circle, transparent 60%, #000 62%); }',
       '.asm-plan-todos--tl .asm-plan-todos-icon svg { display:none; }',
       '.asm-plan-todos--tl .asm-plan-todos-label { color:#212B36; }',
       '.asm-plan-todos--tl .asm-plan-todos-check { display:none; }',
@@ -1139,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-plan-todos--tl { overflow: visible; }',
       '.asm-plan-todos--tl .asm-plan-todos-header { position: sticky; top: 0; z-index: 6; background: #FFFFFF; border-bottom: 1px solid rgba(16,16,16,0.06); border-radius: 10px 10px 0 0; }',
       '.asm-plan-todos--tl.collapsed .asm-plan-todos-header { border-bottom: 0; border-radius: 10px; }',
-      '.asm-plan-todos--tl .asm-plan-todos-icon { background: conic-gradient(#115B3B 0%, transparent 0); transition: background 0.2s linear; }',
+      '.asm-plan-todos--tl .asm-plan-todos-icon { background: conic-gradient(#115B3B 0%, rgba(16,16,16,0.14) 0); }',
       // ── Progressive step reveal: steps slide in one-by-one, each with a
       // brief shimmer "loading" state, mirroring how the plan is generated.
       '.asm-plan-todos--tl .asm-plan-todos-row { max-height: 200px; transition: max-height 0.32s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease; }',
@@ -1345,6 +1345,10 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-send { background:#212B36; color:#fff; font-family:inherit; font-size:12px; font-weight:500; padding:6px 14px; border-radius:8px; border:0; cursor:pointer; transition:background 0.12s ease; display:inline-flex; align-items:center; gap:6px; }',
       '.asm-send:hover:not([disabled]) { background:#000; }',
       '.asm-send[disabled] { opacity:0.4; cursor:not-allowed; }',
+      // Send in its default (submit) state is a compact dark square with an
+      // up-arrow glyph, matching the marketing/build-page submit button.
+      '.asm-send.asm-send--icon { width:32px; height:32px; padding:0; justify-content:center; border-radius:8px; }',
+      '.asm-send.asm-send--icon svg { display:block; }',
       // Pause/Resume mode (shown during the building phase). Slightly
       // narrower padding so the icon+label sits balanced.
       // Stop button — white pill with a primary-color hollow stop square.
@@ -1721,7 +1725,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         '      <div class="asm-composer-bar">',
         '        <button type="button" class="asm-attach" tabindex="-1" aria-label="Attach"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.48-8.48l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>',
         '        <button type="button" class="asm-voice" id="asm-voice" aria-label="Voice input"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>',
-        '        <button type="button" class="asm-send" id="asm-send" disabled>Send</button>',
+        '        <button type="button" class="asm-send asm-send--icon" id="asm-send" data-asm-icon="up" aria-label="Send" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>',
         '      </div>',
         '    </div>',
         '  </div>',
@@ -1786,6 +1790,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       // sitting inside the white-pill button shell.
       var STOP_ICON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg>';
       var PLAY_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+      var UP_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+      function setSendIcon() {
+        send.classList.add('asm-send--icon');
+        if (send.getAttribute('data-asm-icon') !== 'up') { send.innerHTML = UP_ICON; send.setAttribute('data-asm-icon', 'up'); }
+        send.setAttribute('aria-label', SEND_LABEL);
+      }
       function syncSendBtn() {
         if (STATE.phase === 'building') {
           // V4 paused build + user has typed text: morph into a Send
@@ -1796,11 +1806,12 @@ document.addEventListener('DOMContentLoaded', async function() {
           if (v4PauseWithText) {
             send.classList.remove('asm-send--pause');
             send.disabled = false;
-            if (send.textContent !== SEND_LABEL) send.textContent = SEND_LABEL;
-            send.removeAttribute('aria-label');
+            setSendIcon();
             return;
           }
           send.disabled = false;
+          send.classList.remove('asm-send--icon');
+          send.removeAttribute('data-asm-icon');
           send.classList.add('asm-send--pause');
           if (STATE.buildPaused) {
             send.innerHTML = PLAY_ICON + '<span>Resume</span>';
@@ -1812,8 +1823,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
           send.classList.remove('asm-send--pause');
           send.classList.remove('asm-send--approve');
-          if (send.textContent !== SEND_LABEL) send.textContent = SEND_LABEL;
-          send.removeAttribute('aria-label');
+          setSendIcon();
           send.disabled = ta.disabled || !ta.value.trim();
         }
       }
@@ -3488,7 +3498,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 600);
 
     setTimeout(function() {
-      var html = '<div class="asm-email"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg> Feel free to step away — we\'ll notify you once it\'s complete.</div>';
+      var html = '<div class="asm-email"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Feel free to step away — we\'ll notify you once it\'s complete.</div>';
       appendMsg(scroll, 'agent', html, 'email');
     }, 1400);
 
@@ -4145,7 +4155,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     STATE.phase = 'building';
     // Offset the clock so step execution begins only after the steps have
     // progressively revealed (shimmered in) — planning finishes, then build.
-    STATE.buildStart = Date.now() + 2400;
+    STATE.buildStart = Date.now() + 3700;
     STATE.buildProgress = -1;
     STATE.buildPaused = false;
     STATE.buildPauseStart = 0;
@@ -4240,7 +4250,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (STATE.phase === 'done') pct = 100;
     else if (STATE.phase === 'building') pct = Math.max(0, Math.min(100, Math.round((buildElapsed() / BUILD_DURATION) * 100)));
     else pct = 0;
-    icon.style.background = 'conic-gradient(#115B3B ' + pct + '%, transparent 0)';
+    icon.style.background = 'conic-gradient(#115B3B ' + pct + '%, rgba(16,16,16,0.14) 0)';
   }
 
   // ── V3 plan-preview exploration ─────────────────────────────────
@@ -4686,7 +4696,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         var stepRows = [].slice.call(panel.querySelectorAll('.asm-plan-todos-row[data-step]'));
         var endRowEl = panel.querySelector('.asm-plan-todos-end');
         var allRows = stepRows.concat(endRowEl ? [endRowEl] : []);
-        var stagger = Math.min(360, Math.round(2000 / Math.max(1, allRows.length)));
+        var stagger = 550;
         allRows.forEach(function(r) { r.classList.add('asm-row-hidden'); });
         stepRows.forEach(function(r) { r.classList.add('asm-plan-todos-row--loading'); });
         allRows.forEach(function(r, i) {
