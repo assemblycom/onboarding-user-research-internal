@@ -65,7 +65,19 @@
     .exit-preview { position: fixed; top: 16px; right: 18px; z-index: 50; display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: #1a1a1a; color: #fff; border: none; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18); text-decoration: none; }
     .exit-preview:hover { background: #000; }
     .exit-preview svg { width: 14px; height: 14px; }
+
+    /* First-visit interstitial — shown once before entering the client view. */
+    .intro { display: none; position: fixed; inset: 0; z-index: 200; background: #fff; }
+    html.show-portal-intro .intro { display: flex; }
+    .intro-left { flex: 1; display: flex; flex-direction: column; padding: 72px; max-width: 760px; }
+    .intro-title { font-size: 30px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; margin: 0 0 18px; color: var(--text); }
+    .intro-copy { font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 540px; margin: 0; }
+    .intro-btn { align-self: flex-start; margin-top: auto; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .intro-btn:hover { background: #000; }
+    .intro-right { flex: 1; background: #f3f4ef; border-left: 1px solid var(--border); }
+    @media (max-width: 760px) { .intro-right { display: none; } .intro-left { max-width: none; padding: 40px 28px; } }
   </style>
+  <script>(function(){ try { if (!localStorage.getItem('onb.portalIntroSeen')) document.documentElement.classList.add('show-portal-intro'); } catch (e) { document.documentElement.classList.add('show-portal-intro'); } })();</script>
 </head>
 <body>
   <a class="exit-preview" id="exitPreview" href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Studio</a>
@@ -123,6 +135,16 @@
     </main>
   </div>
 
+  <!-- First-visit interstitial -->
+  <div class="intro" id="portalIntro">
+    <div class="intro-left">
+      <h1 class="intro-title">Explore client experience</h1>
+      <p class="intro-copy">We've created a test client using your signup email. When you launch the client experience, you'll authenticate as that client and see exactly what they see.</p>
+      <button class="intro-btn" id="introLaunch" type="button">Launch client view</button>
+    </div>
+    <div class="intro-right"></div>
+  </div>
+
   <script>
     function getHashParam(name) { const m = location.hash.match(new RegExp('[#&]' + name + '=([^&]*)')); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; }
     const AVATAR_COLORS = [['#f4f5f7','#1f1f1f'],['#e4f1eb','#44856f'],['#ece8f6','#7a6cb2'],['#f6e5e6','#ac5462'],['#efe9d2','#a5812b'],['#dce9f0','#6e96ad'],['#e8eee0','#8a9070'],['#f2e6f1','#9c4f92']];
@@ -154,6 +176,13 @@
     const navParams = [];
     ['company','name','email','theme'].forEach(k => { const v = getHashParam(k); if (v) navParams.push(k + '=' + encodeURIComponent(v)); });
     document.getElementById('exitPreview').setAttribute('href', 'studio.html' + (navParams.length ? '#' + navParams.join('&') : ''));
+
+    // First-visit interstitial: dismiss + remember so it only shows once,
+    // regardless of whether the portal was opened via FTUX or "Open Portal".
+    document.getElementById('introLaunch').addEventListener('click', function () {
+      try { localStorage.setItem('onb.portalIntroSeen', '1'); } catch (e) {}
+      document.documentElement.classList.remove('show-portal-intro');
+    });
   </script>
   <script src="ftux.js"></script>
 </body>
