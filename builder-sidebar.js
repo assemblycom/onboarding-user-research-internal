@@ -50,8 +50,12 @@
     '#asm-components-link{display:none !important;}' +
     // Off-white cover that hides the bundle's default render until our sidebar
     // is in place — prevents the "BrandMages" flash on load.
-    '#asm-load-cover{position:fixed;inset:0;z-index:9998;background:#FBFBF5;transition:opacity .25s ease;}' +
-    '#asm-load-cover.asm-hide{opacity:0;pointer-events:none;}';
+    '#asm-load-cover{position:fixed;inset:0;z-index:9998;background:#FBFBF5;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease;}' +
+    '#asm-load-cover.asm-hide{opacity:0;pointer-events:none;}' +
+    '.asm-load-inner{display:flex;flex-direction:column;align-items:center;gap:14px;}' +
+    '.asm-load-mark{width:38px;height:38px;animation:asmLoadPulse 1.4s ease-in-out infinite;}' +
+    ".asm-load-text{font-size:13px;color:#6b6f76;font-family:'Inter',system-ui,-apple-system,sans-serif;}" +
+    '@keyframes asmLoadPulse{0%,100%{opacity:0.4;transform:scale(0.97);}50%{opacity:1;transform:scale(1);}}';
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -191,6 +195,9 @@
     if (document.getElementById('asm-load-cover')) return;
     var c = document.createElement('div');
     c.id = 'asm-load-cover';
+    c.innerHTML = '<div class="asm-load-inner">' +
+      '<img class="asm-load-mark" src="assets/studio-mark.svg" alt="" />' +
+      '<div class="asm-load-text">Setting up the builder…</div></div>';
     document.body.appendChild(c);
   }
   function removeCover() {
