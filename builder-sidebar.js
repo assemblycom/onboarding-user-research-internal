@@ -120,6 +120,7 @@
     '.asm-sri-pnav .pn-ws-name{font-weight:500;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
     '.asm-sri-pnav .pn-item{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;font-size:13.5px;color:#c7d0dc;cursor:pointer;white-space:nowrap;}' +
     '.asm-sri-pnav .pn-item svg{width:17px;height:17px;color:#8b97a8;flex-shrink:0;}' +
+    '.asm-sri-pnav .pn-item span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
     '.asm-sri-pnav .pn-item.active{background:#fff;color:#1a1a1a;font-weight:500;}' +
     '.asm-sri-pnav .pn-item.active svg{color:#1a1a1a;}' +
     '.asm-sri-portal .asm-sri-app{flex:1;min-width:0;}' +
@@ -519,12 +520,11 @@
     if (!ov) { ov = document.createElement('div'); ov.id = 'asm-sri-overlay'; document.body.appendChild(ov); }
     if (ov.getAttribute('data-mode') !== mode) { ov.innerHTML = (mode === 'portal') ? sriPortalHTML() : sriAppHTML(); ov.setAttribute('data-mode', mode); }
     var r = card.getBoundingClientRect();
-    var radius = getComputedStyle(card).borderRadius || '0px';
     // Clamp the left to the preview pane so the overlay never bleeds over chat.
     var left = Math.max(r.left, previewPaneLeft());
     var width = Math.max(0, r.right - left);
-    ov.style.cssText = 'position:fixed;z-index:140;background:#fff;overflow:hidden;border-radius:' + radius +
-      ';left:' + left + 'px;top:' + r.top + 'px;width:' + width + 'px;height:' + r.height + 'px;display:block;';
+    ov.style.cssText = 'position:fixed;z-index:140;background:#fff;overflow:hidden;border-radius:12px;' +
+      'box-shadow:0 1px 3px rgba(16,24,40,0.06);left:' + left + 'px;top:' + r.top + 'px;width:' + width + 'px;height:' + r.height + 'px;display:block;';
   }
 
   function apply() {
