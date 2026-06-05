@@ -56,9 +56,9 @@
     '.asm-sb .open-portal:hover{background:var(--bg-hover);}' +
     // The bundle's own design-system jump-out link duplicates our nav now.
     '#asm-components-link{display:none !important;}' +
-    // Off-white cover that hides the bundle's default render until our sidebar
+    // White cover that hides the bundle's default render until our sidebar
     // is in place — prevents the "BrandMages" flash on load.
-    '#asm-load-cover{position:fixed;inset:0;z-index:9998;background:#FBFBF5;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease;}' +
+    '#asm-load-cover{position:fixed;inset:0;z-index:9998;background:#FFFFFF;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease;}' +
     '#asm-load-cover.asm-hide{opacity:0;pointer-events:none;}' +
     '.asm-load-inner{display:flex;flex-direction:column;align-items:center;gap:14px;}' +
     '.asm-load-mark{width:38px;height:38px;animation:asmLoadPulse 1.4s ease-in-out infinite;}' +
