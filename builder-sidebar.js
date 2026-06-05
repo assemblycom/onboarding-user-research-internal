@@ -259,7 +259,7 @@
         '<a class="nav-item add" data-nav="studio.html"><img class="ic" src="assets/pls.svg" alt="" width="15" height="15" />Add app</a>' +
         '<div class="nav-group-label">Customize</div>' +
         '<a class="nav-item" data-nav="brand.html"><img class="ic" src="assets/brand.svg" alt="" width="18" height="18" />Brand</a>' +
-        '<a class="nav-item" data-nav="studio.html"><img class="ic" src="assets/apps.svg" alt="" width="18" height="18" />App Library</a>' +
+        '<a class="nav-item" data-nav="app-library.html"><img class="ic" src="assets/apps.svg" alt="" width="18" height="18" />App Library</a>' +
       '</nav>' +
       '<div class="spacer"></div>' +
       '<div class="checklist">' +
