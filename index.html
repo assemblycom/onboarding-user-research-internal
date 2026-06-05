@@ -36,7 +36,7 @@
     /* Studio auth flow (Figma 9447-85907 / 9447-85950) */
     .studio-auth { position:fixed;inset:0;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.25s ease;padding:18px;background:linear-gradient(176deg, #b3bde3 0%, #cddda6 52%, #d9ed92 100%) }
     .studio-auth.visible { opacity:1;pointer-events:auto }
-    .studio-auth-card { width:100%;height:100%;background:#f5f5f0;border-radius:23px;position:relative;display:flex;align-items:center;justify-content:center;overflow-y:auto }
+    .studio-auth-card { width:100%;height:100%;background:#fff;border-radius:23px;position:relative;display:flex;align-items:center;justify-content:center;overflow-y:auto }
     .studio-auth-close { position:absolute;top:22px;right:26px;width:34px;height:34px;border:none;background:rgba(0,0,0,0.04);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6b6f76;font-size:16px;line-height:1;transition:background 0.15s;z-index:2 }
     .studio-auth-close:hover { background:rgba(0,0,0,0.08) }
     .studio-step { width:446px;max-width:calc(100% - 40px);display:flex;flex-direction:column;align-items:center;padding:40px 0 }
@@ -46,8 +46,8 @@
     .studio-h1 { font-size:26px;line-height:1.2;color:#000;text-align:center;margin:0;font-weight:400 }
     .studio-sub { font-size:16px;color:rgba(0,0,0,0.5);text-align:center;margin:5px 0 0 }
     .studio-form { display:flex;flex-direction:column;gap:15px;width:100%;margin-top:39px }
-    .studio-oauth { width:100%;height:46px;background:rgba(255,255,255,0.55);border:1px solid #dfe1e4;border-radius:5px;font-family:inherit;font-size:16px;color:#000;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;transition:background 0.15s }
-    .studio-oauth:hover { background:rgba(255,255,255,0.92) }
+    .studio-oauth { width:100%;height:46px;background:#fff;border:1px solid #dfe1e4;border-radius:5px;font-family:inherit;font-size:16px;color:#000;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;transition:background 0.15s }
+    .studio-oauth:hover { background:#f5f5f0 }
     .studio-oauth svg { width:19px;height:19px;flex-shrink:0 }
     .studio-or { display:flex;align-items:center;gap:10px;color:rgba(0,0,0,0.53);font-size:12px;letter-spacing:0.08em }
     .studio-or::before,.studio-or::after { content:'';flex:1;height:1px;background:#dfe1e4 }
@@ -56,9 +56,9 @@
     .studio-fields { display:flex;flex-direction:column;gap:30px;width:100%;margin-top:44px }
     .studio-field { display:flex;flex-direction:column;gap:6px;width:100% }
     .studio-field > span { font-size:13px;letter-spacing:0.07em;color:#000 }
-    .studio-field input { width:100%;height:46px;background:rgba(251,251,245,0.5);border:1px solid #dfe1e4;border-radius:5px;padding:0 16px;font-family:inherit;font-size:14px;color:#1a1a1a;caret-color:#1a1a1a;box-sizing:border-box }
+    .studio-field input { width:100%;height:46px;background:#fff;border:1px solid #dfe1e4;border-radius:5px;padding:0 16px;font-family:inherit;font-size:14px;color:#1a1a1a;caret-color:#1a1a1a;box-sizing:border-box }
     .studio-field input::placeholder { color:#90959d }
-.studio-url { display:flex;align-items:center;height:46px;background:rgba(251,251,245,0.5);border:1px solid #dfe1e4;border-radius:5px;padding:0 14px;box-sizing:border-box }
+.studio-url { display:flex;align-items:center;height:46px;background:#fff;border:1px solid #dfe1e4;border-radius:5px;padding:0 14px;box-sizing:border-box }
 .studio-url:focus-within { border-color:#b9bcc1 }
 .studio-url input { flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:inherit;font-size:14px;color:#1a1a1a;padding:0;height:100% }
 .studio-url-sep { width:1px;height:22px;background:#dfe1e4;margin:0 12px;flex-shrink:0 }
@@ -82,7 +82,7 @@
     /* Keep typed/autofilled text dark (Chrome autofill otherwise overrides the color) */
     .studio-field input:-webkit-autofill,
     .studio-field input:-webkit-autofill:hover,
-    .studio-field input:-webkit-autofill:focus { -webkit-text-fill-color:#1a1a1a;caret-color:#1a1a1a;-webkit-box-shadow:0 0 0 1000px #f5f5f0 inset;transition:background-color 9999s ease-in-out 0s }
+    .studio-field input:-webkit-autofill:focus { -webkit-text-fill-color:#1a1a1a;caret-color:#1a1a1a;-webkit-box-shadow:0 0 0 1000px #fff inset;transition:background-color 9999s ease-in-out 0s }
     /* Customization step (Figma 9421-113197) — theme picker */
     .studio-themes { display:flex;gap:16px;width:100%;margin-top:30px }
     .studio-theme { flex:1;min-width:0;background:transparent;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:10px;font-family:inherit }
