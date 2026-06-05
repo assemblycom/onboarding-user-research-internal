@@ -301,6 +301,10 @@ document.addEventListener('DOMContentLoaded', async function() {
   var APP_NAME = deriveAppName(PAYLOAD.prompt);
   // Shared with the injected sidebar script (builder-sidebar.js).
   try { window.__asmAppName = APP_NAME; } catch (e) {}
+  // The service-request prompt is the fully fleshed-out showcase; other prompts
+  // get a generic (app-name-based) plan + requirements so the copy still tracks
+  // what the user asked for instead of always reading as a time tracker.
+  var IS_SERVICE = /service\s*request/i.test(PAYLOAD.prompt || '') || (APP_NAME || '').toLowerCase() === 'requests';
 
   // Persist the in-progress app as a draft the instant the builder loads — so it
   // survives navigating away mid-build/plan even before the sidebar script's
@@ -4000,12 +4004,19 @@ document.addEventListener('DOMContentLoaded', async function() {
   // The same plan data drives every variant; each is just a different
   // surface. Variant choice is persisted in localStorage.
   // ============================================================
-  var PLAN_ITEMS_DEFAULT = [
-    { title: 'Time entries data model',  detail: 'Date, hours, project, notes',          kind: 'data' },
-    { title: 'Quick log entry form',     detail: 'Project picker, hour input, notes field', kind: 'screen' },
-    { title: 'My Time dashboard',        detail: 'Weekly hours, recent entries, totals', kind: 'screen' },
-    { title: 'Reports + CSV export',     detail: 'Filter by date or project',             kind: 'action' },
-    { title: 'Daily logging reminders',  detail: 'Email nudge if no entry by 5pm',        kind: 'automation' },
+  var PLAN_ITEMS_DEFAULT = IS_SERVICE ? [
+    { title: 'Requests data model',      detail: 'Client, type, priority, status',        kind: 'data' },
+    { title: 'New request form',         detail: 'Client, category, description, files',   kind: 'screen' },
+    { title: 'Request queue',            detail: 'My queue, team, all requests',          kind: 'screen' },
+    { title: 'Filters + export',         detail: 'By status, client, or date',            kind: 'action' },
+    { title: 'Status notifications',     detail: 'On new, in-review, and resolved',       kind: 'automation' },
+    { title: 'Brand and permissions',    detail: 'Use your colors, gate by role',         kind: 'setup' }
+  ] : [
+    { title: APP_NAME + ' data model',   detail: 'The core records your app stores',      kind: 'data' },
+    { title: 'Main entry screen',        detail: 'Create and edit records',               kind: 'screen' },
+    { title: 'Overview dashboard',       detail: 'Summary, recent activity, totals',      kind: 'screen' },
+    { title: 'Reports + export',         detail: 'Filter and export your data',           kind: 'action' },
+    { title: 'Notifications',            detail: 'Keep your team in the loop',            kind: 'automation' },
     { title: 'Brand and permissions',    detail: 'Use your colors, gate by role',         kind: 'setup' }
   ];
 
@@ -4077,9 +4088,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   // block resolves. On resolve it collapses to "Thought for Ns" and the
   // Requirements card mounts below (via the onDone callback).
   var PLAN_REASON_STEPS = [
-    'Mapping who uses the app — team members, managers, and clients',
-    'Defining the core flows: logging time, approvals, and reports',
-    'Choosing notifications and the weekly summary cadence'
+    'Mapping who uses the app — your team, managers, and clients',
+    'Defining the core flows and the data it needs to capture',
+    'Choosing notifications and how it appears in the client portal'
   ];
   function renderPlanReasoning(shell, onDone) {
     var scroll = shell && shell.querySelector('#asm-scroll');
@@ -4578,28 +4589,40 @@ document.addEventListener('DOMContentLoaded', async function() {
   // default with a "Show more" affordance that expands the full plan
   // and auto-scrolls so everything is visible. The user approves THIS
   // (via the composer "Build plan" callout), not a step checklist.
-  var REQUIREMENTS_HTML = [
-    '<p>A time tracking app for your team to log hours, track work across clients and projects, and turn that into clear reports for billing and productivity insights. It centralizes timers, manual entries, and weekly summaries so the team can capture work as it happens and hand finance accurate, ready-to-bill numbers without switching tools.</p>',
+  var REQUIREMENTS_HTML = (IS_SERVICE ? [
+    '<p>A service request intake app for your team to capture, triage, and resolve client requests in one place — turning scattered emails and messages into a clear, trackable queue with status, priority, and ownership.</p>',
     '<div class="asm-req-h">Audience and Roles</div>',
-    '<p>Team members log their own time and review their weekly summaries. Managers see time across the team, approve submitted entries, and export billing-ready reports. Because the app is visible in your Client Portal, clients can see the hours logged against their own projects — but nothing else.</p>',
+    '<p>Team members pick up requests from the queue, update status, and respond. Managers see every request across the team, reassign work, and track resolution. Because the app is visible in your Client Portal, clients can submit requests and follow their own — but nothing else.</p>',
     '<div class="asm-req-h">Core Flows</div>',
     '<ul>',
-    '<li>Team member starts a timer or adds a manual entry, picks the client, project, and notes, and the time lands in the active week.</li>',
-    '<li>Team member opens the weekly view, sees hours grouped by day and project, and edits or submits entries for approval.</li>',
-    '<li>Manager opens the approvals queue, reviews submitted entries, and approves or sends them back with a note.</li>',
-    '<li>Manager opens reports, filters by client, project, or date range, and exports a billing-ready summary.</li>',
-    '<li>Client opens the Client Portal and sees hours logged against their projects with running totals.</li>',
+    '<li>A client or team member submits a request with a category, description, and any attachments.</li>',
+    '<li>The request lands in the queue with a priority and an Open status, ready to be picked up.</li>',
+    '<li>A team member opens a request, assigns it, and moves it through In review → Resolved.</li>',
+    '<li>A manager filters by status, client, or date and exports a summary of the queue.</li>',
+    '<li>A client opens the Client Portal and sees their own requests with current status.</li>',
     '</ul>',
     '<div class="asm-req-h">Notifications</div>',
     '<ul>',
-    '<li>Entry submitted: notify the assigned manager in-product so they can review it.</li>',
-    '<li>Entry approved or returned: notify the team member in-product.</li>',
-    '<li>Weekly summary: email each team member a recap of their logged hours every Friday.</li>',
-    '<li>Missing time: remind team members in-product if no time is logged by end of day.</li>',
+    '<li>New request: notify the team so it gets picked up quickly.</li>',
+    '<li>Status change: notify the requester when their request moves to in-review or resolved.</li>',
+    '<li>Unassigned: remind the team if a request sits without an owner.</li>',
     '</ul>',
     '<div class="asm-req-h">Design Preferences</div>',
-    '<p>Inherits Assembly\'s design system. Internal views are table-driven and scannable, with clear status badges, running totals, and quick actions for start, stop, and approve. The client-facing view stays calm and read-only: a simple summary of hours per project with clear date ranges.</p>'
-  ].join('');
+    '<p>Inherits Assembly\'s design system. Internal views are table-driven and scannable, with clear status badges and quick actions. The client-facing view stays calm: submit a request and track its status.</p>'
+  ] : [
+    '<p>A custom ' + escapeHtml(APP_NAME) + ' app built from your prompt — “' + escapeHtml(PAYLOAD.prompt || '') + '”. It sets up the data, screens, and actions for that goal so your team works in one place and shares the right parts with clients.</p>',
+    '<div class="asm-req-h">Audience and Roles</div>',
+    '<p>Your team works in the app day to day, and managers get an overview across everything. Because it can be shown in your Client Portal, clients see only the parts you choose to share.</p>',
+    '<div class="asm-req-h">Core Flows</div>',
+    '<ul>',
+    '<li>Create and edit records from a clear entry screen.</li>',
+    '<li>Track everything in an overview dashboard with recent activity and totals.</li>',
+    '<li>Filter and export your data for reporting.</li>',
+    '<li>Share the right views with clients through your portal.</li>',
+    '</ul>',
+    '<div class="asm-req-h">Design Preferences</div>',
+    '<p>Inherits Assembly\'s design system — clean, table-driven internal views and a calm, focused client-facing experience.</p>'
+  ]).join('');
 
   function renderRequirementsCard(shell) {
     // Wait for the typed intro to finish before the card materializes,
