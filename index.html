@@ -742,8 +742,13 @@
     gauthLoading.hidden = false;
     setTimeout(() => {
       googleAuth.classList.remove('visible');
-      // Personalize/theme step is stashed for now — go straight to the builder.
-      goToBuilder();
+      // Google accounts go through the same workspace-details step (name,
+      // company, portal URL), pre-filled from the Google account.
+      const gEmail = 'test.user@gmail.com';
+      const ue = document.getElementById('userEmail'); if (ue) ue.value = gEmail;
+      if (window.__asmPrefillWorkspace) window.__asmPrefillWorkspace(gEmail);
+      const un = document.getElementById('userName'); if (un && !un.value.trim()) un.value = 'Test User';
+      showAuthStep(2);
     }, 1200);
   }
 
@@ -874,13 +879,13 @@
     if (currentPrompt) params.push('prompt=' + encodeURIComponent(currentPrompt));
     const company = (document.getElementById('companyName')?.value || '').trim();
     if (company) params.push('company=' + encodeURIComponent(company));
-    // Identity carried into the portal: entered name/email, or the Google test account.
-    let uName, uEmail;
+    // Identity carried into the portal: the values from the workspace step
+    // (both flows pass through it now), falling back to the Google test account.
+    let uName = (document.getElementById('userName')?.value || '').trim();
+    let uEmail = (document.getElementById('userEmail')?.value || '').trim();
     if (authVia === 'google') {
-      uName = 'Test User'; uEmail = 'test.user@gmail.com';
-    } else {
-      uName = (document.getElementById('userName')?.value || '').trim();
-      uEmail = (document.getElementById('userEmail')?.value || '').trim();
+      if (!uName) uName = 'Test User';
+      if (!uEmail) uEmail = 'test.user@gmail.com';
     }
     if (uName) params.push('name=' + encodeURIComponent(uName));
     if (uEmail) params.push('email=' + encodeURIComponent(uEmail));
