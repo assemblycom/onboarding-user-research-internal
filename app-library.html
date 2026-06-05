@@ -45,9 +45,9 @@
     .page-title { font-size: 14px; font-weight: 500; color: var(--text); }
     .page-actions { display: flex; align-items: center; gap: 10px; }
     .page-actions svg { width: 15px; height: 15px; }
-    .btn-ghost { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--border); background: #fff; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; transition: background 0.12s; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--border); background: #fff; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; transition: background 0.12s; }
     .btn-ghost:hover { background: var(--bg-hover); }
-    .btn-dark { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 15px; border: none; background: #212b36; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 500; color: #fff; cursor: pointer; transition: opacity 0.12s; }
+    .btn-dark { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 15px; border: none; background: #212b36; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 500; color: #fff; cursor: pointer; transition: opacity 0.12s; }
     .btn-dark:hover { opacity: 0.9; }
 
     .al-body { flex: 1; display: flex; min-height: 0; }
@@ -145,10 +145,7 @@
       <div class="page-top">
         <div class="page-title">App Library</div>
         <div class="page-actions">
-          <button class="btn-ghost" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14h6"/></svg>
-            Add folder
-          </button>
+          <button class="btn-ghost" type="button">Add folder</button>
           <button class="btn-dark" id="addAppBtn" type="button" data-live="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
             Add app
