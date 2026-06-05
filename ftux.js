@@ -150,7 +150,7 @@
       // Done → green check. "Publish" shows in-progress only once a prompt
       // has been entered (st.publish === 'progress'); otherwise everything
       // defaults to todo (a fresh user who hasn't started building yet).
-      if (st[k] === 'done') { src = 'assets/check-green.svg'; it.classList.add('ftux-done'); }
+      if (st[k] === 'done') { src = 'assets/check-green.svg?v=2'; it.classList.add('ftux-done'); }
       else if (k === 'publish' && st.publish === 'progress') { src = 'assets/progress-indication.svg'; it.classList.add('active'); }
       else { src = 'assets/todo.svg'; }
       if (img) img.setAttribute('src', src);
