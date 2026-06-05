@@ -1,6 +1,6 @@
 /* Shared "Getting started" FTUX checklist logic across the portal pages.
    - Progress bar + per-item state (todo / in-progress / done) persisted in localStorage.
-   - Publish → build page · Explore → client portal (completes on visit) · Invite → modal (completes ONLY when the user clicks "Invite"; dismissing / "Maybe later" leaves it as todo).
+   - Publish → build page · Explore → client portal (completes on visit) · Invite → modal (completes on close — Invite, "Maybe later", or backdrop all mark it done).
    Exposed as window.ftuxInit() and idempotent, so callers that rebuild the
    sidebar (e.g. the AI builder, which swaps its whole document on load) can
    safely re-run it after re-injecting the checklist markup. */
@@ -119,19 +119,18 @@
       '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
       '</div>';
     document.body.appendChild(ov);
-    // Clicking the backdrop or "Maybe later" just dismisses (no completion);
-    // only "Invite" marks the checklist item done.
-    ov.addEventListener('click', function (e) { if (e.target === ov) dismissInvite(); });
+    // Closing the modal any way — "Invite", "Maybe later", or the backdrop —
+    // marks the checklist item done.
+    ov.addEventListener('click', function (e) { if (e.target === ov) completeInvite(); });
     ov.querySelector('.inv-btn').addEventListener('click', completeInvite);
-    ov.querySelector('.inv-later').addEventListener('click', dismissInvite);
+    ov.querySelector('.inv-later').addEventListener('click', completeInvite);
     return ov;
   }
   function openInvite() { ensureModal().classList.add('show'); }
   function hideInvite() { var ov = document.querySelector('.inv-overlay'); if (ov) ov.classList.remove('show'); }
-  function dismissInvite() { hideInvite(); }
   function completeInvite() {
     hideInvite();
-    var s = get(); if (!s.invite) { s.invite = 'done'; save(s); render(); }
+    var s = get(); if (s.invite !== 'done') { s.invite = 'done'; save(s); render(); }
   }
 
   var keys = ['publish', 'explore', 'invite'];
