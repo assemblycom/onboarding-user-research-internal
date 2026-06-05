@@ -748,6 +748,10 @@
       const ue = document.getElementById('userEmail'); if (ue) ue.value = gEmail;
       if (window.__asmPrefillWorkspace) window.__asmPrefillWorkspace(gEmail);
       const un = document.getElementById('userName'); if (un && !un.value.trim()) un.value = 'Test User';
+      // Google (gmail) has no company domain, so seed a demo company — the
+      // portal URL is derived from it, so it shouldn't be left blank.
+      const co = document.getElementById('companyName');
+      if (co && !co.value.trim()) { co.value = 'Test Company'; co.dispatchEvent(new Event('input')); }
       showAuthStep(2);
     }, 1200);
   }
