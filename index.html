@@ -445,12 +445,15 @@
   const promptInput = document.getElementById('promptInput');
   const sendBtn = document.getElementById('sendBtn');
   let currentPrompt = '';
+  // Shared with the Add-app page so a prompt survives navigation / tab switches.
+  const PROMPT_KEY = 'onb.studioPrompt';
 
   if (promptInput) {
     promptInput.addEventListener('input', () => {
       promptInput.style.height = 'auto';
       promptInput.style.height = Math.min(promptInput.scrollHeight, 200) + 'px';
       currentPrompt = promptInput.value.trim();
+      try { localStorage.setItem(PROMPT_KEY, promptInput.value); } catch (e) {}
       if (sendBtn) {
         sendBtn.disabled = !currentPrompt;
         sendBtn.style.opacity = currentPrompt ? '1' : '0.4';
@@ -459,6 +462,8 @@
     promptInput.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (currentPrompt) openAuthModal(); }
     });
+    // Restore a prompt typed before reloading / switching tabs.
+    try { var savedPrompt = localStorage.getItem(PROMPT_KEY); if (savedPrompt && !promptInput.value) { promptInput.value = savedPrompt; promptInput.dispatchEvent(new Event('input')); } } catch (e) {}
   }
 
   if (sendBtn) sendBtn.addEventListener('click', () => { if (currentPrompt) openAuthModal(); });

@@ -5219,16 +5219,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       renderPlanTodosV9(shell);
       // User OKs and we transition into building.
       appendMsg(scroll, 'user', 'Perfect — I have what I need', 'user-perfect');
-      // Email confirmation card (looks like an inline stub the agent
-      // dropped before the build kicked off).
-      var emailHtml = [
-        '<div class="asm-email-card" style="border:1px solid rgba(16,16,16,0.08);border-radius:10px;padding:12px 14px;background:#F8F9FB;">',
-        '  <div style="font-size:12px;color:#6B6F76;margin-bottom:4px;">EMAIL · CONFIRMATION</div>',
-        '  <div style="font-weight:600;margin-bottom:2px;">Time Tracker is on its way</div>',
-        '  <div style="font-size:13px;color:#3a3f46;">We\'ll email you when the app is ready to review.</div>',
-        '</div>'
-      ].join('');
-      appendMsg(scroll, 'agent', emailHtml, 'email');
       // Switch to a paused mid-build state for capture. No inline
       // thinking row — the Build Plan above shows progress instead.
       STATE.phase = 'building';
