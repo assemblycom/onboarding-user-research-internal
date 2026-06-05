@@ -266,12 +266,15 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg>
         Skip this step (prototype)
       </button>
-      <!-- Illustration is the single focal point (no separate logo). -->
-      <div class="magic-visual" id="magicVisual" aria-hidden="true">
-        <div class="mv-panel"><img src="assets/Frame 2147223920.svg" alt="" width="108" height="110" /></div>
-      </div>
+      <div class="studio-mark"><img src="assets/studio-mark.svg" alt="Studio" /></div>
       <h1 class="studio-h1">Check your email</h1>
-      <p class="studio-sub">We’ve sent you a temporary login link.<br />Please check your inbox at <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.</p>
+      <p class="studio-sub">We sent a sign-in link to <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.</p>
+      <p class="studio-microcopy">Click the link in the email to sign in. It expires in 15 minutes.</p>
+
+      <!-- Placeholder visual (a faux preview of the email) — swap for real art. -->
+      <div class="magic-visual" id="magicVisual" aria-hidden="true">
+        <div class="mv-panel"><img src="assets/Frame 2147223920.svg" alt="" width="132" height="134" /></div>
+      </div>
 
       <!-- Cross-device fallback, revealed by "Enter verification code" -->
       <div id="codeFallback" hidden>
@@ -691,10 +694,10 @@
       '.proto-skip{position:absolute;top:22px;left:26px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:#111;color:#fff;border:0;border-radius:999px;padding:7px 14px 7px 12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;}' +
       '.proto-skip:hover{opacity:0.85;}' +
       '.studio-microcopy{font-size:13px;color:rgba(0,0,0,0.4);text-align:center;margin:12px 0 0;max-width:340px;line-height:1.5;}' +
-      '.magic-visual{margin:0 0 24px;display:flex;justify-content:center;width:100%;}' +
+      '.magic-visual{margin-top:30px;display:flex;justify-content:center;width:100%;}' +
       '.magic-visual[hidden]{display:none;}' +
-      '.mv-panel{background:#e4dfd2;border-radius:18px;padding:30px 36px;display:flex;align-items:center;justify-content:center;}' +
-      '.mv-panel img{width:108px;height:auto;display:block;}' +
+      '.mv-panel{width:100%;max-width:380px;background:#e4dfd2;border-radius:16px;padding:40px;display:flex;align-items:center;justify-content:center;}' +
+      '.mv-panel img{width:132px;height:auto;display:block;}' +
       '.studio-code{display:flex;justify-content:center;gap:10px;margin-top:26px;}' +
       '.studio-code input{width:46px;height:56px;text-align:center;font-size:22px;font-weight:400;color:#212b36;font-family:inherit;border:1px solid #d3d6db;border-radius:10px;background:#fff;outline:none;transition:border-color .12s,box-shadow .12s;-moz-appearance:textfield;}' +
       '.studio-code input:focus{border-color:#9aa0a6;box-shadow:0 0 0 3px rgba(0,0,0,0.05);}' +
