@@ -244,7 +244,7 @@
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
   </script>
   <script src="ftux.js"></script>
-  <script src="apps-nav.js"></script>
+  <script src="apps-nav.js?v=2"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>
 </html>
