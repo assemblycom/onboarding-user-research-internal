@@ -77,7 +77,7 @@
 /* Apple-Intelligence-style edge glow: a gradient (our green→blue) rotating
    around the screen edge while the workspace provisions. */
 @property --asm-glow-angle { syntax:"<angle>"; inherits:false; initial-value:0deg }
-.studio-loader::before { content:"";position:absolute;inset:0;z-index:0;pointer-events:none;padding:18px;
+.studio-loader::before { content:"";position:absolute;inset:0;z-index:0;pointer-events:none;padding:18px;border-radius:28px;
   background:conic-gradient(from var(--asm-glow-angle), #d9ed92, #7da4ff, #8b99c8, #d9ed92, #7da4ff, #d9ed92);
   /* Feather the inner edge so the glow bleeds into white instead of a hard band. */
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
