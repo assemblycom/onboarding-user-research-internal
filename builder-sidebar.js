@@ -585,13 +585,12 @@
     if (!card) { if (ov) ov.style.display = 'none'; return; }
     if (!ov) { ov = document.createElement('div'); ov.id = 'asm-sri-overlay'; document.body.appendChild(ov); }
     // Service-request prompts get the hand-built app; everything else gets the
-    // simplified placeholder. Encode both in data-mode so it re-renders on change.
+    // simplified placeholder. Both Dashboard and Portal previews show just the
+    // app canvas — no client sidebar in the built-app preview.
     var svc = isServiceApp();
     var key = mode + (svc ? ':s' : ':p');
     if (ov.getAttribute('data-mode') !== key) {
-      ov.innerHTML = (mode === 'portal')
-        ? (svc ? sriPortalHTML() : placeholderPortalHTML())
-        : (svc ? sriAppHTML() : placeholderAppHTML());
+      ov.innerHTML = svc ? sriAppHTML() : placeholderAppHTML();
       ov.setAttribute('data-mode', key);
     }
     var r = card.getBoundingClientRect();
