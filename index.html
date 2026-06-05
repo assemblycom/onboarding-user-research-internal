@@ -258,21 +258,14 @@
       </div>
     </div>
 
-    <!-- Step 1b: Magic link (passwordless). No primary button — like best-in-class
-         (the action is in the email). Code entry is the cross-device fallback. -->
+    <!-- Step 1b: Verification code entry (passwordless). -->
     <div class="studio-step" id="authStepEmail" hidden>
       <input type="email" id="userEmail" hidden />
       <div class="studio-mark"><img src="assets/studio-mark.svg" alt="Studio" /></div>
       <h1 class="studio-h1">Check your email</h1>
-      <p class="studio-sub">We sent a sign-in link to <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.</p>
+      <p class="studio-sub">Enter the 6-digit code we sent to <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.</p>
 
-      <!-- Placeholder visual (a faux preview of the email) — swap for real art. -->
-      <div class="magic-visual" id="magicVisual" aria-hidden="true">
-        <div class="mv-panel"><img src="assets/Frame 2147223920.svg" alt="" width="132" height="134" /></div>
-      </div>
-
-      <!-- Cross-device fallback, revealed by "Enter verification code" -->
-      <div id="codeFallback" hidden>
+      <div id="codeFallback">
         <div class="studio-code" id="codeInputs">
           <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1" />
           <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
@@ -285,7 +278,6 @@
       </div>
 
       <div class="studio-help">
-        <p id="helpCodeLine">Signing in on another device? <button class="studio-altlink" id="linkEnterCode" type="button">Enter verification code</button></p>
         <p>Didn’t get it? <button class="studio-altlink" id="linkResend" type="button" data-proto-na>Resend email</button></p>
       </div>
     </div>
@@ -648,10 +640,8 @@
 
   // Back to the clean "click the link" state (used each time we enter the step).
   function resetEmailStep() {
-    if (codeFallback) codeFallback.hidden = true;
-    if (helpCodeLine) helpCodeLine.hidden = false;
-    var mv = document.getElementById('magicVisual'); if (mv) mv.hidden = false;
-    if (window.__asmResetCode) window.__asmResetCode(true);
+    // Code entry is the page itself — just clear the boxes and focus the first.
+    if (window.__asmResetCode) window.__asmResetCode();
   }
 
   if (studioContinue1) studioContinue1.addEventListener('click', () => {
@@ -663,18 +653,7 @@
     showAuthStep('email');
   });
 
-  // A real user clicks the link in their inbox; in a prototype there's no inbox,
-  // so the black skip pill stands in for "I clicked the link".
-  if (protoSkip) protoSkip.addEventListener('click', proceedFromEmail);
   if (codeVerify) codeVerify.addEventListener('click', proceedFromEmail);
-
-  // Cross-device fallback: reveal the code entry, hide its prompt line.
-  if (linkEnterCode) linkEnterCode.addEventListener('click', () => {
-    if (helpCodeLine) helpCodeLine.hidden = true;
-    var mv = document.getElementById('magicVisual'); if (mv) mv.hidden = true;
-    if (codeFallback) codeFallback.hidden = false;
-    if (window.__asmResetCode) window.__asmResetCode();
-  });
 
   // "Use a different email" → back to the welcome step.
   if (linkDiffEmail) linkDiffEmail.addEventListener('click', () => {
