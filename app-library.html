@@ -71,7 +71,9 @@
     .al-menu svg { width: 18px; height: 18px; }
 
     /* Client preview device */
-    .al-device { flex: 1; min-height: 0; border: 1px solid var(--border); border-right: none; border-bottom: none; border-radius: 14px 0 0 0; overflow: hidden; display: flex; background: #fff; }
+    /* The preview is illustrative only — pointer cursor makes prototype-hints.js
+       show the "Not part of this prototype" tooltip anywhere inside it. */
+    .al-device { flex: 1; min-height: 0; border: 1px solid var(--border); border-right: none; border-bottom: none; border-radius: 14px 0 0 0; overflow: hidden; display: flex; background: #fff; cursor: pointer; }
     .al-portal-side { width: 196px; flex-shrink: 0; background: #26262a; display: flex; flex-direction: column; padding: 14px 12px; gap: 2px; }
     .al-portal-brand { display: flex; align-items: center; gap: 9px; padding: 5px 6px 16px; color: #fff; font-size: 14px; font-weight: 500; }
     .al-portal-brand .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
