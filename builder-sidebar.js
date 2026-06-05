@@ -124,6 +124,14 @@
     '.asm-sri-pnav .pn-item.active{background:#fff;color:#1a1a1a;font-weight:500;}' +
     '.asm-sri-pnav .pn-item.active svg{color:#1a1a1a;}' +
     '.asm-sri-portal .asm-sri-app{flex:1;min-width:0;}' +
+    // Simplified placeholder canvas (non-service-request prompts).
+    ".asm-ph-app{display:flex;flex-direction:column;height:100%;background:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#212b36;overflow:hidden;letter-spacing:normal;}" +
+    '.asm-sri-portal .asm-ph-app{flex:1;min-width:0;}' +
+    '.asm-ph-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 28px;gap:10px;}' +
+    '.asm-ph-badge{width:48px;height:48px;border-radius:12px;background:#f0f1f3;display:flex;align-items:center;justify-content:center;color:#6b6f76;}' +
+    '.asm-ph-badge svg{width:24px;height:24px;}' +
+    '.asm-ph-name{font-size:16px;font-weight:500;color:#212b36;margin-top:2px;}' +
+    '.asm-ph-msg{font-size:13px;color:#6b6f76;max-width:300px;line-height:1.5;}' +
     '.asm-sri-body{flex:1;overflow:auto;}' +
     '.asm-sri-table{min-width:520px;}' +
     // Narrow preview pane → switch the requests table to a stacked card layout
@@ -178,6 +186,17 @@
       }
     }
     return '';
+  }
+
+  // The app name derived from the prompt (shared by builder.html). Read live so
+  // it's current even though this script loads before builder.html sets it.
+  function appNameNow() { return (typeof window !== 'undefined' && window.__asmAppName) ? window.__asmAppName : 'Service Requests'; }
+  // Only the service-request prompt has a fully hand-built preview; every other
+  // prompt gets a simplified placeholder canvas instead.
+  function isServiceApp() {
+    var p = (hashParam('prompt') || '').toLowerCase();
+    if (/service\s*request/.test(p)) return true;
+    return (appNameNow() || '').toLowerCase() === 'requests';
   }
 
   // The builder surfaces an "...version published" checkpoint once the app
@@ -342,7 +361,8 @@
     });
     var nodes = [], n;
     while ((n = w.nextNode())) nodes.push(n);
-    nodes.forEach(function (t) { t.nodeValue = t.nodeValue.split('Time Tracker').join('Service Requests'); });
+    var nm = appNameNow();
+    nodes.forEach(function (t) { t.nodeValue = t.nodeValue.split('Time Tracker').join(nm); });
   }
 
   function ensureCover() {
@@ -444,7 +464,7 @@
         '<td data-label="Status"><span class="asm-sri-badge ' + r[5] + '">' + r[6] + '</span></td></tr>';
     }).join('');
     return '<div class="asm-sri-app">' +
-      '<div class="asm-sri-head"><div class="asm-sri-title">Service Requests</div>' +
+      '<div class="asm-sri-head"><div class="asm-sri-title">' + esc(appNameNow()) + '</div>' +
         '<button class="asm-sri-new" type="button">+ New request</button></div>' +
       '<div class="asm-sri-tabs"><div class="asm-sri-tab active">My queue</div><div class="asm-sri-tab">Team</div><div class="asm-sri-tab">All requests</div></div>' +
       '<div class="asm-sri-body"><table class="asm-sri-table"><thead><tr>' +
@@ -461,9 +481,9 @@
       var own = '';
       for (var c = 0; c < e.childNodes.length; c++) { if (e.childNodes[c].nodeType === 3) own += e.childNodes[c].textContent; }
       var label = own.trim();
-      // Title may already be relabelled to "Service Requests" by the time this
-      // runs. Our own overlay has no "log time"/"description", so it's excluded.
-      if (label !== 'Time Tracker' && label !== 'Service Requests') continue;
+      // Title may already be relabelled to the app name by the time this runs.
+      // Our own overlay has no "log time"/"description", so it's excluded.
+      if (label !== 'Time Tracker' && label !== appNameNow()) continue;
       if (e.closest('#asm-sri-overlay')) continue;
       var r = e.getBoundingClientRect();
       if (r.width === 0 || r.left < 320) continue; // hidden VH modal or left chrome
@@ -492,9 +512,20 @@
     return active;
   }
 
-  // Client-facing portal preview = our own dark sidebar + the SRI app, so the
+  // Simplified placeholder canvas for any prompt that isn't the hand-built
+  // service-request app — shows the app name and tells the user it's simplified.
+  function placeholderAppHTML() {
+    return '<div class="asm-ph-app">' +
+      '<div class="asm-sri-head"><div class="asm-sri-title">' + esc(appNameNow()) + '</div></div>' +
+      '<div class="asm-ph-mid">' +
+        '<div class="asm-ph-badge">' + CLOCK + '</div>' +
+        '<div class="asm-ph-name">' + esc(appNameNow()) + '</div>' +
+        '<div class="asm-ph-msg">This preview is simplified for the prototype — your built app will be fully designed here.</div>' +
+      '</div></div>';
+  }
+  // Client-facing portal preview = our own dark sidebar + the app canvas, so the
   // Portal view always keeps the client sidebar and is fully responsive.
-  function sriPortalHTML() {
+  function portalShell(appHTML) {
     var co = company();
     var initial = ((co.trim()[0]) || 'A').toUpperCase();
     var S = function (p, fill) { return '<svg viewBox="0 0 24 24" fill="' + (fill ? 'currentColor' : 'none') + '" stroke="' + (fill ? 'none' : 'currentColor') + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; };
@@ -503,13 +534,15 @@
       msg: S('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'),
       req: S('<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>')
     };
-    var items = [['home', 'Home', ''], ['msg', 'Messages', ''], ['req', 'Service Requests', 'active']];
-    var nav = items.map(function (n) { return '<div class="pn-item ' + n[2] + '">' + ICONS[n[0]] + '<span>' + n[1] + '</span></div>'; }).join('');
+    var items = [['home', 'Home', ''], ['msg', 'Messages', ''], ['req', appNameNow(), 'active']];
+    var nav = items.map(function (n) { return '<div class="pn-item ' + n[2] + '">' + ICONS[n[0]] + '<span>' + esc(n[1]) + '</span></div>'; }).join('');
     return '<div class="asm-sri-portal">' +
-      '<div class="asm-sri-pnav"><div class="pn-ws"><div class="pn-ws-av">' + initial + '</div><span class="pn-ws-name">' + co + '</span></div>' + nav + '</div>' +
-      sriAppHTML() +
+      '<div class="asm-sri-pnav"><div class="pn-ws"><div class="pn-ws-av">' + initial + '</div><span class="pn-ws-name">' + esc(co) + '</span></div>' + nav + '</div>' +
+      appHTML +
     '</div>';
   }
+  function sriPortalHTML() { return portalShell(sriAppHTML()); }
+  function placeholderPortalHTML() { return portalShell(placeholderAppHTML()); }
   // The full portal preview card: an ancestor of the dark nav (Helpdesk) that
   // also holds the app ("+ Log Time").
   function findPortalCard() {
@@ -551,7 +584,16 @@
     else if (tab === null || tab === 'Dashboard') { card = findAppCard(); mode = 'dash'; }
     if (!card) { if (ov) ov.style.display = 'none'; return; }
     if (!ov) { ov = document.createElement('div'); ov.id = 'asm-sri-overlay'; document.body.appendChild(ov); }
-    if (ov.getAttribute('data-mode') !== mode) { ov.innerHTML = (mode === 'portal') ? sriPortalHTML() : sriAppHTML(); ov.setAttribute('data-mode', mode); }
+    // Service-request prompts get the hand-built app; everything else gets the
+    // simplified placeholder. Encode both in data-mode so it re-renders on change.
+    var svc = isServiceApp();
+    var key = mode + (svc ? ':s' : ':p');
+    if (ov.getAttribute('data-mode') !== key) {
+      ov.innerHTML = (mode === 'portal')
+        ? (svc ? sriPortalHTML() : placeholderPortalHTML())
+        : (svc ? sriAppHTML() : placeholderAppHTML());
+      ov.setAttribute('data-mode', key);
+    }
     var r = card.getBoundingClientRect();
     // Clamp the left to the preview pane so the overlay never bleeds over chat.
     var left = Math.max(r.left, previewPaneLeft());
