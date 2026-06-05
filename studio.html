@@ -258,13 +258,19 @@
       try { var s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (!s.publish) { s.publish = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {}
     }
 
-    // Pre-fill from the website prompt if one was entered/chosen
-    const initial = getHashParam('prompt');
+    // Persist whatever's in the prompt box so leaving and coming back keeps it.
+    const STUDIO_PROMPT_KEY = 'onb.studioPrompt';
+    function savePrompt() { try { localStorage.setItem(STUDIO_PROMPT_KEY, promptField.value); } catch (e) {} }
+
+    // Pre-fill from the website prompt if one was entered/chosen; otherwise
+    // restore a draft the user typed before navigating away.
+    let initial = getHashParam('prompt');
+    if (!initial) { try { initial = localStorage.getItem(STUDIO_PROMPT_KEY) || ''; } catch (e) {} }
     if (initial) { promptField.value = initial; markPromptEntered(); }
     autosize();
     updateStart();
 
-    promptField.addEventListener('input', () => { autosize(); updateStart(); if (promptField.value.trim()) markPromptEntered(); });
+    promptField.addEventListener('input', () => { autosize(); updateStart(); savePrompt(); if (promptField.value.trim()) markPromptEntered(); });
 
     // Category chips below open a dropdown of related starter apps; picking one
     // fills the prompt (same effect the old single-prompt chips had).
@@ -275,6 +281,7 @@
           promptField.value = item.prompt;
           autosize();
           updateStart();
+          savePrompt();
           markPromptEntered();
           promptField.focus();
         }
@@ -313,6 +320,7 @@
           promptField.value = t.prompt;
           autosize();
           updateStart();
+          savePrompt();
           markPromptEntered();
           promptField.focus();
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -325,6 +333,8 @@
     function startBuilding() {
       const p = promptField.value.trim();
       if (!p) { promptField.focus(); return; }
+      // Build kicked off — clear the saved draft so a later visit starts clean.
+      try { localStorage.removeItem(STUDIO_PROMPT_KEY); } catch (e) {}
       window.location.href = 'builder.html#prompt=' + encodeURIComponent(p);
     }
     startBtn.addEventListener('click', startBuilding);
