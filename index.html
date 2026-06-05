@@ -258,16 +258,21 @@
       </div>
     </div>
 
-    <!-- Step 1b: Magic link (passwordless). Verification code is a fallback link. -->
+    <!-- Step 1b: Magic link (passwordless). No primary button — like best-in-class
+         (the action is in the email). Code entry is the cross-device fallback. -->
     <div class="studio-step" id="authStepEmail" hidden>
       <input type="email" id="userEmail" hidden />
+      <button class="proto-skip" id="protoSkip" type="button">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg>
+        Skip this step (prototype)
+      </button>
       <div class="studio-mark"><img src="assets/studio-mark.svg" alt="Studio" /></div>
       <h1 class="studio-h1">Check your email</h1>
-      <p class="studio-sub">To continue, click the link sent to<br /><strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong></p>
-      <button class="studio-primary" id="emailContinue" type="button" style="margin-top:28px">Open the magic link</button>
+      <p class="studio-sub">We sent a sign-in link to <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.</p>
+      <p class="studio-microcopy">Click the link in the email to sign in. It expires in 15 minutes.</p>
 
-      <!-- Revealed by "Enter verification code" -->
-      <div id="codeFallback" hidden style="margin-top:26px">
+      <!-- Cross-device fallback, revealed by "Enter verification code" -->
+      <div id="codeFallback" hidden>
         <div class="studio-code" id="codeInputs">
           <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1" />
           <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
@@ -279,10 +284,9 @@
         <button class="studio-primary" id="codeVerify" type="button" style="margin-top:20px">Verify &amp; continue</button>
       </div>
 
-      <div class="studio-altlinks">
-        <button class="studio-altlink" id="linkEnterCode" type="button">Enter verification code</button>
-        <button class="studio-altlink" id="linkResend" type="button">Resend email</button>
-        <button class="studio-altlink" id="linkDiffEmail" type="button">Use a different email</button>
+      <div class="studio-help">
+        <p id="helpCodeLine">Signing in on another device? <button class="studio-altlink" id="linkEnterCode" type="button">Enter verification code</button></p>
+        <p>Didn’t get it? <button class="studio-altlink" id="linkResend" type="button" data-proto-na>Resend email</button> <span class="dot">·</span> <button class="studio-altlink" id="linkDiffEmail" type="button">Use a different email</button></p>
       </div>
     </div>
 
@@ -618,18 +622,18 @@
   // Track which method the user signed in with, so the portal can show the right identity.
   let authVia = 'email';
 
-  // Step 1: "Continue with email" → passwordless magic-link step; Google → fake Google sign-in
+  // Step 1: "Continue with email" → passwordless "check your email" step; Google → fake Google sign-in
   const welcomeEmail = document.getElementById('welcomeEmail');
   const studioContinue1 = document.getElementById('studioContinue1');
-  const emailContinue = document.getElementById('emailContinue');
   const codeFallback = document.getElementById('codeFallback');
+  const helpCodeLine = document.getElementById('helpCodeLine');
   const linkEnterCode = document.getElementById('linkEnterCode');
-  const linkResend = document.getElementById('linkResend');
   const linkDiffEmail = document.getElementById('linkDiffEmail');
   const codeVerify = document.getElementById('codeVerify');
+  const protoSkip = document.getElementById('protoSkip');
 
-  // Both the magic-link button and the code fallback land in the same place:
-  // the workspace step, pre-filled from the email's domain.
+  // Prototype skip + the code fallback both land in the same place: the
+  // workspace step, pre-filled from the email's domain.
   function proceedFromEmail() {
     const email = (document.getElementById('userEmail')?.value || (welcomeEmail && welcomeEmail.value) || '').trim();
     if (window.__asmPrefillWorkspace) window.__asmPrefillWorkspace(email);
@@ -639,9 +643,7 @@
   // Back to the clean "click the link" state (used each time we enter the step).
   function resetEmailStep() {
     if (codeFallback) codeFallback.hidden = true;
-    if (emailContinue) emailContinue.hidden = false;
-    if (linkEnterCode) linkEnterCode.hidden = false;
-    if (linkResend) { linkResend.textContent = 'Resend email'; linkResend.style.color = ''; }
+    if (helpCodeLine) helpCodeLine.hidden = false;
     if (window.__asmResetCode) window.__asmResetCode(true);
   }
 
@@ -654,21 +656,16 @@
     showAuthStep('email');
   });
 
-  if (emailContinue) emailContinue.addEventListener('click', proceedFromEmail);
+  // A real user clicks the link in their inbox; in a prototype there's no inbox,
+  // so the black skip pill stands in for "I clicked the link".
+  if (protoSkip) protoSkip.addEventListener('click', proceedFromEmail);
   if (codeVerify) codeVerify.addEventListener('click', proceedFromEmail);
 
-  // "Enter verification code" reveals the code fallback in place of the link button.
+  // Cross-device fallback: reveal the code entry, hide its prompt line.
   if (linkEnterCode) linkEnterCode.addEventListener('click', () => {
-    if (emailContinue) emailContinue.hidden = true;
-    linkEnterCode.hidden = true;
+    if (helpCodeLine) helpCodeLine.hidden = true;
     if (codeFallback) codeFallback.hidden = false;
     if (window.__asmResetCode) window.__asmResetCode();
-  });
-
-  // Lightweight feedback (prototype sends no real email).
-  if (linkResend) linkResend.addEventListener('click', () => {
-    linkResend.textContent = 'Email sent ✓';
-    linkResend.style.color = '#2e7d32';
   });
 
   // "Use a different email" → back to the welcome step.
@@ -677,41 +674,65 @@
     if (welcomeEmail) welcomeEmail.focus();
   });
 
-  // Verification-code boxes: numeric-only, auto-advance, backspace to previous,
-  // Enter submits, paste fans out. __asmResetCode(noFocus) clears them.
+  // Verification-code boxes + step styles + the "not part of this prototype"
+  // tooltip (shown on hover over anything marked [data-proto-na]).
   (function () {
     const wrap = document.getElementById('codeInputs');
-    if (!wrap) return;
     const css = document.createElement('style');
     css.textContent =
-      '.studio-code{display:flex;justify-content:center;gap:10px;}' +
+      '.proto-skip{position:absolute;top:22px;left:26px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:#111;color:#fff;border:0;border-radius:999px;padding:7px 14px 7px 12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;}' +
+      '.proto-skip:hover{opacity:0.85;}' +
+      '.studio-microcopy{font-size:13px;color:rgba(0,0,0,0.4);text-align:center;margin:12px 0 0;max-width:340px;line-height:1.5;}' +
+      '.studio-code{display:flex;justify-content:center;gap:10px;margin-top:26px;}' +
       '.studio-code input{width:46px;height:56px;text-align:center;font-size:22px;font-weight:400;color:#212b36;font-family:inherit;border:1px solid #d3d6db;border-radius:10px;background:#fff;outline:none;transition:border-color .12s,box-shadow .12s;-moz-appearance:textfield;}' +
       '.studio-code input:focus{border-color:#9aa0a6;box-shadow:0 0 0 3px rgba(0,0,0,0.05);}' +
-      // The primary button sets its own display, so [hidden] needs to win.
-      '.studio-primary[hidden]{display:none;}' +
-      '.studio-altlinks{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:26px;}' +
-      '.studio-altlink{background:none;border:0;padding:0;font-family:inherit;font-size:14px;font-weight:400;color:#6b6f76;text-decoration:underline;text-underline-offset:3px;cursor:pointer;transition:color .12s;}' +
-      '.studio-altlink:hover{color:#212b36;}';
+      '#codeFallback:not([hidden]){display:flex;flex-direction:column;align-items:center;}' +
+      '.studio-help{margin-top:30px;display:flex;flex-direction:column;gap:9px;align-items:center;}' +
+      '.studio-help p{margin:0;font-size:14px;color:#6b6f76;text-align:center;line-height:1.5;}' +
+      '.studio-help .dot{color:rgba(0,0,0,0.25);margin:0 3px;}' +
+      '.studio-altlink{display:inline;background:none;border:0;padding:0;font-family:inherit;font-size:14px;font-weight:400;color:#6b6f76;text-decoration:underline;text-underline-offset:3px;cursor:pointer;transition:color .12s;}' +
+      '.studio-altlink:hover{color:#212b36;}' +
+      '.proto-na-tip{position:fixed;z-index:99999;pointer-events:none;display:none;align-items:center;gap:6px;background:#1a1a1a;color:#fff;font-family:inherit;font-size:12px;font-weight:500;line-height:1;padding:7px 10px;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.18);white-space:nowrap;}' +
+      '.proto-na-tip svg{width:13px;height:13px;flex-shrink:0;opacity:0.85;}';
     document.head.appendChild(css);
-    const boxes = [].slice.call(wrap.querySelectorAll('input'));
-    boxes.forEach((b, i) => {
-      b.addEventListener('input', () => {
-        b.value = b.value.replace(/[^0-9]/g, '').slice(0, 1);
-        if (b.value && boxes[i + 1]) boxes[i + 1].focus();
+
+    if (wrap) {
+      const boxes = [].slice.call(wrap.querySelectorAll('input'));
+      boxes.forEach((b, i) => {
+        b.addEventListener('input', () => {
+          b.value = b.value.replace(/[^0-9]/g, '').slice(0, 1);
+          if (b.value && boxes[i + 1]) boxes[i + 1].focus();
+        });
+        b.addEventListener('keydown', e => {
+          if (e.key === 'Backspace' && !b.value && boxes[i - 1]) boxes[i - 1].focus();
+          if (e.key === 'Enter' && codeVerify) codeVerify.click();
+        });
+        b.addEventListener('paste', e => {
+          const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, boxes.length);
+          if (!digits) return;
+          e.preventDefault();
+          digits.split('').forEach((d, k) => { if (boxes[k]) boxes[k].value = d; });
+          (boxes[digits.length] || boxes[boxes.length - 1]).focus();
+        });
       });
-      b.addEventListener('keydown', e => {
-        if (e.key === 'Backspace' && !b.value && boxes[i - 1]) boxes[i - 1].focus();
-        if (e.key === 'Enter' && codeVerify) codeVerify.click();
-      });
-      b.addEventListener('paste', e => {
-        const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, boxes.length);
-        if (!digits) return;
-        e.preventDefault();
-        digits.split('').forEach((d, k) => { if (boxes[k]) boxes[k].value = d; });
-        (boxes[digits.length] || boxes[boxes.length - 1]).focus();
-      });
+      window.__asmResetCode = noFocus => { boxes.forEach(b => { b.value = ''; }); if (!noFocus) setTimeout(() => boxes[0] && boxes[0].focus(), 60); };
+    }
+
+    // "Not part of this prototype" hover tooltip for [data-proto-na] controls.
+    const tip = document.createElement('div');
+    tip.className = 'proto-na-tip';
+    tip.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>Not part of this prototype</span>';
+    document.body.appendChild(tip);
+    document.addEventListener('mousemove', e => {
+      const t = e.target.closest && e.target.closest('[data-proto-na]');
+      if (!t) { tip.style.display = 'none'; return; }
+      tip.style.display = 'inline-flex';
+      let left = e.clientX + 14, top = e.clientY + 16;
+      if (left + tip.offsetWidth + 12 > window.innerWidth) left = e.clientX - tip.offsetWidth - 14;
+      if (top + tip.offsetHeight + 12 > window.innerHeight) top = e.clientY - tip.offsetHeight - 14;
+      tip.style.left = Math.max(12, left) + 'px';
+      tip.style.top = Math.max(12, top) + 'px';
     });
-    window.__asmResetCode = noFocus => { boxes.forEach(b => { b.value = ''; }); if (!noFocus) setTimeout(() => boxes[0] && boxes[0].focus(), 60); };
   })();
 
   // ── Fake "Sign in with Google" experience (prototype) ──
