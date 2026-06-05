@@ -44,7 +44,7 @@
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
   <script src="ftux.js"></script>
-  <script src="builder-sidebar.js?v=4"></script>
+  <script src="builder-sidebar.js?v=5"></script>
 </head>
 <body>
   <div id="__bundler_thumbnail">
@@ -370,7 +370,14 @@ document.addEventListener('DOMContentLoaded', async function() {
       var _one = JSON.parse(localStorage.getItem('onb.buildApp'));
       if (_one) _apps.push(_one);
       for (var _i = 0; _i < _apps.length; _i++) {
-        if (_apps[_i] && (_apps[_i].name || '').toLowerCase() === _nm && _apps[_i].status === 'published') { FF = '3'; window.__asmResumePublished = true; break; }
+        var _a = _apps[_i];
+        if (!_a || (_a.name || '').toLowerCase() !== _nm) continue;
+        // Resume where the user left off, skipping the Q&A + reasoning typing:
+        //   published → done; building → mid-build; plan already built → ready plan.
+        if (_a.status === 'published') { FF = '3'; window.__asmResumePublished = true; }
+        else if (_a.phase === 'building' || _a.phase === 'done') { FF = '2'; window.__asmResumeBuild = true; }
+        else if (_a.phase === 'plan') { FF = '1'; window.__asmResumePlan = true; }
+        break;
       }
     } catch (e) {}
   }

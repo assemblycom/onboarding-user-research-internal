@@ -200,6 +200,10 @@
       var name = appTitle() || DRAFT_APP;
       if (!name) return;
       var rec = { name: name, status: isPublished() ? 'published' : 'draft', hash: location.hash || '' };
+      // Record how far the build got, so resuming can skip back to that phase
+      // (e.g. a ready plan) instead of replaying the Q&A + reasoning typing.
+      var _ph = (window.__ASM_STATE || {}).phase;
+      if (_ph) rec.phase = _ph;
       var list = readApps();
       var found = false;
       for (var i = 0; i < list.length; i++) {
