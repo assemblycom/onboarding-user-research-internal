@@ -214,30 +214,44 @@
   // Keep the draft entry's name in sync with the builder, and drop the
   // Draft badge once published.
   function syncDraft(host) {
-    var label = host.querySelector('.draft-label');
+    // The active (currently-building) item — not necessarily the first one now
+    // that new apps render at the bottom. Only its label tracks the builder.
+    var active = host.querySelector('.nav-item.active');
+    var label = active && active.querySelector('.draft-label');
     if (label) { var t = appTitle(); if (t && label.textContent !== t) label.textContent = t; }
-    if (isPublished()) {
-      var badge = host.querySelector('.draft-badge');
+    if (isPublished() && active) {
+      var badge = active.querySelector('.draft-badge');
       if (badge) badge.remove();
       if (window.ftuxMarkPublishDone) window.ftuxMarkPublishDone();
     }
     persistApp();
   }
 
-  // The app currently being built (active) followed by every other built
-  // app, so the full list lives in the builder sidebar too. Built apps link
-  // back to their builder session via the stored hash.
+  // Every built app in build order (oldest first), so a newly-started app sits
+  // BELOW the previous ones rather than jumping to the top. The app currently
+  // being built is the active draft; others link back to their builder session.
   function appsNavHTML() {
     var current = appTitle() || DRAFT_APP;
-    var seen = {}; seen[current.toLowerCase()] = 1;
-    var html = '<a class="nav-item draft active">' + CLOCK + '<span class="draft-label">' + esc(current) + '</span><span class="draft-badge">Draft</span></a>';
+    var currentLc = current.toLowerCase();
+    var seen = {};
+    var html = '';
+    var currentRendered = false;
     readApps().forEach(function (a) {
       if (!a || !a.name) return;
       var lc = a.name.toLowerCase();
       if (seen[lc]) return;
       seen[lc] = 1;
-      html += '<a class="nav-item built" href="builder.html' + (a.hash || '') + '">' + CLOCK + '<span class="draft-label">' + esc(a.name) + '</span>' + (a.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '') + '</a>';
+      if (lc === currentLc) {
+        html += '<a class="nav-item draft active">' + CLOCK + '<span class="draft-label">' + esc(a.name) + '</span><span class="draft-badge">Draft</span></a>';
+        currentRendered = true;
+      } else {
+        html += '<a class="nav-item built" href="builder.html' + (a.hash || '') + '">' + CLOCK + '<span class="draft-label">' + esc(a.name) + '</span>' + (a.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '') + '</a>';
+      }
     });
+    // Active app not persisted yet → show it last (newest at the bottom).
+    if (!currentRendered) {
+      html += '<a class="nav-item draft active">' + CLOCK + '<span class="draft-label">' + esc(current) + '</span><span class="draft-badge">Draft</span></a>';
+    }
     return html;
   }
 
