@@ -299,26 +299,10 @@
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
 
-    // Preview tabs (Login / Client Portal / Notifications) switch the preview;
-    // brand the portal + notification mocks from the workspace identity + theme.
-    (function () {
-      const tabs = document.querySelectorAll('.preview-tab');
-      const views = document.querySelectorAll('.pv-view');
-      tabs.forEach(function (t) {
-        t.addEventListener('click', function () {
-          const pv = t.getAttribute('data-pv');
-          tabs.forEach(function (x) { x.classList.toggle('active', x === t); });
-          views.forEach(function (v) { v.hidden = v.getAttribute('data-pv') !== pv; });
-        });
-      });
-      function set(id, fn) { const el = document.getElementById(id); if (el) fn(el); }
-      set('pvPortalAv', function (e) { e.textContent = letter; });
-      set('pvPortalName', function (e) { e.textContent = company; });
-      set('pvPortalPill', function (e) { e.style.background = theme.accent; });
-      set('pvNotifAv', function (e) { e.textContent = letter; e.style.background = avBg; e.style.color = avFg; });
-      set('pvNotifName', function (e) { e.textContent = company; });
-      set('pvNotifBtn', function (e) { e.style.background = theme.accent; });
-    })();
+    // Login is the only functional preview. Client Portal + Notifications are
+    // not part of the prototype — they stay inactive and prototype-hints.js
+    // shows the "Not part of this prototype" tooltip on hover (inactive
+    // .preview-tab is hintable). No tab-switching is wired.
   </script>
   <script src="ftux.js?v=4"></script>
   <script src="apps-nav.js?v=2"></script>
