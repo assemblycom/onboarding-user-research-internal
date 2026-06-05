@@ -271,6 +271,17 @@
       <p class="studio-sub">We sent a sign-in link to <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.</p>
       <p class="studio-microcopy">Click the link in the email to sign in. It expires in 15 minutes.</p>
 
+      <!-- Placeholder visual (a faux preview of the email) — swap for real art. -->
+      <div class="magic-visual" id="magicVisual" aria-hidden="true">
+        <div class="mv-card">
+          <div class="mv-top">
+            <span class="mv-logo"><img src="assets/studio-mark.svg" alt="" /></span>
+            <span class="mv-meta"><span class="mv-from">Assembly Studio</span><span class="mv-sub">Your secure sign-in link</span></span>
+          </div>
+          <div class="mv-btn">Sign in to Assembly</div>
+        </div>
+      </div>
+
       <!-- Cross-device fallback, revealed by "Enter verification code" -->
       <div id="codeFallback" hidden>
         <div class="studio-code" id="codeInputs">
@@ -648,6 +659,7 @@
   function resetEmailStep() {
     if (codeFallback) codeFallback.hidden = true;
     if (helpCodeLine) helpCodeLine.hidden = false;
+    var mv = document.getElementById('magicVisual'); if (mv) mv.hidden = false;
     if (window.__asmResetCode) window.__asmResetCode(true);
   }
 
@@ -668,6 +680,7 @@
   // Cross-device fallback: reveal the code entry, hide its prompt line.
   if (linkEnterCode) linkEnterCode.addEventListener('click', () => {
     if (helpCodeLine) helpCodeLine.hidden = true;
+    var mv = document.getElementById('magicVisual'); if (mv) mv.hidden = true;
     if (codeFallback) codeFallback.hidden = false;
     if (window.__asmResetCode) window.__asmResetCode();
   });
@@ -687,6 +700,16 @@
       '.proto-skip{position:absolute;top:22px;left:26px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:#111;color:#fff;border:0;border-radius:999px;padding:7px 14px 7px 12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;}' +
       '.proto-skip:hover{opacity:0.85;}' +
       '.studio-microcopy{font-size:13px;color:rgba(0,0,0,0.4);text-align:center;margin:12px 0 0;max-width:340px;line-height:1.5;}' +
+      '.magic-visual{margin-top:30px;display:flex;justify-content:center;width:100%;}' +
+      '.magic-visual[hidden]{display:none;}' +
+      '.mv-card{width:320px;max-width:100%;background:#fff;border:1px solid #e7e7e1;border-radius:14px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,0.06);text-align:left;}' +
+      '.mv-top{display:flex;align-items:center;gap:11px;padding-bottom:14px;border-bottom:1px solid #f0f0eb;}' +
+      '.mv-logo{width:36px;height:36px;border-radius:9px;background:#f3f3ee;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+      '.mv-logo img{width:18px;height:18px;display:block;}' +
+      '.mv-meta{display:flex;flex-direction:column;gap:2px;min-width:0;}' +
+      '.mv-from{font-size:13px;font-weight:500;color:#212b36;}' +
+      '.mv-sub{font-size:12px;color:#9aa0a6;}' +
+      '.mv-btn{margin-top:14px;height:42px;display:flex;align-items:center;justify-content:center;background:#d9ed92;color:#1a1a1a;border-radius:10px;font-size:14px;font-weight:500;}' +
       '.studio-code{display:flex;justify-content:center;gap:10px;margin-top:26px;}' +
       '.studio-code input{width:46px;height:56px;text-align:center;font-size:22px;font-weight:400;color:#212b36;font-family:inherit;border:1px solid #d3d6db;border-radius:10px;background:#fff;outline:none;transition:border-color .12s,box-shadow .12s;-moz-appearance:textfield;}' +
       '.studio-code input:focus{border-color:#9aa0a6;box-shadow:0 0 0 3px rgba(0,0,0,0.05);}' +
