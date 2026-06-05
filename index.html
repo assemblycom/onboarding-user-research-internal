@@ -258,16 +258,14 @@
       </div>
     </div>
 
-    <!-- Step 1b: Email + password -->
+    <!-- Step 1b: Magic-link sent (passwordless, industry-standard) -->
     <div class="studio-step" id="authStepEmail" hidden>
+      <input type="email" id="userEmail" hidden />
       <div class="studio-mark"><img src="assets/studio-mark.svg" alt="Studio" /></div>
-      <h1 class="studio-h1">Create your account</h1>
-      <p class="studio-sub">Enter your email and create a password</p>
-      <div class="studio-fields" style="margin-top:34px">
-        <label class="studio-field"><span>Email</span><input type="email" id="userEmail" placeholder="you@company.com" /></label>
-        <label class="studio-field"><span>Password</span><input type="password" placeholder="Create your password" /></label>
-      </div>
-      <button class="studio-primary" id="emailContinue" type="button" style="margin-top:30px">Continue</button>
+      <h1 class="studio-h1">Check your email</h1>
+      <p class="studio-sub">We sent a magic link to <strong id="magicEmail" style="font-weight:500;color:#212b36">your email</strong>.<br />Click it to finish signing in — no password needed.</p>
+      <button class="studio-primary" id="emailContinue" type="button" style="margin-top:30px">Open the magic link</button>
+      <button id="magicResend" type="button" style="display:block;margin:14px auto 0;background:none;border:0;color:#6b6f76;font-family:inherit;font-size:13px;font-weight:400;cursor:pointer">Didn’t get it? Resend link</button>
     </div>
 
     <!-- Step 2: Workspace details -->
@@ -280,7 +278,7 @@
           <div class="studio-url" id="portalUrlBox">
             <input type="text" id="portalSub" placeholder="yourcompany" maxlength="22" />
             <span class="studio-url-sep"></span>
-            <span class="studio-url-suffix">.mystudio.com</span>
+            <span class="studio-url-suffix">.myassembly.com</span>
             <span class="studio-url-ind" id="portalInd"></span>
           </div>
           <p class="studio-url-msg" id="portalMsg"></p>
@@ -523,16 +521,28 @@
   // Track which method the user signed in with, so the portal can show the right identity.
   let authVia = 'email';
 
-  // Step 1: "Continue with email" / "Continue" → email + password step; Google → fake Google sign-in
+  // Step 1: "Continue with email" → passwordless magic-link step; Google → fake Google sign-in
   const welcomeEmail = document.getElementById('welcomeEmail');
   const studioContinue1 = document.getElementById('studioContinue1');
   if (studioContinue1) studioContinue1.addEventListener('click', () => {
     authVia = 'email';
-    const ue = document.getElementById('userEmail'); if (ue && welcomeEmail) ue.value = welcomeEmail.value;
+    const email = (welcomeEmail && welcomeEmail.value.trim()) || '';
+    const ue = document.getElementById('userEmail'); if (ue) ue.value = email;
+    const me = document.getElementById('magicEmail'); if (me) me.textContent = email || 'your email';
     showAuthStep('email');
   });
-  // Email + password → workspace details (name / company)
-  document.getElementById('emailContinue').addEventListener('click', () => showAuthStep(2));
+  // Magic link "opened" → workspace details, pre-filled from the email's domain.
+  document.getElementById('emailContinue').addEventListener('click', () => {
+    const email = (document.getElementById('userEmail')?.value || (welcomeEmail && welcomeEmail.value) || '').trim();
+    if (window.__asmPrefillWorkspace) window.__asmPrefillWorkspace(email);
+    showAuthStep(2);
+  });
+  // "Resend" gives lightweight confirmation feedback (prototype: no real email).
+  const magicResend = document.getElementById('magicResend');
+  if (magicResend) magicResend.addEventListener('click', () => {
+    magicResend.textContent = 'Link sent ✓';
+    magicResend.style.color = '#2e7d32';
+  });
 
   // ── Fake "Sign in with Google" experience (prototype) ──
   const googleAuth = document.getElementById('googleAuth');
@@ -562,7 +572,7 @@
   // Step 2 (workspace details) Continue → builder. Personalize/theme step is stashed for now.
   document.getElementById('studioContinue2').addEventListener('click', e => { if (e.currentTarget.disabled) return; goToBuilder(); });
 
-  // Portal URL auto-derives from the company name (slug + .mystudio.com),
+  // Portal URL auto-derives from the company name (slug + .myassembly.com),
   // and shows an "Available" check once there's a subdomain.
   (function () {
     const coInput = document.getElementById('companyName');
@@ -593,21 +603,60 @@
       if (shortened && msg) { msg.textContent = 'Portal URL is kept to ' + MAX_SUB + ' characters.'; msg.classList.add('show', 'warn'); }
     }
 
-    // Continue is disabled until name + company are filled and the URL is free.
+    // Continue is enabled by default — the fields come pre-filled, and we
+    // always resolve the portal URL to an available one, so there's nothing
+    // to block on.
     const userName = document.getElementById('userName');
     const cont2 = document.getElementById('studioContinue2');
     function syncContinue2() {
       if (!cont2) return;
-      const taken = box && box.classList.contains('invalid');
-      const ok = !!(userName && userName.value.trim()) && !!coInput.value.trim() && !taken;
-      cont2.disabled = !ok;
-      cont2.style.opacity = ok ? '1' : '0.45';
-      cont2.style.cursor = ok ? 'pointer' : 'default';
+      cont2.disabled = false;
+      cont2.style.opacity = '1';
+      cont2.style.cursor = 'pointer';
     }
+
+    // If a base subdomain is taken, append a word (then a number) until we
+    // find a free one — the user never lands on an unavailable URL.
+    function findAvailable(base) {
+      base = slug(base);
+      if (!base || TAKEN.indexOf(base) === -1) return base;
+      const words = ['hq', 'app', 'team', 'co', 'io', 'labs'];
+      for (let i = 0; i < words.length; i++) {
+        const c = (base + words[i]).slice(0, MAX_SUB);
+        if (TAKEN.indexOf(c) === -1) return c;
+      }
+      let n = 2, c;
+      do { c = (base + n).slice(0, MAX_SUB); n++; } while (TAKEN.indexOf(c) !== -1 && n < 99);
+      return c;
+    }
+    // "ana.lee" → "Ana Lee", "brightlabs" → "Brightlabs".
+    function titleCase(s) {
+      return String(s).split(/[._\-\s]+/).filter(Boolean)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+    // Generic mailbox providers aren't company domains — don't derive a name from them.
+    const GENERIC = ['gmail', 'googlemail', 'yahoo', 'outlook', 'hotmail', 'icloud', 'me', 'proton', 'protonmail', 'aol', 'live', 'msn'];
+
+    // Pre-fill name / company / portal URL from the signed-in email's domain.
+    window.__asmPrefillWorkspace = function (email) {
+      email = (email || '').trim();
+      const at = email.indexOf('@');
+      if (at >= 1) {
+        const local = email.slice(0, at);
+        const domainBase = email.slice(at + 1).toLowerCase().split('.')[0];
+        if (userName && !userName.value.trim()) userName.value = titleCase(local);
+        if (!coInput.value.trim() && GENERIC.indexOf(domainBase) === -1) coInput.value = titleCase(domainBase);
+        // Prefer the company for the URL; fall back to the name part for generic inboxes.
+        const base = slug(coInput.value) || slug(local);
+        if (base) sub.value = findAvailable(base);
+      }
+      evalAvail(false);
+      syncContinue2();
+    };
 
     coInput.addEventListener('input', () => {
       const raw = coInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      sub.value = raw.slice(0, MAX_SUB);
+      sub.value = findAvailable(raw.slice(0, MAX_SUB));
       evalAvail(raw.length > MAX_SUB);
       syncContinue2();
     });
