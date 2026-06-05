@@ -112,7 +112,7 @@
     '.asm-sri-badge.closed{background:#eceef1;color:#6b6f76;}' +
     // Client-facing portal wrapper: our own dark sidebar + the SRI app, so the
     // Portal view always has the client sidebar and stays responsive.
-    ".asm-sri-portal{display:flex;height:100%;background:#fff;overflow:hidden;font-family:'Inter',system-ui,-apple-system,sans-serif;}" +
+    ".asm-sri-portal{display:flex;height:100%;background:#fff;overflow:hidden;font-family:'Inter',system-ui,-apple-system,sans-serif;container-type:inline-size;}" +
     '.asm-sri-portal *{box-sizing:border-box;}' +
     '.asm-sri-pnav{width:200px;max-width:42%;flex-shrink:0;background:#0e1726;color:#c7d0dc;display:flex;flex-direction:column;padding:14px 12px;gap:2px;overflow:hidden;}' +
     '.asm-sri-pnav .pn-ws{display:flex;align-items:center;gap:10px;padding:6px 8px 14px;}' +
@@ -137,7 +137,10 @@
       '.asm-sri-table td::before{content:attr(data-label);color:#6b6f76;font-size:12px;font-weight:500;}' +
       '.asm-sri-table td.asm-sri-req{display:block;font-size:14px;font-weight:500;margin-bottom:4px;}' +
       '.asm-sri-table td.asm-sri-req::before{display:none;}' +
-    '}';
+    '}' +
+    // Mobile: a sidebar can't live on mobile, so hide the client-portal nav
+    // when the portal is narrow — the app fills the screen like a mobile app.
+    '@container (max-width: 520px){.asm-sri-pnav{display:none;}}';
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
