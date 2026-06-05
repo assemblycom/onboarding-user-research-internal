@@ -86,6 +86,37 @@
     .login-form .lf-input { width: 100%; height: 40px; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
     .login-form .signin { width: 100%; height: 44px; border: none; border-radius: 8px; color: #fff; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 18px; }
     .login-side { width: 30%; flex-shrink: 0; }
+
+    /* Preview views (Login / Client Portal / Notifications) */
+    .pv-view { flex: 1; display: flex; min-width: 0; }
+    .pv-view[hidden] { display: none; }
+    .pv-card { flex: 1; background: #fff; border: 1px solid var(--border); border-right: none; border-radius: 14px 0 0 14px; overflow: hidden; display: flex; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .pv-portal-side { width: 38%; max-width: 230px; flex-shrink: 0; background: #26262a; color: #fff; padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; }
+    .pv-portal-brand { display: flex; align-items: center; gap: 9px; padding: 4px 6px 14px; font-size: 14px; font-weight: 500; }
+    .pv-av { width: 26px; height: 26px; border-radius: 7px; background: #3a3a40; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+    .pv-portal-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv-pnav { display: flex; align-items: center; gap: 9px; padding: 8px; border-radius: 8px; font-size: 13px; color: rgba(255,255,255,0.8); }
+    .pv-pnav span { width: 16px; height: 16px; border-radius: 4px; background: rgba(255,255,255,0.22); flex-shrink: 0; }
+    .pv-pnav.active { background: rgba(255,255,255,0.10); color: #fff; }
+    .pv-portal-body { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .pv-bar { height: 10px; border-radius: 99px; background: #e7e7e2; }
+    .pv-bar.w30 { width: 30%; } .pv-bar.w50 { width: 50%; } .pv-bar.w70 { width: 70%; }
+    .pv-block { height: 120px; border-radius: 10px; background: #f1f1ee; }
+    .pv-pill { width: 120px; height: 34px; border-radius: 8px; background: #d9ed92; }
+    .pv-notif-card { margin: auto; width: 360px; max-width: calc(100% - 48px); background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px; }
+    .pv-notif-head { display: flex; align-items: center; gap: 11px; }
+    .pv-notif-meta { display: flex; flex-direction: column; gap: 2px; }
+    .pv-notif-from { font-size: 14px; font-weight: 500; color: #212b36; }
+    .pv-notif-sub { font-size: 12px; color: #9aa0a6; }
+    .pv-notif-btn { margin-top: 6px; align-self: flex-start; padding: 9px 16px; border-radius: 8px; background: #5b6cf0; color: #fff; font-size: 13px; font-weight: 500; }
+
+    /* Responsive: stack the form above the preview on narrow screens. */
+    @media (max-width: 900px) {
+      .brand-body { flex-direction: column; }
+      .brand-form { width: 100%; max-width: none; flex-shrink: 0; border-right: none; border-bottom: 1px solid var(--border); }
+      .brand-preview { min-height: 460px; }
+      .preview-stage { padding: 24px 0 24px 24px; }
+    }
   </style>
 </head>
 <body>
@@ -175,22 +206,50 @@
         <!-- Right: live preview -->
         <div class="brand-preview">
           <div class="preview-tabs">
-            <div class="preview-tab active">Login</div>
-            <div class="preview-tab">Client Portal</div>
+            <div class="preview-tab active" data-pv="login">Login</div>
+            <div class="preview-tab" data-pv="portal">Client Portal</div>
+            <div class="preview-tab" data-pv="notif">Notifications</div>
           </div>
           <div class="preview-stage">
-            <div class="login-card">
-              <div class="login-form">
-                <div class="login-inner">
-                  <div class="login-icon" id="loginIcon">B</div>
-                  <label>Email</label>
-                  <div class="lf-input"></div>
-                  <label>Password</label>
-                  <div class="lf-input"></div>
-                  <button class="signin" id="signinBtn">Sign in</button>
+            <!-- Login -->
+            <div class="pv-view" data-pv="login">
+              <div class="login-card">
+                <div class="login-form">
+                  <div class="login-inner">
+                    <div class="login-icon" id="loginIcon">B</div>
+                    <label>Email</label>
+                    <div class="lf-input"></div>
+                    <label>Password</label>
+                    <div class="lf-input"></div>
+                    <button class="signin" id="signinBtn">Sign in</button>
+                  </div>
+                </div>
+                <div class="login-side" id="loginSide"></div>
+              </div>
+            </div>
+            <!-- Client Portal -->
+            <div class="pv-view" data-pv="portal" hidden>
+              <div class="pv-card">
+                <div class="pv-portal-side" id="pvPortalSide">
+                  <div class="pv-portal-brand"><span class="pv-av" id="pvPortalAv">B</span><span class="pv-portal-name" id="pvPortalName">Brand</span></div>
+                  <div class="pv-pnav active" id="pvPortalNav"><span></span>Home</div>
+                  <div class="pv-pnav"><span></span>Messages</div>
+                </div>
+                <div class="pv-portal-body">
+                  <div class="pv-bar w30"></div>
+                  <div class="pv-block"></div>
+                  <div class="pv-pill" id="pvPortalPill"></div>
                 </div>
               </div>
-              <div class="login-side" id="loginSide"></div>
+            </div>
+            <!-- Notifications -->
+            <div class="pv-view" data-pv="notif" hidden>
+              <div class="pv-notif-card">
+                <div class="pv-notif-head"><span class="pv-av" id="pvNotifAv">B</span><div class="pv-notif-meta"><span class="pv-notif-from" id="pvNotifName">Brand</span><span class="pv-notif-sub">New notification</span></div></div>
+                <div class="pv-bar w70"></div>
+                <div class="pv-bar w50"></div>
+                <div class="pv-notif-btn" id="pvNotifBtn">View update</div>
+              </div>
             </div>
           </div>
         </div>
@@ -239,6 +298,27 @@
     const navSuffix = navParams.length ? '#' + navParams.join('&') : '';
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
+
+    // Preview tabs (Login / Client Portal / Notifications) switch the preview;
+    // brand the portal + notification mocks from the workspace identity + theme.
+    (function () {
+      const tabs = document.querySelectorAll('.preview-tab');
+      const views = document.querySelectorAll('.pv-view');
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          const pv = t.getAttribute('data-pv');
+          tabs.forEach(function (x) { x.classList.toggle('active', x === t); });
+          views.forEach(function (v) { v.hidden = v.getAttribute('data-pv') !== pv; });
+        });
+      });
+      function set(id, fn) { const el = document.getElementById(id); if (el) fn(el); }
+      set('pvPortalAv', function (e) { e.textContent = letter; });
+      set('pvPortalName', function (e) { e.textContent = company; });
+      set('pvPortalPill', function (e) { e.style.background = theme.accent; });
+      set('pvNotifAv', function (e) { e.textContent = letter; e.style.background = avBg; e.style.color = avFg; });
+      set('pvNotifName', function (e) { e.textContent = company; });
+      set('pvNotifBtn', function (e) { e.style.background = theme.accent; });
+    })();
   </script>
   <script src="ftux.js?v=4"></script>
   <script src="apps-nav.js?v=2"></script>
