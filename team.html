@@ -105,6 +105,7 @@
       <div class="checklist">
         <div class="checklist-title">Getting started</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Add your first app</div>
+        <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Create test client</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Explore the client experience</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Invite your team</div>
       </div>
@@ -193,7 +194,7 @@
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
   </script>
-  <script src="ftux.js?v=4"></script>
+  <script src="ftux.js?v=5"></script>
   <script src="apps-nav.js?v=2"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>

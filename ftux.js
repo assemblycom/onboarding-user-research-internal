@@ -133,7 +133,7 @@
     var s = get(); if (s.invite !== 'done') { s.invite = 'done'; save(s); render(); }
   }
 
-  var keys = ['publish', 'explore', 'invite'];
+  var keys = ['publish', 'client', 'explore', 'invite'];
 
   function render() {
     var cl = document.querySelector('.checklist');
@@ -254,8 +254,9 @@
       it.parentNode.replaceChild(clone, it);
       clone.setAttribute('data-ftux-bound', '1');
       clone.addEventListener('click', function () {
-        if (i === 0) location.href = 'studio.html' + suffix;      // Publish your first app → build
-        else if (i === 1) openPortalIntro();                      // Explore → interstitial → client portal
+        if (i === 0) location.href = 'studio.html' + suffix;      // Add app → build
+        else if (i === 1) { var s = get(); if (s.client !== 'done') { s.client = 'done'; save(s); } location.href = 'crm.html' + suffix; } // Create test client → CRM
+        else if (i === 2) openPortalIntro();                      // Explore → interstitial → client portal
         else openInvite();                                        // Invite your team → modal
       });
     });
