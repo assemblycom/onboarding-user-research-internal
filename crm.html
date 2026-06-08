@@ -308,7 +308,10 @@
         showPopover();
       });
       const openBtn = document.getElementById('crmPopOpen');
-      if (openBtn) openBtn.addEventListener('click', function () { location.href = 'portal.html' + navSuffix; });
+      if (openBtn) openBtn.addEventListener('click', function () {
+        // Carry from=crm.html so the portal's Back link returns here.
+        location.href = 'portal.html#from=crm.html' + (navSuffix ? '&' + navSuffix.slice(1) : '');
+      });
       const closeBtn = document.getElementById('crmPopClose');
       if (closeBtn) closeBtn.addEventListener('click', closePopover);
       window.addEventListener('resize', function () { if (popover.classList.contains('show')) positionPopover(); });

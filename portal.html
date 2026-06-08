@@ -186,10 +186,15 @@
     document.getElementById('aboutText').textContent = company + ', a full-service marketing agency that helps businesses increase their brand awareness, attract new customers, and grow their bottom line. We specialize in crafting unique and effective marketing strategies that align with your business goals and help you stand out in a crowded marketplace.';
     document.getElementById('filesCo').textContent = company;
 
-    // Keep params on the "Back to Studio" link so returning preserves state.
+    // Back link returns to wherever the preview was opened from (?from=…),
+    // defaulting to Studio. Carries params so returning preserves state.
     const navParams = [];
     ['company','name','email','theme'].forEach(k => { const v = getHashParam(k); if (v) navParams.push(k + '=' + encodeURIComponent(v)); });
-    document.getElementById('exitPreview').setAttribute('href', 'studio.html' + (navParams.length ? '#' + navParams.join('&') : ''));
+    const fromPage = getHashParam('from');
+    const exitEl = document.getElementById('exitPreview');
+    exitEl.setAttribute('href', (fromPage || 'studio.html') + (navParams.length ? '#' + navParams.join('&') : ''));
+    // Generic "Back" label when returning somewhere other than Studio.
+    if (fromPage && fromPage !== 'studio.html') { exitEl.lastChild.textContent = 'Back'; }
   </script>
   <script src="ftux.js?v=6"></script>
   <script src="prototype-hints.js?v=5"></script>
