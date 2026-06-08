@@ -87,6 +87,27 @@
     .date { color: var(--muted); }
     .row-actions { border: none; background: transparent; cursor: pointer; padding: 5px; border-radius: 6px; display: inline-flex; }
     .row-actions:hover { background: var(--bg-hover); }
+
+    /* Empty state (mirrors the notifications empty state) */
+    .crm-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+    .crm-empty[hidden] { display: none; }
+    .crm-empty-ic { width: 48px; height: 48px; border-radius: 12px; background: #f0f1f3; display: flex; align-items: center; justify-content: center; color: #5a6068; margin-bottom: 20px; }
+    .crm-empty-title { font-size: 20px; font-weight: 500; margin: 0 0 8px; }
+    .crm-empty-sub { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 360px; margin: 0 0 20px; }
+    .crm-empty-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .crm-empty-btn:hover { background: #000; }
+    .crm-empty-btn svg { width: 15px; height: 15px; }
+    .crm-populated[hidden] { display: none; }
+
+    /* Lightweight magic-link callout shown after a test client is added */
+    .crm-magic { display: flex; align-items: center; gap: 13px; margin: 14px 28px 0; padding: 12px 14px; border: 1px solid #e6e8eb; border-radius: 10px; background: linear-gradient(100deg, rgba(217,237,146,0.30), rgba(194,202,240,0.30)); }
+    .crm-magic[hidden] { display: none; }
+    .crm-magic-ic { width: 34px; height: 34px; border-radius: 9px; background: #fff; border: 1px solid #e6e8eb; display: flex; align-items: center; justify-content: center; color: #5a6068; flex-shrink: 0; }
+    .crm-magic-ic svg { width: 17px; height: 17px; }
+    .crm-magic-text { flex: 1; font-size: 13px; color: #3a3f46; line-height: 1.45; }
+    .crm-magic-text strong { font-weight: 600; color: #212b36; }
+    .crm-magic-btn { padding: 8px 14px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .crm-magic-btn:hover { background: #000; }
   </style>
 </head>
 <body>
@@ -147,46 +168,47 @@
         </div>
       </div>
 
-      <div class="tabs">
-        <div class="tab active">Contacts</div>
-        <div class="tab">Companies</div>
+      <!-- Empty state — shown until the user adds a test client -->
+      <div class="crm-empty" id="crmEmpty">
+        <div class="crm-empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
+        <h2 class="crm-empty-title">No contacts yet</h2>
+        <p class="crm-empty-sub">Add a test client to see how contacts, companies, and the client portal work together.</p>
+        <button class="crm-empty-btn" id="crmAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add test client</button>
       </div>
 
-      <div class="table-wrap">
-        <table class="crm-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Company</th>
-              <th>Status</th>
-              <th>Creation date</th>
-              <th class="col-actions"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><div class="cell-name"><span class="avatar" id="crmAv1">TU</span><div><div class="nm" id="crmName1">Test User</div><div class="em" id="crmEmail1">test.user@studio.com</div></div></div></td>
-              <td><div class="cell-co"><span class="co-ic" id="crmCoAv1" style="background:#f0f1f3;color:#5a6068;font-size:11px;font-weight:500">S</span><span id="crmCo1">Studio (Test Company)</span></div></td>
-              <td><span class="badge badge-inactive">Inactive</span></td>
-              <td class="date">6/1/2026</td>
-              <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
-            </tr>
-            <tr>
-              <td><div class="cell-name"><span class="avatar" style="background:#d6e4f0;color:#3a6ea5">JD</span><div><div class="nm">John Doe</div><div class="em">john@rocket.com</div></div></div></td>
-              <td><div class="cell-co"><img src="assets/rocket.svg" width="22" height="22" style="border-radius:6px;flex-shrink:0" alt="" />Rocket Rides (Test Company)</div></td>
-              <td><span class="badge badge-inactive">Inactive</span></td>
-              <td class="date">6/1/2026</td>
-              <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
-            </tr>
-            <tr>
-              <td><div class="cell-name"><span class="avatar" style="background:#f0ddd6;color:#a5613a">JD</span><div><div class="nm">Jane Doe</div><div class="em">jane@rocket.com</div></div></div></td>
-              <td><div class="cell-co"><img src="assets/rocket.svg" width="22" height="22" style="border-radius:6px;flex-shrink:0" alt="" />Rocket Rides (Test Company)</div></td>
-              <td><span class="badge badge-inactive">Inactive</span></td>
-              <td class="date">6/1/2026</td>
-              <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Populated view — revealed once a test client is added -->
+      <div class="crm-populated" id="crmPopulated" hidden>
+        <div class="crm-magic" id="crmMagic">
+          <span class="crm-magic-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></span>
+          <div class="crm-magic-text"><strong>Test client added.</strong> Send them a magic link to preview the client experience — no password needed.</div>
+          <button class="crm-magic-btn" id="crmMagicBtn">Open with magic link</button>
+        </div>
+        <div class="tabs">
+          <div class="tab active">Contacts</div>
+          <div class="tab">Companies</div>
+        </div>
+        <div class="table-wrap">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Creation date</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-name"><span class="avatar" id="crmAv1">TU</span><div><div class="nm" id="crmName1">Test User</div><div class="em" id="crmEmail1">test.user@studio.com</div></div></div></td>
+                <td><div class="cell-co"><span class="co-ic" id="crmCoAv1" style="background:#f0f1f3;color:#5a6068;font-size:11px;font-weight:500">S</span><span id="crmCo1">Studio (Test Company)</span></div></td>
+                <td><span class="badge badge-inactive">Invited</span></td>
+                <td class="date">6/1/2026</td>
+                <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   </div>
@@ -242,8 +264,28 @@
     const navSuffix = navParams.length ? '#' + navParams.join('&') : '';
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
+
+    // Empty state → "Add test client" reveals the contact + a lightweight
+    // magic-link callout for previewing the client experience.
+    (function () {
+      const KEY = 'onb.crmClient';
+      const empty = document.getElementById('crmEmpty');
+      const pop = document.getElementById('crmPopulated');
+      function reveal() { if (empty) empty.hidden = true; if (pop) pop.hidden = false; }
+      let added = false; try { added = localStorage.getItem(KEY) === 'added'; } catch (e) {}
+      if (added) reveal();
+      const addBtn = document.getElementById('crmAddBtn');
+      if (addBtn) addBtn.addEventListener('click', function () {
+        try { localStorage.setItem(KEY, 'added'); } catch (e) {}
+        try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.client !== 'done') { s.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {}
+        reveal();
+        if (typeof window.ftuxInit === 'function') window.ftuxInit();
+      });
+      const magicBtn = document.getElementById('crmMagicBtn');
+      if (magicBtn) magicBtn.addEventListener('click', function () { location.href = 'portal.html' + navSuffix; });
+    })();
   </script>
-  <script src="ftux.js?v=5"></script>
+  <script src="ftux.js?v=6"></script>
   <script src="apps-nav.js?v=2"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>
