@@ -178,7 +178,7 @@
         <div class="crm-empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <h2 class="crm-empty-title">No contacts yet</h2>
         <p class="crm-empty-sub">Add a test client to see how contacts, companies, and the client portal work together.</p>
-        <button class="crm-empty-btn" id="crmAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add test client</button>
+        <button class="crm-empty-btn" id="crmAddBtn" data-live="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add test client</button>
       </div>
 
       <!-- Populated view — revealed once a test client is added -->
@@ -214,7 +214,7 @@
   </div>
 
   <!-- Contextual magic-link popover (anchored to the new client row) -->
-  <div class="crm-pop" id="crmPop">
+  <div class="crm-pop" id="crmPop" data-live="1">
     <div class="crm-pop-head">
       <span class="crm-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></span>
       <div><div class="crm-pop-title" id="crmPopTitle">Preview as your client</div><div class="crm-pop-sub">Open the portal with a magic link — no password needed.</div></div>
