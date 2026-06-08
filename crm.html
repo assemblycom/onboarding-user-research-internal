@@ -100,15 +100,20 @@
     .crm-empty-btn svg { width: 15px; height: 15px; }
     .crm-populated[hidden] { display: none; }
 
-    /* Lightweight magic-link callout shown after a test client is added */
-    .crm-magic { display: flex; align-items: center; gap: 13px; margin: 14px 28px 0; padding: 12px 14px; border: 1px solid #e6e8eb; border-radius: 10px; background: linear-gradient(100deg, rgba(217,237,146,0.30), rgba(194,202,240,0.30)); }
-    .crm-magic[hidden] { display: none; }
-    .crm-magic-ic { width: 34px; height: 34px; border-radius: 9px; background: #fff; border: 1px solid #e6e8eb; display: flex; align-items: center; justify-content: center; color: #5a6068; flex-shrink: 0; }
-    .crm-magic-ic svg { width: 17px; height: 17px; }
-    .crm-magic-text { flex: 1; font-size: 13px; color: #3a3f46; line-height: 1.45; }
-    .crm-magic-text strong { font-weight: 600; color: #212b36; }
-    .crm-magic-btn { padding: 8px 14px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
-    .crm-magic-btn:hover { background: #000; }
+    /* Magic-link modal shown after a test client is added */
+    .crm-modal-ov { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.42); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+    .crm-modal-ov.show { opacity: 1; pointer-events: auto; }
+    .crm-modal { width: 400px; max-width: 100%; background: #fff; border-radius: 16px; padding: 26px 24px 22px; box-shadow: 0 24px 70px rgba(0,0,0,0.28); text-align: center; }
+    .crm-modal-ic { width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(135deg, rgba(217,237,146,0.85), rgba(194,202,240,0.85)); display: flex; align-items: center; justify-content: center; color: #1a1a1a; margin: 0 auto 16px; }
+    .crm-modal-ic svg { width: 22px; height: 22px; }
+    .crm-modal-title { font-size: 18px; font-weight: 500; margin: 0 0 8px; }
+    .crm-modal-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 0 22px; }
+    .crm-modal-actions { display: flex; gap: 10px; }
+    .crm-modal-btn { flex: 1; padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .crm-modal-btn.primary { background: #1a1a1a; color: #fff; border: 1px solid #1a1a1a; }
+    .crm-modal-btn.primary:hover { background: #000; }
+    .crm-modal-btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .crm-modal-btn.secondary:hover { background: var(--bg-hover); }
   </style>
 </head>
 <body>
@@ -179,11 +184,6 @@
 
       <!-- Populated view — revealed once a test client is added -->
       <div class="crm-populated" id="crmPopulated" hidden>
-        <div class="crm-magic" id="crmMagic">
-          <span class="crm-magic-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></span>
-          <div class="crm-magic-text"><strong>Test client added.</strong> Send them a magic link to preview the client experience — no password needed.</div>
-          <button class="crm-magic-btn" id="crmMagicBtn">Open with magic link</button>
-        </div>
         <div class="tabs">
           <div class="tab active">Contacts</div>
           <div class="tab">Companies</div>
@@ -212,6 +212,19 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- Magic-link modal (shown once a test client is added) -->
+  <div class="crm-modal-ov" id="crmModal">
+    <div class="crm-modal">
+      <div class="crm-modal-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></div>
+      <h3 class="crm-modal-title">Test client added</h3>
+      <p class="crm-modal-sub">Send them a magic link to preview the client experience — no password needed.</p>
+      <div class="crm-modal-actions">
+        <button class="crm-modal-btn secondary" id="crmModalLater" type="button">Maybe later</button>
+        <button class="crm-modal-btn primary" id="crmModalOpen" type="button">Open with magic link</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -266,13 +279,15 @@
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
 
-    // Empty state → "Add test client" reveals the contact + a lightweight
-    // magic-link callout for previewing the client experience.
+    // Empty state → "Add test client" reveals the contact, then a modal
+    // offers a magic link to preview the client experience.
     (function () {
       const KEY = 'onb.crmClient';
       const empty = document.getElementById('crmEmpty');
       const pop = document.getElementById('crmPopulated');
+      const modal = document.getElementById('crmModal');
       function reveal() { if (empty) empty.hidden = true; if (pop) pop.hidden = false; }
+      function closeModal() { if (modal) modal.classList.remove('show'); }
       let added = false; try { added = localStorage.getItem(KEY) === 'added'; } catch (e) {}
       if (added) reveal();
       const addBtn = document.getElementById('crmAddBtn');
@@ -281,9 +296,13 @@
         try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.client !== 'done') { s.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {}
         reveal();
         if (typeof window.ftuxInit === 'function') window.ftuxInit();
+        if (modal) modal.classList.add('show');
       });
-      const magicBtn = document.getElementById('crmMagicBtn');
-      if (magicBtn) magicBtn.addEventListener('click', function () { location.href = 'portal.html' + navSuffix; });
+      const openBtn = document.getElementById('crmModalOpen');
+      if (openBtn) openBtn.addEventListener('click', function () { location.href = 'portal.html' + navSuffix; });
+      const laterBtn = document.getElementById('crmModalLater');
+      if (laterBtn) laterBtn.addEventListener('click', closeModal);
+      if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
     })();
   </script>
   <script src="ftux.js?v=6"></script>
