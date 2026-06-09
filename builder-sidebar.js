@@ -44,7 +44,7 @@
     '.asm-sb .nav-item.draft .draft-label,.asm-sb .nav-item.built .draft-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
     '.asm-sb .draft-badge{font-size:11px;font-weight:400;color:var(--muted);background:#f0f1f3;border-radius:5px;padding:1px 7px;}' +
     '.asm-sb .spacer{flex:1;}' +
-    '.asm-sb .checklist{border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:10px;}' +
+    '.asm-sb .checklist{border:1px solid var(--border);border-radius:4px;padding:12px;margin-top:10px;}' +
     '.asm-sb .checklist-title{font-size:12.5px;font-weight:500;margin-bottom:10px;}' +
     '.asm-sb .checklist-item{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12.5px;color:var(--muted);position:relative;}' +
     '.asm-sb .checklist-item.active{color:var(--text);font-weight:500;}' +
