@@ -270,7 +270,9 @@
     // restore a draft the user typed before navigating away.
     let initial = getHashParam('prompt');
     if (!initial) { try { initial = localStorage.getItem(STUDIO_PROMPT_KEY) || ''; } catch (e) {} }
-    if (initial) { promptField.value = initial; markPromptEntered(); }
+    // Persist the prompt (incl. one carried from the website via #prompt=) so it
+    // survives navigating away and back, not just typing here.
+    if (initial) { promptField.value = initial; markPromptEntered(); savePrompt(); }
     autosize();
     updateStart();
 
