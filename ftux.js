@@ -26,6 +26,8 @@
       '.checklist-item{cursor:pointer;border-radius:4px;margin:0;padding:6px 2px 6px 0;gap:8px;transition:background .12s;}' +
       '.checklist-item:hover{background:var(--bg-hover,#eff1f4);}' +
       '.checklist-item.ftux-done{color:#8a9099;}' +
+      '.checklist{transition:opacity .45s ease, transform .45s ease;}' +
+      '.checklist.ftux-dismiss-out{opacity:0;transform:translateY(10px);pointer-events:none;}' +
       '.checklist-item img{flex-shrink:0;}' +
       '.ci-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
       '.inv-overlay{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
@@ -171,6 +173,22 @@
     });
     var fill = cl.querySelector('.ftux-bar-fill');
     if (fill) fill.style.width = Math.max(7, Math.round(doneCount / Math.max(1, visCount) * 100)) + '%';
+    // Everything complete → show the all-done state briefly, then retire the card.
+    if (visCount > 0 && doneCount === visCount) finishFtux(cl);
+  }
+
+  // All steps done: flip the title to an "all set" confirmation, then fade the
+  // card out and remove it. A flag keeps it gone on reload.
+  function finishFtux(cl) {
+    if (cl.getAttribute('data-ftux-finishing') === '1') return;
+    cl.setAttribute('data-ftux-finishing', '1');
+    var title = cl.querySelector('.checklist-title');
+    if (title) title.textContent = 'You’re all set';
+    setTimeout(function () {
+      try { localStorage.setItem('onb.ftuxDone', '1'); } catch (e) {}
+      cl.classList.add('ftux-dismiss-out');
+      setTimeout(function () { if (cl && cl.parentNode) cl.parentNode.removeChild(cl); }, 480);
+    }, 1300);
   }
 
   // Mark "Publish your first app" as in-progress (a prompt was entered) or done
@@ -301,6 +319,9 @@
       }
       return;
     }
+
+    // Onboarding already finished on a prior visit → the card stays retired.
+    try { if (localStorage.getItem('onb.ftuxDone') === '1') { if (cl.parentNode) cl.parentNode.removeChild(cl); return; } } catch (e) {}
 
     ensureModal();
 
