@@ -120,10 +120,10 @@
     .crm-pop-alt:hover { color: var(--text); }
 
     /* Anchored coachmark (variant B) — minimal: title · description · action */
-    .crm-coach { position: fixed; z-index: 500; width: 320px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; box-shadow: 0 16px 40px rgba(16,24,40,0.16), 0 2px 6px rgba(16,24,40,0.05); padding: 18px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
+    .crm-coach { position: fixed; z-index: 500; width: 320px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; box-shadow: 0 18px 44px rgba(16,24,40,0.14), 0 2px 6px rgba(16,24,40,0.05); padding: 18px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
     .crm-coach.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .crm-coach-title { font-size: 15px; font-weight: 600; color: #212b36; margin: 0 0 16px; }
-    .crm-coach-body { font-size: 13px; line-height: 1.5; color: var(--muted); margin: 0 0 16px; }
+    .crm-coach-title { font-size: 15px; font-weight: 500; color: #212b36; margin: 0 0 6px; letter-spacing: -0.005em; }
+    .crm-coach-body { font-size: 13px; line-height: 1.55; color: var(--muted); margin: 0 0 18px; }
     .crm-coach-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .crm-coach-step { font-size: 12px; color: #9aa0a6; flex-shrink: 0; white-space: nowrap; }
     .crm-coach-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
@@ -781,7 +781,7 @@
         const dots = e.target.closest('.row-actions');
         if (!dots) return;
         e.stopPropagation();
-        if (rowMenu.classList.contains('show')) closeRowMenu();
+        if (rowMenu.classList.contains('show')) { closeRowMenu(); closeCoach(); }
         else openRowMenu(dots, false);
       });
       // Menu item actions. Magic-link items are live; the rest are illustrative.
@@ -802,7 +802,8 @@
       document.addEventListener('mousedown', function (e) {
         if (popover.classList.contains('show') && !popover.contains(e.target) && !e.target.closest('.crm-empty-btn')) closePopover();
         if (coach.classList.contains('show') && !coach.contains(e.target) && !e.target.closest('.crm-empty-btn') && !rowMenu.contains(e.target) && !e.target.closest('.row-actions')) closeCoach();
-        if (rowMenu.classList.contains('show') && !rowMenu.contains(e.target) && !e.target.closest('.row-actions')) closeRowMenu();
+        // Don't close the menu when clicking the coachmark — they're one unit in card 2.
+        if (rowMenu.classList.contains('show') && !rowMenu.contains(e.target) && !coach.contains(e.target) && !e.target.closest('.row-actions')) closeRowMenu();
       });
 
       // Option 1 only (it's the only one with a visible step): clicking "Meet your test
