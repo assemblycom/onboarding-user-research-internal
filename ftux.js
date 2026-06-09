@@ -276,20 +276,13 @@
     requestAnimationFrame(function () { ov.classList.add('show'); });
   }
 
-  // Show the interstitial first; if already seen, go straight to the portal.
   function openPortalIntro() {
     // Guard: until "Explore the client experience" is completed (which only happens
     // via the CRM — opening the portal as the test client), redirect there first.
     var exp; try { exp = (get() || {}).explore; } catch (e) {}
     if (exp !== 'done') { showClientFirst(); return; }
-    // Option 3 teaches nothing — go straight into the Open Portal experience
-    // (branded sign-in → portal), no explanatory interstitial.
-    var v3; try { v3 = localStorage.getItem('onb.crmVariant') === '3'; } catch (e) {}
-    if (v3) { location.href = 'portal.html#signin=1' + (navSuffix() ? '&' + navSuffix().slice(1) : ''); return; }
-    var seen; try { seen = localStorage.getItem('onb.portalIntroSeen'); } catch (e) {}
-    if (seen) { location.href = 'portal.html' + navSuffix(); return; }
-    var ov = ensurePortalIntro();
-    requestAnimationFrame(function () { ov.classList.add('show'); });
+    // Already explored → open the portal directly (no interstitial).
+    location.href = 'portal.html' + navSuffix();
   }
   window.ftuxOpenPortalIntro = openPortalIntro;
 
