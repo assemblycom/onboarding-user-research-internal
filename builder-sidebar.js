@@ -389,8 +389,14 @@
         '<div class="asm-load-text">Setting up the builder…</div></div>';
     }
     document.body.appendChild(c);
+    // Failsafe: never let the loading cover hang forever (e.g. if the bundle's
+    // sidebar never appears on a resume) — auto-dismiss after a few seconds so
+    // the user is never stuck on an infinite loading screen.
+    if (!coverFailsafe) coverFailsafe = setTimeout(function () { removeCover(); }, 9000);
   }
+  var coverFailsafe = null;
   function removeCover() {
+    if (coverFailsafe) { clearTimeout(coverFailsafe); coverFailsafe = null; }
     var c = document.getElementById('asm-load-cover');
     if (!c || c.classList.contains('asm-hide')) return;
     c.classList.add('asm-hide');
