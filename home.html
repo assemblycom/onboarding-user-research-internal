@@ -15,13 +15,13 @@
 
     /* Sidebar (shared) */
     .sidebar { width: 248px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 14px 12px; gap: 4px; }
-    .ws { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
+    .ws { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 4px; cursor: pointer; }
     .ws:hover { background: var(--bg-hover); }
     .ws-avatar { width: 26px; height: 26px; border-radius: 7px; background: #f0f1f3 !important; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #5a6068 !important; font-size: 13px; font-weight: 400; }
     .ws-name { font-weight: 500; font-size: 14px; flex: 1; }
     .nav { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
     .nav-group-label { font-size: 11px; font-weight:500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 14px 8px 5px; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; font-size: 13.5px; color: var(--text); cursor: pointer; text-decoration: none; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 4px; font-size: 13.5px; color: var(--text); cursor: pointer; text-decoration: none; }
     .nav-item:hover { background: var(--bg-hover); }
     .nav-item.active { background: var(--bg-hover); }
     .nav-item .ic, .ws-caret-img, .checklist-item .ic { display: block; flex-shrink: 0; }
@@ -201,7 +201,7 @@
       document.querySelectorAll('.checklist-item').forEach(function (it) { if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function () { location.href = purl; }); } });
     })();
   </script>
-  <script src="ftux.js?v=24"></script>
+  <script src="ftux.js?v=25"></script>
   <script src="apps-nav.js?v=2"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>
