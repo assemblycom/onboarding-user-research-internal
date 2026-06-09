@@ -43,6 +43,9 @@
     '.asm-sb .nav-item.add{color:var(--muted);}' +
     '.asm-sb .nav-item.draft .draft-label,.asm-sb .nav-item.built .draft-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
     '.asm-sb .draft-badge{font-size:11px;font-weight:400;color:var(--muted);background:#f0f1f3;border-radius:5px;padding:1px 7px;}' +
+    // Sheen sweeps a draft's label while it is still building (another app open).
+    '@keyframes asmTextShimmer{0%{background-position:180% 0;}100%{background-position:-180% 0;}}' +
+    '.asm-sb .draft-label.shimmer-text{background:linear-gradient(90deg,#6b6f76 0%,#6b6f76 40%,#c6cad0 50%,#6b6f76 60%,#6b6f76 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:asmTextShimmer 1.4s linear infinite;}' +
     '.asm-sb .spacer{flex:1;}' +
     '.asm-sb .checklist{border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;}' +
     '.asm-sb .checklist-title{font-size:12.5px;font-weight:500;margin-bottom:10px;}' +
@@ -269,7 +272,8 @@
         html += '<a class="nav-item draft active">' + CLOCK + '<span class="draft-label">' + esc(a.name) + '</span><span class="draft-badge">Draft</span></a>';
         currentRendered = true;
       } else {
-        html += '<a class="nav-item built" href="builder.html' + (a.hash || '') + '">' + CLOCK + '<span class="draft-label">' + esc(a.name) + '</span>' + (a.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '') + '</a>';
+        var bShim = (a.phase === 'building' && a.status !== 'published') ? ' shimmer-text' : '';
+        html += '<a class="nav-item built" href="builder.html' + (a.hash || '') + '">' + CLOCK + '<span class="draft-label' + bShim + '">' + esc(a.name) + '</span>' + (a.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '') + '</a>';
       }
     });
     // Active app not persisted yet → show it last (newest at the bottom).
@@ -328,6 +332,11 @@
     });
     var op = host.querySelector('.open-portal');
     if (op) op.addEventListener('click', function () { location.href = 'portal.html' + suffix; });
+    // Switching to another built app reloads the builder — show the cover the
+    // instant it's clicked so the old app doesn't flash during the swap.
+    host.querySelectorAll('.nav-item.built').forEach(function (el) {
+      el.addEventListener('click', function () { ensureCover(); });
+    });
   }
 
   // The bundle bakes "BrandMages" into its breadcrumb and chat copy; rewrite

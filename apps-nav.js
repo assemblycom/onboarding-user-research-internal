@@ -24,7 +24,11 @@
     s.id = 'built-app-style';
     s.textContent =
       '.nav-item.built .draft-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-      '.nav-item.built .draft-badge{font-size:11px;font-weight:400;color:#6b6f76;background:#f0f1f3;border-radius:5px;padding:1px 7px;flex-shrink:0;}';
+      '.nav-item.built .draft-badge{font-size:11px;font-weight:400;color:#6b6f76;background:#f0f1f3;border-radius:5px;padding:1px 7px;flex-shrink:0;}' +
+      // A sheen sweeps the label while the app is still building in the background.
+      '@keyframes asmTextShimmer{0%{background-position:180% 0;}100%{background-position:-180% 0;}}' +
+      '.draft-label.shimmer-text{background:linear-gradient(90deg,#6b6f76 0%,#6b6f76 40%,#c6cad0 50%,#6b6f76 60%,#6b6f76 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:asmTextShimmer 1.4s linear infinite;}' +
+      '@media (prefers-reduced-motion: reduce){.draft-label.shimmer-text{animation:none;}}';
     document.head.appendChild(s);
   }
 
@@ -45,12 +49,13 @@
     if (seen[lc]) return;
     seen[lc] = 1;
 
+    var building = rec.phase === 'building' && rec.status !== 'published';
     var a = document.createElement('a');
     a.className = 'nav-item built' + (rec.status === 'draft' ? ' draft' : '');
     a.setAttribute('data-built-app', '1');
     a.setAttribute('href', 'builder.html' + (rec.hash || ''));
     a.style.cursor = 'pointer';
-    a.innerHTML = CLOCK + '<span class="draft-label"></span>' +
+    a.innerHTML = CLOCK + '<span class="draft-label' + (building ? ' shimmer-text' : '') + '"></span>' +
       (rec.status === 'draft' ? '<span class="draft-badge">Draft</span>' : '');
     a.querySelector('.draft-label').textContent = rec.name;
 
