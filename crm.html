@@ -633,7 +633,10 @@
       // ── Row ••• menu (the real home of the magic link) ──
       function positionMenu(anchor) {
         const r = anchor.getBoundingClientRect();
-        let left = Math.round(r.right - rowMenu.offsetWidth);
+        const w = rowMenu.offsetWidth || 240;   // fall back if measured before layout
+        let left = Math.round(r.right - w);
+        // Keep the menu fully inside the viewport (never bleed off either edge).
+        left = Math.min(left, window.innerWidth - w - 8);
         rowMenu.style.left = Math.max(8, left) + 'px';
         rowMenu.style.top = Math.round(r.bottom + 6) + 'px';
       }
