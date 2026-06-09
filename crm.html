@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Assembly Studio — CRM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -84,6 +87,7 @@
     .badge { display: inline-block; padding: 2px 9px; border-radius: 6px; font-size: 12px; font-weight: 500; }
     .badge-inactive { background: #fbf0cf; color: #8a6d1f; }
     .badge-active { background: #e4f1eb; color: #115B3B; }
+    .badge-sample { background: #ece8f6; color: #7a6cb2; }
 
     .date { color: var(--muted); }
     .row-actions { border: none; background: transparent; cursor: pointer; padding: 5px; border-radius: 6px; display: inline-flex; }
@@ -99,6 +103,84 @@
     .crm-empty-btn:hover { background: #000; }
     .crm-empty-btn svg { width: 15px; height: 15px; }
     .crm-populated[hidden] { display: none; }
+    /* Empty-state action row (variant B shows two buttons) */
+    .crm-empty-actions { display: flex; align-items: center; gap: 10px; }
+    .crm-empty-btn.ghost { background: #fff; color: var(--text); border: 1px solid var(--border); }
+    .crm-empty-btn.ghost:hover { background: var(--bg-hover); }
+
+    /* "This is a sample client" convert strip (variant C) */
+    .crm-convert { display: none; align-items: center; gap: 10px; margin: 14px 0 0; padding: 10px 14px; background: #f7f6fb; border: 1px solid #e7e3f3; border-radius: 10px; font-size: 13px; color: var(--muted); }
+    .crm-convert .dot { width: 7px; height: 7px; border-radius: 50%; background: #7a6cb2; flex-shrink: 0; }
+    .crm-convert .crm-convert-link { margin-left: auto; background: none; border: 0; color: #1a1a1a; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .crm-convert .crm-convert-link:hover { text-decoration: underline; }
+    .crm-convert .crm-convert-link svg { width: 13px; height: 13px; }
+
+    /* Secondary text link inside the magic-link popover (variant C) */
+    .crm-pop-alt { display: none; width: 100%; margin-top: 8px; background: none; border: 0; font-family: inherit; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+    .crm-pop-alt:hover { color: var(--text); }
+
+    /* Anchored coachmark (variant B) — minimal: title · description · action */
+    .crm-coach { position: fixed; z-index: 500; width: 320px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; box-shadow: 0 16px 40px rgba(16,24,40,0.16), 0 2px 6px rgba(16,24,40,0.05); padding: 18px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
+    .crm-coach.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .crm-coach-title { font-size: 15px; font-weight: 600; color: #212b36; margin: 0 0 16px; }
+    .crm-coach-body { font-size: 13px; line-height: 1.5; color: var(--muted); margin: 0 0 16px; }
+    .crm-coach-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .crm-coach-step { font-size: 12px; color: #9aa0a6; flex-shrink: 0; white-space: nowrap; }
+    .crm-coach-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .crm-coach-later { background: none; border: 0; font-family: inherit; font-size: 13px; color: var(--muted); cursor: pointer; padding: 6px 10px; border-radius: 7px; white-space: nowrap; }
+    .crm-coach-later:hover { color: var(--text); background: var(--bg-hover); }
+    .crm-coach-btn { padding: 6px 12px; background: #1a1a1a; color: #fff; border: none; border-radius: 7px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .crm-coach-btn:hover { background: #000; }
+
+    /* Spotlight the freshly-added test client row (variants B + C) — soft tint, no edge line */
+    .crm-table tbody tr.spotlight, .crm-table tbody tr.spotlight:hover { background: #edf0f5; }
+
+    /* Row ••• actions menu (the real home of the magic link) */
+    .crm-menu { position: fixed; z-index: 600; width: 240px; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgba(16,24,40,0.12), 0 1px 3px rgba(16,24,40,0.06); padding: 5px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease; }
+    .crm-menu.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .crm-menu-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 10px; background: none; border: 0; border-radius: 7px; font-family: inherit; font-size: 14px; color: var(--text); cursor: pointer; text-align: left; transition: opacity 0.18s, background 0.12s; }
+    .crm-menu-item:hover { background: var(--bg-hover); }
+    .crm-menu-item svg { width: 17px; height: 17px; color: var(--muted); flex-shrink: 0; }
+    .crm-menu-item.danger { color: #d92d20; }
+    .crm-menu-item.danger svg { color: #d92d20; }
+    .crm-menu-sep { height: 1px; background: var(--border); margin: 5px 0; }
+    /* During the variant-C reveal: dim everything but the magic-link items */
+    .crm-menu.revealing .crm-menu-item:not(.spotlight) { opacity: 0.4; }
+    .crm-menu-item.spotlight { background: #e9f3ed; box-shadow: inset 0 0 0 1px #cfe3d6; }
+    .crm-menu-item.spotlight svg { color: #115B3B; }
+
+    /* Lightweight confirmation toast */
+    .crm-toast { position: fixed; z-index: 1500; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(8px); background: #1a1a1a; color: #fff; font-size: 13px; font-weight: 500; padding: 10px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.28); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
+    .crm-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Create-contact modal (mirrors the product's contact window) */
+    .crm-form-ov { position: fixed; inset: 0; z-index: 1400; background: rgba(0,0,0,0.42); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .crm-form-ov.show { opacity: 1; pointer-events: auto; }
+    .crm-form { width: 480px; max-width: 100%; background: #fff; border-radius: 14px; box-shadow: 0 24px 70px rgba(0,0,0,0.28); overflow: hidden; }
+    .crm-form-head { padding: 18px 24px; border-bottom: 1px solid var(--border); }
+    .crm-form-head h3 { font-size: 18px; font-weight: 600; margin: 0; color: var(--text); }
+    .crm-form-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .crm-field label { display: block; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+    .crm-field-opt { font-weight: 400; color: var(--muted); }
+    .crm-field input { width: 100%; height: 42px; border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.12s, box-shadow 0.12s; }
+    .crm-field input:focus { border-color: var(--dark); box-shadow: 0 0 0 1px var(--dark); }
+    .crm-form-foot { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-top: 1px solid var(--border); }
+    .crm-form-bulk { background: none; border: 0; font-family: inherit; font-size: 14px; color: var(--text); cursor: pointer; padding: 0; }
+    .crm-form-bulk:hover { text-decoration: underline; }
+    .crm-form-actions { display: flex; align-items: center; gap: 10px; }
+    .crm-form-cancel { height: 40px; padding: 0 18px; background: #fff; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; }
+    .crm-form-cancel:hover { background: var(--bg-hover); }
+    .crm-form-send { height: 40px; padding: 0 20px; background: var(--dark); color: #fff; border: none; border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .crm-form-send:hover { background: #000; }
+
+    /* Variant switcher (testing only) */
+    .var-switch { position: fixed; z-index: 2000; right: 18px; bottom: 18px; background: #1a1a1a; color: #fff; border-radius: 12px; padding: 9px 11px; box-shadow: 0 10px 30px rgba(0,0,0,0.28); font-size: 12px; }
+    .var-switch-label { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: #9aa0a6; margin-bottom: 7px; display: flex; align-items: center; gap: 6px; }
+    .var-switch-segs { display: flex; gap: 4px; }
+    .var-seg { flex: 1; border: 0; background: #2c2c2e; color: #cfd2d6; border-radius: 7px; padding: 6px 10px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.12s, color 0.12s; }
+    .var-seg:hover { background: #3a3a3d; }
+    .var-seg.active { background: #fff; color: #1a1a1a; }
+    .var-switch-cap { margin-top: 7px; font-size: 11px; color: #9aa0a6; max-width: 230px; line-height: 1.4; }
 
     /* Contextual magic-link popover anchored under the new client row */
     .crm-pop { position: fixed; z-index: 500; width: 300px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; box-shadow: 0 16px 40px rgba(16,24,40,0.16), 0 2px 6px rgba(16,24,40,0.05); padding: 14px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }
@@ -173,15 +255,15 @@
         </div>
       </div>
 
-      <!-- Empty state — shown until the user adds a test client -->
+      <!-- Empty state — content injected per variant -->
       <div class="crm-empty" id="crmEmpty">
         <div class="crm-empty-ic"><svg width="24" height="24" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.17969 2.6375C1.17969 1.37504 2.20316 0.351562 3.46563 0.351562H10.9469C11.9807 0.351562 12.8172 1.18801 12.8172 2.22188V8.87188C12.8172 9.52129 12.4873 10.0928 11.9859 10.4279V12.4047H12.1938C12.5392 12.4047 12.8172 12.6826 12.8172 13.0281C12.8172 13.3736 12.5392 13.6516 12.1938 13.6516H3.25781C2.10965 13.6516 1.17969 12.7216 1.17969 11.5734V2.6375ZM2.42656 11.5734C2.42656 12.0332 2.79803 12.4047 3.25781 12.4047H10.7391V10.7422H3.25781C2.79803 10.7422 2.42656 11.1137 2.42656 11.5734ZM2.42656 9.66936C2.68113 9.55766 2.96168 9.49531 3.25781 9.49531H10.9469C11.2924 9.49531 11.5703 9.21736 11.5703 8.87188V2.22188C11.5703 1.87639 11.2924 1.59844 10.9469 1.59844H3.46563C2.89154 1.59844 2.42656 2.06342 2.42656 2.6375V9.66936ZM5.75156 4.50781C5.75156 4.34407 5.78381 4.18193 5.84648 4.03065C5.90914 3.87938 6.00098 3.74192 6.11676 3.62614C6.23255 3.51036 6.37 3.41851 6.52128 3.35585C6.67256 3.29319 6.8347 3.26094 6.99844 3.26094C7.16218 3.26094 7.32432 3.29319 7.4756 3.35585C7.62687 3.41851 7.76433 3.51036 7.88011 3.62614C7.99589 3.74192 8.08774 3.87938 8.1504 4.03065C8.21306 4.18193 8.24531 4.34407 8.24531 4.50781C8.24531 4.67155 8.21306 4.83369 8.1504 4.98497C8.08774 5.13625 7.99589 5.2737 7.88011 5.38949C7.76433 5.50527 7.62687 5.59711 7.4756 5.65978C7.32432 5.72244 7.16218 5.75469 6.99844 5.75469C6.8347 5.75469 6.67256 5.72244 6.52128 5.65978C6.37 5.59711 6.23255 5.50527 6.11676 5.38949C6.00098 5.2737 5.90914 5.13625 5.84648 4.98497C5.78381 4.83369 5.75156 4.67155 5.75156 4.50781ZM5.25801 8.04063C4.87355 8.04063 4.57742 7.68475 4.79043 7.36524C5.09955 6.89766 5.63207 6.58594 6.23732 6.58594H7.76215C8.3674 6.58594 8.89732 6.89506 9.20904 7.36524C9.41945 7.68475 9.12592 8.04063 8.74147 8.04063H5.26061H5.25801Z" fill="currentColor"/></svg></div>
-        <h2 class="crm-empty-title">No contacts yet</h2>
-        <p class="crm-empty-sub">Add a test client to see how contacts, companies, and the client portal work together.</p>
-        <button class="crm-empty-btn" id="crmAddBtn" data-live="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add test client</button>
+        <h2 class="crm-empty-title" id="crmEmptyTitle">No contacts yet</h2>
+        <p class="crm-empty-sub" id="crmEmptySub">Add a test client to see how contacts, companies, and the client portal work together.</p>
+        <div class="crm-empty-actions" id="crmEmptyActions"></div>
       </div>
 
-      <!-- Populated view — revealed once a test client is added -->
+      <!-- Populated view — row(s) injected once a client is added -->
       <div class="crm-populated" id="crmPopulated" hidden>
         <div class="tabs">
           <div class="tab active">Contacts</div>
@@ -198,16 +280,14 @@
                 <th class="col-actions"></th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td><div class="cell-name"><span class="avatar" id="crmAv1">TU</span><div><div class="nm" id="crmName1">Test User</div><div class="em" id="crmEmail1">test.user@studio.com</div></div></div></td>
-                <td><div class="cell-co"><span class="co-ic" id="crmCoAv1" style="background:#f0f1f3;color:#5a6068;font-size:11px;font-weight:500">S</span><span id="crmCo1">Studio (Test Company)</span></div></td>
-                <td><span class="badge badge-active">Active</span></td>
-                <td class="date">6/1/2026</td>
-                <td class="col-actions"><button class="row-actions"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>
-              </tr>
-            </tbody>
+            <tbody id="crmTbody"></tbody>
           </table>
+          <!-- Sample-client convert strip (variant C) -->
+          <div class="crm-convert" id="crmConvert">
+            <span class="dot"></span>
+            <span>This is a sample client, here so you can explore the portal safely.</span>
+            <button class="crm-convert-link" id="crmConvertBtn" data-live="1" type="button">Invite a real client <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
       </div>
     </main>
@@ -217,11 +297,58 @@
   <div class="crm-pop" id="crmPop" data-live="1">
     <div class="crm-pop-head">
       <span class="crm-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></span>
-      <div><div class="crm-pop-title" id="crmPopTitle">Preview as your client</div><div class="crm-pop-sub">Open the portal with a magic link — no password needed.</div></div>
+      <div><div class="crm-pop-title" id="crmPopTitle">Preview as your client</div><div class="crm-pop-sub" id="crmPopSub">Open the portal with a magic link — no password needed.</div></div>
       <button class="crm-pop-close" id="crmPopClose" type="button" aria-label="Dismiss">✕</button>
     </div>
     <button class="crm-pop-btn" id="crmPopOpen" type="button">Open with magic link</button>
+    <button class="crm-pop-alt" id="crmPopAlt" type="button">Send the magic link to my email instead</button>
   </div>
+
+  <!-- Anchored coachmark (variant B) -->
+  <div class="crm-coach" id="crmCoach" data-live="1">
+    <div class="crm-coach-title" id="crmCoachTitle">Your test client is ready</div>
+    <div class="crm-coach-body" id="crmCoachBody"></div>
+    <div class="crm-coach-foot">
+      <span class="crm-coach-step" id="crmCoachStep">1 of 2</span>
+      <div class="crm-coach-actions">
+        <button class="crm-coach-later" id="crmCoachLater" type="button">Later</button>
+        <button class="crm-coach-btn" id="crmCoachOpen" type="button"><span class="coach-label">Next</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row ••• actions menu (magic link lives here) -->
+  <div class="crm-menu" id="crmRowMenu">
+    <button class="crm-menu-item" data-act="view" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>View details</button>
+    <button class="crm-menu-item" data-act="edit" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Edit info</button>
+    <button class="crm-menu-item" data-act="email" data-live="1" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Email magic link</button>
+    <button class="crm-menu-item" data-act="copy" data-live="1" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy magic link</button>
+    <button class="crm-menu-item danger" data-act="delete" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></svg>Delete contact</button>
+  </div>
+
+  <!-- Confirmation toast -->
+  <div class="crm-toast" id="crmToast"></div>
+
+  <!-- Create-contact modal (pre-filled for the test/sample client) -->
+  <div class="crm-form-ov" id="crmFormOv" data-live="1">
+    <div class="crm-form">
+      <div class="crm-form-head"><h3 id="crmFormTitle">Create contact</h3></div>
+      <div class="crm-form-body">
+        <div class="crm-field"><label for="crmFormFirst">First name</label><input id="crmFormFirst" type="text" /></div>
+        <div class="crm-field"><label for="crmFormLast">Last name</label><input id="crmFormLast" type="text" /></div>
+        <div class="crm-field"><label for="crmFormEmail">Email</label><input id="crmFormEmail" type="email" /></div>
+        <div class="crm-field"><label for="crmFormCompany">Company <span class="crm-field-opt">— (Optional) Companies are used to group contacts</span></label><input id="crmFormCompany" type="text" /></div>
+      </div>
+      <div class="crm-form-foot">
+        <button class="crm-form-bulk" id="crmFormBulk" type="button">Bulk import contacts</button>
+        <div class="crm-form-actions">
+          <button class="crm-form-cancel" id="crmFormCancel" type="button">Cancel</button>
+          <button class="crm-form-send" id="crmFormSend" type="button">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script>
     function getHashParam(name) {
@@ -244,27 +371,14 @@
     }
     paintAvatar(document.getElementById('wsAvatar'), wsDisplay);
 
-    // First contact row mirrors the signed-in identity + company (no stray
-    // "BrandMages" — keep one consistent brand across the prototype).
+    // Domain used for the auto-generated "test client" email (variant A).
     const COMMON_DOMAINS = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com', 'live.com', 'aol.com'];
     const coDomain = (function () {
       if (uEmail && uEmail.indexOf('@') > -1) { const d = uEmail.split('@')[1].toLowerCase().trim(); if (d && COMMON_DOMAINS.indexOf(d) === -1) return d; }
       return (wsDisplay.toLowerCase().replace(/[^a-z0-9]/g, '') || 'studio') + '.com';
     })();
-    function initials(n) { const p = (n || '').trim().split(/\s+/); return (((p[0] || '')[0] || '') + ((p[1] || '')[0] || '')).toUpperCase() || 'TU'; }
-    const rowName = uName || 'Test User';
-    document.getElementById('crmName1').textContent = rowName;
-    document.getElementById('crmAv1').textContent = initials(rowName);
-    document.getElementById('crmEmail1').textContent = uEmail || ('test.user@' + coDomain);
-    document.getElementById('crmCo1').textContent = wsDisplay + ' (Test Company)';
-    document.getElementById('crmCoAv1').textContent = wsDisplay.trim()[0].toUpperCase();
+    function initials(n) { const p = (n || '').trim().split(/\s+/); return (((p[0] || '')[0] || '') + ((p[1] || '')[0] || '')).toUpperCase() || '?'; }
 
-    // Paint each contact avatar from the allowed palette, keyed by the contact's name.
-    document.querySelectorAll('.crm-table tbody tr').forEach(tr => {
-      const av = tr.querySelector('.cell-name .avatar');
-      const nm = tr.querySelector('.cell-name .nm')?.textContent || '';
-      if (av) paintAvatar(av, nm);
-    });
     // Keep company + identity on cross-page nav links (Team, Home, Add app).
     const navParams = [];
     if (company) navParams.push('company=' + encodeURIComponent(company));
@@ -275,51 +389,470 @@
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
     (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
 
-    // Empty state → "Add test client" reveals the contact, then a contextual
-    // popover (anchored to the new client row) offers a magic-link preview.
+    // ── Add-client moment: three switchable variants for testing ──
+    // All three are ONE-CLICK adds — they differ only in the showcase that follows:
+    // A · Magic-link popover  — compact anchored popover offering the portal preview (current build)
+    // B · Anchored coachmark  — instructional coachmark spotlighting the row + teaching the magic link
+    // C · Sample + convert    — an honest, labeled sample client with an "invite a real client" path
     (function () {
-      const KEY = 'onb.crmClient';
+      const CLIENT_KEY = 'onb.crmClient';   // stores the added row (JSON) so it survives reload
+      const VAR_KEY = 'onb.crmVariant';
       const empty = document.getElementById('crmEmpty');
       const pop = document.getElementById('crmPopulated');
       const popover = document.getElementById('crmPop');
-      const firstName = (rowName || 'your client').trim().split(/\s+/)[0];
+      const coach = document.getElementById('crmCoach');
+      const rowMenu = document.getElementById('crmRowMenu');
+      const toastEl = document.getElementById('crmToast');
+      const tbody = document.getElementById('crmTbody');
+      const convert = document.getElementById('crmConvert');
+      let current = null;   // the client currently shown in the table
+      let toastTimer = null;
+      let coachMode = 'coach', coachStep = 1, coachClient = null;   // variant-B tour state
+
+      function getVariant() { try { var v = localStorage.getItem(VAR_KEY); return (v === '1' || v === '2' || v === '3') ? v : '1'; } catch (e) { return '1'; } }
+      function readClient() { try { return JSON.parse(localStorage.getItem(CLIENT_KEY)); } catch (e) { return null; } }
+
+      // Pre-built personas. The "test" persona mirrors the signed-in user (variant A);
+      // the "sample" persona is an obvious, generic stand-in (variants B + C).
+      const TEST_CLIENT = {
+        kind: 'test', name: uName || 'Test User', email: uEmail || ('test.user@' + coDomain),
+        company: wsDisplay + ' (Test Company)', coInitial: wsDisplay.trim()[0].toUpperCase(), status: 'active'
+      };
+      const SAMPLE_CLIENT = {
+        kind: 'sample', name: 'Jane Rivera', email: 'jane@acme.co',
+        company: 'Acme Co', coInitial: 'A', status: 'sample'
+      };
+
+      const VARIANTS = {
+        '1': { cap: 'Option 1. Test client is a checklist step; landing shows a 2-step coachmark (intro → magic link in the ••• menu).' },
+        '2': { cap: 'Option 2. No checklist step for the test client; landing shows one card explaining we set it up to help you test.' },
+        '3': { cap: 'Option 3. Option 1’s CRM coachmark (no “Meet your test client” checklist step) PLUS the new portal-entry interstitial (Continue to Portal / Manage Clients) at the Explore step.' }
+      };
+
+      let variant = '1';   // Locked to Option 1 (chosen onboarding): "Meet your test client" + coachmark.
+
+      // ── Render the empty-state copy + buttons for the active variant ──
+      function renderEmpty() {
+        const v = VARIANTS[variant];
+        document.getElementById('crmEmptyTitle').textContent = v.title;
+        document.getElementById('crmEmptySub').textContent = v.sub;
+        const host = document.getElementById('crmEmptyActions');
+        host.innerHTML = '';
+        const PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+        v.actions.forEach(function (a) {
+          const b = document.createElement('button');
+          b.className = 'crm-empty-btn' + (a.primary ? '' : ' ghost');
+          b.setAttribute('data-live', '1');
+          b.innerHTML = (a.plus ? PLUS : '') + a.label;
+          b.addEventListener('click', a.act);
+          host.appendChild(b);
+        });
+      }
+
+      // ── Build a contact row from a client object ──
+      function buildRow(c) {
+        const first = c.name.trim().split(/\s+/)[0];
+        const statusHtml = c.status === 'sample'
+          ? '<span class="badge badge-sample">Sample</span>'
+          : '<span class="badge badge-active">Active</span>';
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><div class="cell-name"><span class="avatar"></span><div><div class="nm"></div><div class="em"></div></div></div></td>' +
+          '<td><div class="cell-co"><span class="co-ic" style="font-size:11px;font-weight:500">' + c.coInitial + '</span><span class="co-nm"></span></div></td>' +
+          '<td>' + statusHtml + '</td>' +
+          '<td class="date">6/1/2026</td>' +
+          '<td class="col-actions"><button class="row-actions" data-live="1"><img src="assets/dots.svg" alt="" width="16" height="16" /></button></td>';
+        tr.querySelector('.cell-name .nm').textContent = c.name;
+        tr.querySelector('.cell-name .em').textContent = c.email;
+        tr.querySelector('.co-nm').textContent = c.company;
+        paintAvatar(tr.querySelector('.cell-name .avatar'), c.name);
+        tr.querySelector('.cell-name .avatar').textContent = initials(c.name) || first[0].toUpperCase();
+        const coIc = tr.querySelector('.co-ic');
+        if (c.kind === 'sample') { coIc.style.background = '#ece8f6'; coIc.style.color = '#7a6cb2'; }
+        else { coIc.style.background = '#f0f1f3'; coIc.style.color = '#5a6068'; }
+        return tr;
+      }
+
       function reveal() { if (empty) empty.hidden = true; if (pop) pop.hidden = false; }
+
+      // ── Render the populated table for a stored client ──
+      function renderClient(c) {
+        current = c;
+        tbody.innerHTML = '';
+        tbody.appendChild(buildRow(c));
+        convert.style.display = (c.kind === 'sample') ? 'flex' : 'none';
+        reveal();
+      }
+
+      // ── Magic-link popover, anchored under the new row ──
+      const firstNameOf = (c) => c.name.trim().split(/\s+/)[0];
       function positionPopover() {
-        var row = document.querySelector('.crm-table tbody tr');
+        const row = tbody.querySelector('tr');
         if (!row || !popover) return;
-        var r = row.getBoundingClientRect();
+        const r = row.getBoundingClientRect();
         popover.style.left = Math.round(r.left + 8) + 'px';
         popover.style.top = Math.round(r.bottom + 8) + 'px';
       }
-      function showPopover() {
-        var t = document.getElementById('crmPopTitle'); if (t) t.textContent = 'Preview the portal as ' + firstName;
+      function showPopover(c) {
+        const first = firstNameOf(c);
+        const title = document.getElementById('crmPopTitle');
+        const sub = document.getElementById('crmPopSub');
+        const open = document.getElementById('crmPopOpen');
+        const alt = document.getElementById('crmPopAlt');
+        if (c.kind === 'real') {
+          title.textContent = 'Invite sent to ' + first;
+          sub.textContent = 'We emailed ' + c.email + ' a magic link. Step in yourself to see what they’ll get.';
+          open.textContent = 'Open portal as ' + first;
+          alt.style.display = 'none';
+        } else if (c.kind === 'sample') {
+          title.textContent = 'Step into ' + first + '’s shoes';
+          sub.textContent = 'Open the portal exactly as your client would see it — no password needed.';
+          open.textContent = 'Open portal as ' + first;
+          alt.style.display = 'block';
+        } else {
+          title.textContent = 'Preview the portal as ' + first;
+          sub.textContent = 'Open the portal with a magic link — no password needed.';
+          open.textContent = 'Open with magic link';
+          alt.style.display = 'none';
+        }
         positionPopover();
         requestAnimationFrame(function () { positionPopover(); popover.classList.add('show'); });
       }
-      function closePopover() { if (popover) popover.classList.remove('show'); }
-      let added = false; try { added = localStorage.getItem(KEY) === 'added'; } catch (e) {}
-      if (added) reveal();
-      const addBtn = document.getElementById('crmAddBtn');
-      if (addBtn) addBtn.addEventListener('click', function () {
-        try { localStorage.setItem(KEY, 'added'); } catch (e) {}
-        try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.client !== 'done') { s.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {}
-        reveal();
+      function closePopover() {
+        popover.classList.remove('show');
+        closeRowMenu();
+        const row = tbody.querySelector('tr.spotlight'); if (row) row.classList.remove('spotlight');
+        if (current && current.kind === 'sample') convert.style.display = 'flex';   // restore deferred strip
+      }
+
+      // ── Anchored coachmark (variant B): sits under the ••• dots, like the menu ──
+      function positionCoach() {
+        const dots = tbody.querySelector('.row-actions');
+        if (!dots || !coach) return;
+        const r = dots.getBoundingClientRect();
+        coach.style.left = Math.max(8, Math.round(r.right - coach.offsetWidth)) + 'px';
+        coach.style.top = Math.round(r.bottom + 8) + 'px';
+      }
+      // Variant B is a 2-step tour: "test client ready" → reveal the ••• magic link.
+      function renderCoachB(step) {
+        coachStep = step;
+        const open = document.getElementById('crmCoachOpen');
+        const stepEl = document.getElementById('crmCoachStep');
+        const titleEl = document.getElementById('crmCoachTitle');
+        const bodyEl = document.getElementById('crmCoachBody');
+        bodyEl.style.display = 'none';            // title-only by default
+        titleEl.style.marginBottom = '';
+        stepEl.style.display = '';
+        open.style.display = '';
+        stepEl.textContent = step + ' of 2';
+        const row = tbody.querySelector('tr');
+        if (step === 1) {
+          closeRowMenu();
+          titleEl.textContent = 'Meet your test client';
+          bodyEl.textContent = 'We’ve added a test client to help you test the platform.';
+          bodyEl.style.display = '';
+          titleEl.style.marginBottom = '6px';
+          document.getElementById('crmCoachLater').textContent = 'Later';
+          open.querySelector('.coach-label').textContent = 'Next';
+          positionCoach();
+        } else {
+          titleEl.textContent = 'Open the client experience';
+          bodyEl.textContent = 'Your client’s magic link lives in the ••• menu — copy it to preview the portal as them.';
+          bodyEl.style.display = '';
+          titleEl.style.marginBottom = '6px';
+          document.getElementById('crmCoachLater').textContent = 'Back';
+          open.querySelector('.coach-label').textContent = 'Copy magic link';
+          const dots = row && row.querySelector('.row-actions');
+          if (dots) openRowMenu(dots, true);
+          requestAnimationFrame(function () {
+            const mr = rowMenu.getBoundingClientRect();
+            coach.style.left = Math.max(8, Math.round(mr.right - coach.offsetWidth)) + 'px';
+            coach.style.top = Math.round(mr.bottom + 10) + 'px';
+          });
+        }
+      }
+      function showCoach(c) {
+        coachMode = 'coach';
+        coachClient = c;
+        const row = tbody.querySelector('tr');
+        if (row) row.classList.add('spotlight');
+        renderCoachB(1);
+        requestAnimationFrame(function () { positionCoach(); coach.classList.add('show'); });
+      }
+      function closeCoach() {
+        coach.classList.remove('show');
+        closeRowMenu();
+        const row = tbody.querySelector('tr.spotlight');
+        if (row) row.classList.remove('spotlight');
+        if (current && current.kind === 'sample') convert.style.display = 'flex';   // restore deferred strip
+      }
+
+      // ── Option 2: a single informational card (no walkthrough, no magic-link step) ──
+      function showInfoCard(c) {
+        coachMode = 'info';
+        const row = tbody.querySelector('tr');
+        if (row) row.classList.add('spotlight');
+        const titleEl = document.getElementById('crmCoachTitle');
+        const bodyEl = document.getElementById('crmCoachBody');
+        titleEl.textContent = 'Meet your test client';
+        titleEl.style.marginBottom = '6px';
+        bodyEl.textContent = 'We’ve added a test client to help you test the platform.';
+        bodyEl.style.display = '';
+        document.getElementById('crmCoachStep').style.display = 'none';
+        document.getElementById('crmCoachLater').style.display = 'none';
+        const open = document.getElementById('crmCoachOpen');
+        open.style.display = '';
+        open.querySelector('.coach-label').textContent = 'Got it';
+        positionCoach();
+        requestAnimationFrame(function () { positionCoach(); coach.classList.add('show'); });
+      }
+
+      // ── Option 3: a single card with one clear, direct CTA (opens the portal) ──
+      function showActionCard(c) {
+        coachMode = 'action';
+        const row = tbody.querySelector('tr');
+        if (row) row.classList.add('spotlight');
+        const titleEl = document.getElementById('crmCoachTitle');
+        const bodyEl = document.getElementById('crmCoachBody');
+        titleEl.textContent = 'Meet your test client';
+        titleEl.style.marginBottom = '6px';
+        bodyEl.textContent = 'We’ve added a test client to help you test the platform.';
+        bodyEl.style.display = '';
+        document.getElementById('crmCoachStep').style.display = 'none';
+        const later = document.getElementById('crmCoachLater');
+        later.style.display = ''; later.textContent = 'Maybe later';
+        const open = document.getElementById('crmCoachOpen');
+        open.style.display = ''; open.querySelector('.coach-label').textContent = 'Preview the portal';
+        positionCoach();
+        requestAnimationFrame(function () { positionCoach(); coach.classList.add('show'); });
+      }
+
+      // ── Row ••• menu (the real home of the magic link) ──
+      function positionMenu(anchor) {
+        const r = anchor.getBoundingClientRect();
+        let left = Math.round(r.right - rowMenu.offsetWidth);
+        rowMenu.style.left = Math.max(8, left) + 'px';
+        rowMenu.style.top = Math.round(r.bottom + 6) + 'px';
+      }
+      function openRowMenu(anchor, reveal) {
+        positionMenu(anchor);
+        rowMenu.classList.toggle('revealing', !!reveal);
+        rowMenu.querySelectorAll('.crm-menu-item').forEach(function (it) {
+          it.classList.toggle('spotlight', !!reveal && it.dataset.act === 'copy');
+        });
+        requestAnimationFrame(function () { positionMenu(anchor); rowMenu.classList.add('show'); });
+      }
+      function closeRowMenu() {
+        rowMenu.classList.remove('show', 'revealing');
+        rowMenu.querySelectorAll('.crm-menu-item.spotlight').forEach(function (it) { it.classList.remove('spotlight'); });
+      }
+      function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
+      }
+      function gotoPortal() {
+        markClientDone();   // engaging with the test client completes the step
+        location.href = 'portal.html#from=crm.html' + (navSuffix ? '&' + navSuffix.slice(1) : '');
+      }
+      // The single focused action for this moment: copy the client's magic link.
+      function copyMagicLink() {
+        var link = location.origin + '/portal.html#from=crm.html' + (navSuffix ? '&' + navSuffix.slice(1) : '');
+        try { if (navigator.clipboard) navigator.clipboard.writeText(link); } catch (e) {}
+        toast('Magic link copied to clipboard');
+        markClientDone();
+      }
+
+      // ── Variants A + C: open the ••• menu (Copy highlighted) + a minimal card ──
+      // Reuses the clean coachmark card (no caret / icon / subcopy) under the menu.
+      function showMagicReveal(c) {
+        coachMode = 'reveal';
+        const row = tbody.querySelector('tr');
+        if (row) row.classList.add('spotlight');
+        const dots = row && row.querySelector('.row-actions');
+        if (dots) openRowMenu(dots, true);
+        convert.style.display = 'none';   // defer the convert strip — keep the moment clean
+        document.getElementById('crmCoachTitle').textContent = 'Preview the portal as ' + firstNameOf(c);
+        document.getElementById('crmCoachBody').style.display = 'none';
+        document.getElementById('crmCoachStep').style.display = 'none';
+        const open = document.getElementById('crmCoachOpen');
+        open.style.display = '';
+        open.querySelector('.coach-label').textContent = 'Open magic link';
+        document.getElementById('crmCoachLater').textContent = 'Got it';
+        requestAnimationFrame(function () {
+          const mr = rowMenu.getBoundingClientRect();
+          coach.style.left = Math.max(8, Math.round(mr.right - coach.offsetWidth)) + 'px';
+          coach.style.top = Math.round(mr.bottom + 10) + 'px';
+          coach.classList.add('show');
+        });
+      }
+
+      // Mark the CRM checklist step done + re-render. In Option 2 the client is
+      // pre-provisioned, so the step ("Meet your test client") completes only
+      // once the user engages — not on load.
+      function markClientDone() {
+        try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.client !== 'done') { s.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(s)); if (typeof window.ftuxInit === 'function') window.ftuxInit(); } } catch (e) {}
+      }
+
+      // ── Commit a client: persist, (optionally) mark the step done, render, showcase ──
+      function addClient(c, showcase, markDone) {
+        current = c;
+        try { localStorage.setItem(CLIENT_KEY, JSON.stringify(c)); } catch (e) {}
+        if (markDone !== false) { try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.client !== 'done') { s.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {} }
+        renderClient(c);
         if (typeof window.ftuxInit === 'function') window.ftuxInit();
-        // Let the new contact settle before the magic-link hint slides in.
-        setTimeout(showPopover, 260);
+        const show = showcase === 'coach' ? showCoach : showcase === 'reveal' ? showMagicReveal : showPopover;
+        setTimeout(function () { show(c); }, 260);
+      }
+
+      // ── Add / invite modal ──
+      // "create" mode: pre-filled with the test/sample client → one click to add.
+      // "invite" mode: empty fields for a real client (from the convert strip).
+      const formOv = document.getElementById('crmFormOv');
+      let formMode = 'invite', formShowcase = 'reveal', formClient = null;
+      function setField(id, v) { document.getElementById(id).value = v; }
+      function openCreateForm(c, showcase) {
+        formMode = 'create'; formShowcase = showcase; formClient = c;
+        const parts = c.name.trim().split(/\s+/);
+        setField('crmFormFirst', parts[0] || '');
+        setField('crmFormLast', parts.slice(1).join(' '));
+        setField('crmFormEmail', c.email);
+        setField('crmFormCompany', c.company);
+        formOv.classList.add('show');
+      }
+      function openInviteForm() {
+        formMode = 'invite'; formShowcase = 'popover';
+        setField('crmFormFirst', ''); setField('crmFormLast', ''); setField('crmFormEmail', ''); setField('crmFormCompany', '');
+        formOv.classList.add('show');
+        document.getElementById('crmFormFirst').focus();
+      }
+      function closeForm() { formOv.classList.remove('show'); }
+      document.getElementById('crmFormCancel').addEventListener('click', closeForm);
+      formOv.addEventListener('click', function (e) { if (e.target === formOv) closeForm(); });
+      document.getElementById('crmFormSend').addEventListener('click', function () {
+        const first = (document.getElementById('crmFormFirst').value || '').trim();
+        const last = (document.getElementById('crmFormLast').value || '').trim();
+        const name = (first + ' ' + last).trim() || (formClient && formClient.name) || 'New Contact';
+        const email = (document.getElementById('crmFormEmail').value || '').trim() || (name.toLowerCase().replace(/[^a-z]+/g, '.') + '@company.com');
+        const co = (document.getElementById('crmFormCompany').value || '').trim() || ((last || name) + ' Co');
+        const coInitial = (co.trim()[0] || '?').toUpperCase();
+        closeForm();
+        if (formMode === 'create') {
+          addClient(Object.assign({}, formClient, { name: name, email: email, company: co, coInitial: coInitial }), formShowcase);
+        } else {
+          addClient({ kind: 'real', name: name, email: email, company: co, coInitial: coInitial, status: 'active' });
+        }
       });
-      const openBtn = document.getElementById('crmPopOpen');
-      if (openBtn) openBtn.addEventListener('click', function () {
-        // Carry from=crm.html so the portal's Back link returns here.
+
+      // Convert strip → create a real contact (replaces the sample on commit)
+      document.getElementById('crmConvertBtn').addEventListener('click', openInviteForm);
+
+      document.getElementById('crmPopOpen').addEventListener('click', function () {
         location.href = 'portal.html#from=crm.html' + (navSuffix ? '&' + navSuffix.slice(1) : '');
       });
-      const closeBtn = document.getElementById('crmPopClose');
-      if (closeBtn) closeBtn.addEventListener('click', closePopover);
-      window.addEventListener('resize', function () { if (popover.classList.contains('show')) positionPopover(); });
-      document.addEventListener('mousedown', function (e) { if (popover.classList.contains('show') && !popover.contains(e.target) && e.target.id !== 'crmAddBtn') closePopover(); });
+      document.getElementById('crmPopAlt').addEventListener('click', function () {
+        // Prototype affordance: confirm the email send, then let them open it too.
+        this.textContent = 'Magic link sent — check your inbox';
+        this.style.color = '#115B3B';
+      });
+      document.getElementById('crmPopClose').addEventListener('click', closePopover);
+
+      // Coachmark actions: variant B advances the 2-step tour; variant C dismisses.
+      document.getElementById('crmCoachOpen').addEventListener('click', function () {
+        if (coachMode === 'info') { closeCoach(); return; }     // info card: "Got it" dismisses
+        if (coachMode === 'action') { gotoPortal(); return; }   // Option 3: open the portal directly
+        if (coachStep === 1) { renderCoachB(2); return; }
+        copyMagicLink();   // step 2: copy the client's magic link
+        closeCoach();
+      });
+      document.getElementById('crmCoachLater').addEventListener('click', function () {
+        if (coachMode === 'coach' && coachStep === 2) { renderCoachB(1); return; }
+        closeCoach();
+      });
+
+      // Row ••• menu: toggle on the row's actions button (delegated — rows are dynamic).
+      tbody.addEventListener('click', function (e) {
+        const dots = e.target.closest('.row-actions');
+        if (!dots) return;
+        e.stopPropagation();
+        if (rowMenu.classList.contains('show')) closeRowMenu();
+        else openRowMenu(dots, false);
+      });
+      // Menu item actions. Magic-link items are live; the rest are illustrative.
+      rowMenu.addEventListener('click', function (e) {
+        const item = e.target.closest('.crm-menu-item');
+        if (!item) return;
+        const act = item.dataset.act;
+        closeRowMenu();
+        closeCoach();
+        if (act === 'copy') { copyMagicLink(); }
+        else if (act === 'email') { toast('Magic link sent to ' + ((current && current.email) || 'your client')); markClientDone(); }
+      });
+
+      window.addEventListener('resize', function () {
+        if (popover.classList.contains('show')) positionPopover();
+        if (coach.classList.contains('show') && coach.style.display !== 'none') positionCoach();
+      });
+      document.addEventListener('mousedown', function (e) {
+        if (popover.classList.contains('show') && !popover.contains(e.target) && !e.target.closest('.crm-empty-btn')) closePopover();
+        if (coach.classList.contains('show') && !coach.contains(e.target) && !e.target.closest('.crm-empty-btn') && !rowMenu.contains(e.target) && !e.target.closest('.row-actions')) closeCoach();
+        if (rowMenu.classList.contains('show') && !rowMenu.contains(e.target) && !e.target.closest('.row-actions')) closeRowMenu();
+      });
+
+      // Option 1 only (it's the only one with a visible step): clicking "Meet your test
+      // client" re-starts the coachmark (capture phase beats ftux's nav handler).
+      var clEl = document.querySelector('.checklist');
+      if (clEl) clEl.addEventListener('click', function (e) {
+        if (variant !== '1') return;
+        var item = e.target.closest('.checklist-item');
+        if (item && item.textContent.indexOf('Meet your test client') > -1) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          if (current) showCoach(current);
+        }
+      }, true);
+
+      // ── Boot ──
+      // Every option pre-provisions a test client (no empty state); the framing differs.
+      var clientItem = null;
+      document.querySelectorAll('.checklist-item').forEach(function (it) {
+        if (it.textContent.indexOf('Create test client') > -1) clientItem = it;
+      });
+      if (variant === '1') {
+        // Option 1: keep it as a visible step, reframed from "create" to "meet".
+        if (clientItem) [].forEach.call(clientItem.childNodes, function (n) {
+          if (n.nodeType === 3 && n.textContent.indexOf('Create test client') > -1) n.textContent = 'Meet your test client';
+        });
+        // Landing on the CRM puts the step in-progress; engaging with the card completes it.
+        try { var sp = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (sp.client !== 'done') { sp.client = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(sp)); } } catch (e) {}
+      } else {
+        // Options 2 & 3: the test client isn't a checklist task — hide the step (kept in
+        // DOM so ftux's index mapping stays intact) and mark it done for the progress bar.
+        if (clientItem) clientItem.style.display = 'none';
+        try { var sd = JSON.parse(localStorage.getItem('onb.ftux')) || {}; sd.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(sd)); } catch (e) {}
+      }
+
+      // No empty state — the test client is already there.
+      const existing = readClient();
+      if (existing) { renderClient(existing); }
+      else { current = TEST_CLIENT; try { localStorage.setItem(CLIENT_KEY, JSON.stringify(TEST_CLIENT)); } catch (e) {} renderClient(TEST_CLIENT); }
+
+      // Arriving via "Add client" from the portal preview launcher → open the
+      // Create-contact modal straight away (and skip the onboarding card).
+      if (getHashParam('addclient')) {
+        setTimeout(openInviteForm, 200);
+      } else {
+        // Card on load: Option 2 → single info card; Options 1 & 3 → the 2-step coachmark.
+        // (Option 3 also gets the new portal-entry interstitial via the Explore step.)
+        setTimeout(function () {
+          if (variant === '2') showInfoCard(current);
+          else showCoach(current);
+        }, 280);
+      }
     })();
   </script>
-  <script src="ftux.js?v=6"></script>
+  <script src="ftux.js?v=17"></script>
   <script src="apps-nav.js?v=2"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>

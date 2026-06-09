@@ -12,3 +12,4 @@
 
 # Local preview / editor config
 .claude/
+.vercel

@@ -140,23 +140,24 @@
     if (!cl) return;
     var items = [].slice.call(cl.querySelectorAll('.checklist-item'));
     var st = get();
-    var doneCount = 0;
-    keys.forEach(function (k) { if (st[k] === 'done') doneCount++; });
+    var visCount = 0, doneCount = 0;
     items.forEach(function (it, i) {
       var k = keys[i];
       var img = it.querySelector('img');
       it.classList.remove('ftux-done', 'active');
       var src;
-      // Done → green check. "Publish" shows in-progress only once a prompt
-      // has been entered (st.publish === 'progress'); otherwise everything
-      // defaults to todo (a fresh user who hasn't started building yet).
+      // Done → green check. Any step set to 'progress' shows the in-progress
+      // indicator + is highlighted; otherwise it's a plain todo.
       if (st[k] === 'done') { src = 'assets/check-green.svg?v=2'; it.classList.add('ftux-done'); }
-      else if (k === 'publish' && st.publish === 'progress') { src = 'assets/progress-indication.svg'; it.classList.add('active'); }
+      else if (st[k] === 'progress') { src = 'assets/progress-indication.svg'; it.classList.add('active'); }
       else { src = 'assets/todo.svg'; }
       if (img) img.setAttribute('src', src);
+      // Progress reflects only visible steps (some options hide the test-client /
+      // explore steps), so the bar can't read as partially full with nothing checked.
+      if (it.style.display !== 'none') { visCount++; if (st[k] === 'done') doneCount++; }
     });
     var fill = cl.querySelector('.ftux-bar-fill');
-    if (fill) fill.style.width = Math.max(7, Math.round(doneCount / keys.length * 100)) + '%';
+    if (fill) fill.style.width = Math.max(7, Math.round(doneCount / Math.max(1, visCount) * 100)) + '%';
   }
 
   // Mark "Publish your first app" as in-progress (a prompt was entered) or done
@@ -181,16 +182,38 @@
     var MSG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
     var FILES = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
     var lines = '<div class="pi-line"></div><div class="pi-line short"></div><div class="pi-head2"></div><div class="pi-line"></div><div class="pi-line"></div><div class="pi-line short"></div><div class="pi-line"></div><div class="pi-line short"></div>';
+    // Option 3 reframes this interstitial as the single onboarding moment: explain the
+    // test client here (not on the CRM) and offer Continue to Portal / Manage Clients.
+    var pv = '1'; try { var cvv = localStorage.getItem('onb.crmVariant'); if (cvv) pv = cvv; } catch (e) {}
+    var leftHtml;
+    if (pv === '3') {
+      var AV = 'width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+      leftHtml = '<div class="pi-left">' +
+        '<h2 class="pi-title">Preview the client portal</h2>' +
+        '<p class="pi-copy">See exactly what your client experiences — the branded sign-in and their portal. You can switch which client you preview once you\'re inside.</p>' +
+        '<div style="margin-bottom:6px;">' +
+          '<div style="font-size:12px;color:#6b6f76;margin-bottom:6px;">Preview as</div>' +
+          '<div style="display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #dfe1e4;border-radius:10px;padding:9px 12px;font-size:14px;color:#212b36;">' +
+            '<span style="' + AV + 'background:#e4f1eb;color:#44856f;">TC</span>Test Client' +
+          '</div>' +
+        '</div>' +
+        '<div style="margin-top:auto;">' +
+          '<button class="pi-btn" id="piOpen" type="button" style="margin-top:0;">Open client portal</button>' +
+        '</div>' +
+      '</div>';
+    } else {
+      leftHtml = '<div class="pi-left">' +
+        '<h2 class="pi-title">Step into your client\'s view</h2>' +
+        '<p class="pi-copy">You\'ve met your test client in the CRM — now see the portal from their side. This is exactly what your clients log in to, on any app you build or enable.</p>' +
+        '<button class="pi-btn" type="button">Launch client view</button>' +
+      '</div>';
+    }
     ov = document.createElement('div');
     ov.className = 'pi-ov';
     ov.style.setProperty('--pi-side', t[0]);
     ov.style.setProperty('--pi-tx', t[1]);
     ov.innerHTML = '<div class="pi-card">' +
-      '<div class="pi-left">' +
-        '<h2 class="pi-title">Explore the client experience</h2>' +
-        '<p class="pi-copy">This is your Client Portal — the experience your clients log in to. We\'ve set up a test client so you can step inside and see it exactly as they would, on any app you build or enable.</p>' +
-        '<button class="pi-btn" type="button">Launch client view</button>' +
-      '</div>' +
+      leftHtml +
       '<div class="pi-right"><div class="pi-portal">' +
         '<div class="pi-side">' +
           '<div class="pi-ws"><span class="pi-av">' + initial + '</span><span>' + coShort + '</span></div>' +
@@ -201,10 +224,16 @@
       '</div></div>' +
     '</div>';
     document.body.appendChild(ov);
-    ov.querySelector('.pi-btn').addEventListener('click', function () {
-      try { localStorage.setItem('onb.portalIntroSeen', '1'); } catch (e) {}
-      location.href = 'portal.html' + navSuffix();
-    });
+    function seenThenGo(url) { try { localStorage.setItem('onb.portalIntroSeen', '1'); } catch (e) {} location.href = url; }
+    if (pv === '3') {
+      // Launcher: single "Open client portal" → branded sign-in (skippable) → portal.
+      // Switching the previewed client happens inside the portal, not here.
+      var sfx = navSuffix();
+      var openBtn = ov.querySelector('#piOpen');
+      if (openBtn) openBtn.addEventListener('click', function () { seenThenGo('portal.html#signin=1' + (sfx ? '&' + sfx.slice(1) : '')); });
+    } else {
+      ov.querySelector('.pi-btn').addEventListener('click', function () { seenThenGo('portal.html' + navSuffix()); });
+    }
     ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('show'); });
     return ov;
   }
@@ -225,11 +254,35 @@
     // Pages with no checklist but a portal sidebar — visiting the client
     // portal completes "Explore the client experience".
     if (!cl) {
-      if (document.querySelector('.side')) { var s = get(); if (!s.explore) { s.explore = 'done'; save(s); } }
+      // Visiting the client portal completes "Explore the client experience" —
+      // but NOT when it's the quick magic-link preview launched from the CRM
+      // create-client flow (from=crm.html). That preview belongs to "Create
+      // test client"; only a deliberate visit completes "Explore".
+      if (document.querySelector('.side') && hashParam('from') !== 'crm.html') {
+        var s = get(); if (!s.explore) { s.explore = 'done'; save(s); }
+      }
       return;
     }
 
     ensureModal();
+
+    // ── Variant-aware "test client" step (option chosen on the CRM, in localStorage) ──
+    // Keeps the checklist consistent on every page: Option 2 hides the step entirely;
+    // Options 1 & 3 relabel "Create test client" → "Meet your test client".
+    (function () {
+      var v = '1';   // Locked to Option 1 (chosen onboarding).
+      [].forEach.call(cl.querySelectorAll('.checklist-item'), function (it) {
+        var txt = it.textContent;
+        if (txt.indexOf('Create test client') === -1 && txt.indexOf('Meet your test client') === -1) return;
+        // Options 2 & 3 set the test client up silently (no checklist step);
+        // Option 1 keeps it as a step, relabeled "Meet your test client".
+        if (v === '2' || v === '3') { it.style.display = 'none'; return; }
+        it.style.display = '';
+        var lbl = it.querySelector('.ci-label');
+        if (lbl) { if (lbl.textContent.indexOf('Create test client') > -1) lbl.textContent = 'Meet your test client'; }
+        else [].forEach.call(it.childNodes, function (n) { if (n.nodeType === 3 && n.textContent.indexOf('Create test client') > -1) n.textContent = 'Meet your test client'; });
+      });
+    })();
 
     var title = cl.querySelector('.checklist-title');
     if (title && !cl.querySelector('.ftux-bar')) {

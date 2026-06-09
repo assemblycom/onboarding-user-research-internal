@@ -62,9 +62,22 @@
     .how-item .ht span { color: var(--muted); }
 
     /* Prototype-only: return to the admin portal (real life = new tab) */
-    .exit-preview { position: fixed; top: 16px; right: 18px; z-index: 50; display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: #1a1a1a; color: #fff; border: none; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18); text-decoration: none; }
+    .exit-preview { position: fixed; top: 16px; right: 18px; z-index: 130; display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: #1a1a1a; color: #fff; border: none; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18); text-decoration: none; }
     .exit-preview:hover { background: #000; }
     .exit-preview svg { width: 14px; height: 14px; }
+
+    /* "Previewing as [client]" switcher — lets you switch the previewed client anywhere */
+    .preview-as { position: fixed; top: 16px; left: 18px; z-index: 130; }
+    .preview-as-btn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; background: #fff; border: 1px solid var(--border); border-radius: 999px; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.10); }
+    .preview-as-btn b { font-weight: 600; }
+    .preview-as-btn .eye { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
+    .preview-as-btn .cev { width: 13px; height: 13px; color: var(--muted); flex-shrink: 0; }
+    .preview-as-menu { display: none; position: absolute; top: 100%; left: 0; margin-top: 6px; min-width: 210px; background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; box-shadow: 0 12px 32px rgba(16,24,40,0.16); padding: 5px; }
+    .preview-as-menu.show { display: block; }
+    .pa-item { display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 10px; border: 0; background: none; border-radius: 8px; font-family: inherit; font-size: 14px; color: var(--text); cursor: pointer; text-align: left; }
+    .pa-item:hover { background: #eff1f4; }
+    .pa-item.is-sel { background: #f3f6f4; }
+    .pa-av { width: 22px; height: 22px; border-radius: 50%; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
     /* First-visit interstitial — centered modal (text left, visual right). */
     .intro { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.42); align-items: center; justify-content: center; padding: 24px; }
@@ -99,10 +112,53 @@
     .ip-line.short { width: 56%; }
     .ip-head2 { height: 10px; width: 38%; border-radius: 4px; background: #eef0f2; margin-top: 6px; }
     @media (max-width: 640px) { .intro-right { display: none; } }
+
+    /* Branded sign-in preview (shown when arriving with #signin=1) */
+    .signin-ov { position: fixed; inset: 0; z-index: 120; background: #fff; display: none; align-items: center; justify-content: center; padding: 24px; }
+    .signin-ov.show { display: flex; }
+    .signin-card { width: 360px; max-width: 100%; text-align: center; }
+    .signin-logo { width: 52px; height: 52px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; margin-bottom: 18px; }
+    .signin-title { font-size: 22px; font-weight: 600; margin: 0 0 8px; color: var(--text); }
+    .signin-sub { font-size: 14px; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
+    .signin-field { text-align: left; margin-bottom: 14px; }
+    .signin-field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+    .signin-field input { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 10px; padding: 0 14px; font-family: inherit; font-size: 14px; color: var(--text); outline: none; }
+    .signin-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; background: #1a1a1a; color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .signin-btn:hover { background: #000; }
+    .signin-btn svg { width: 15px; height: 15px; }
+    .signin-skip { display: inline-block; margin-top: 18px; background: none; border: none; font-family: inherit; font-size: 13px; color: var(--muted); cursor: pointer; }
+    .signin-skip:hover { color: var(--text); }
+    .signin-foot { margin-top: 28px; font-size: 12px; color: #9aa0a6; }
   </style>
 </head>
 <body>
-  <a class="exit-preview" id="exitPreview" href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Studio</a>
+  <!-- Branded sign-in preview (shown when arriving with #signin=1) -->
+  <div class="signin-ov" id="signinScreen">
+    <div class="signin-card">
+      <div class="signin-logo" id="signinLogo">S</div>
+      <h1 class="signin-title" id="signinTitle">Sign in to Studio</h1>
+      <p class="signin-sub">Enter your email and we'll send you a magic link to access your portal — no password needed.</p>
+      <div class="signin-field"><label>Email</label><input id="signinEmail" type="email" /></div>
+      <button class="signin-btn" id="signinBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Email me a magic link</button>
+      <div><button class="signin-skip" id="signinSkip" type="button">Skip — you're previewing →</button></div>
+      <div class="signin-foot">Secured by Assembly</div>
+    </div>
+  </div>
+
+  <!-- Switch which client you're previewing as — available anywhere in the preview -->
+  <div class="preview-as" id="previewAs">
+    <button class="preview-as-btn" id="previewAsBtn" type="button">
+      <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      Previewing as <b id="previewAsName">Test Client</b>
+      <svg class="cev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="preview-as-menu" id="previewAsMenu">
+      <button class="pa-item is-sel" type="button"><span class="pa-av" style="background:#e4f1eb;color:#44856f;">TC</span>Test Client</button>
+      <button class="pa-item" id="paAddClient" type="button"><span class="pa-av" style="border:1px dashed #c4c8cf;color:#6b6f76;font-size:14px;">+</span>Add client</button>
+    </div>
+  </div>
+
+  <a class="exit-preview" id="exitPreview" href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Exit preview</a>
 
   <div class="shell">
     <!-- Themed client sidebar -->
@@ -193,10 +249,37 @@
     const fromPage = getHashParam('from');
     const exitEl = document.getElementById('exitPreview');
     exitEl.setAttribute('href', (fromPage || 'studio.html') + (navParams.length ? '#' + navParams.join('&') : ''));
-    // Generic "Back" label when returning somewhere other than Studio.
-    if (fromPage && fromPage !== 'studio.html') { exitEl.lastChild.textContent = 'Back'; }
+
+    // ── "Previewing as" switcher — switch the previewed client from anywhere ──
+    (function () {
+      var btn = document.getElementById('previewAsBtn'), menu = document.getElementById('previewAsMenu');
+      if (!btn) return;
+      btn.addEventListener('click', function (e) { e.stopPropagation(); menu.classList.toggle('show'); });
+      document.addEventListener('click', function () { menu.classList.remove('show'); });
+      var add = document.getElementById('paAddClient');
+      if (add) add.addEventListener('click', function () {
+        location.href = 'crm.html#addclient=1' + (navParams.length ? '&' + navParams.join('&') : '');
+      });
+    })();
+
+    // ── Branded sign-in preview (arriving with #signin=1) ──
+    // Shows how a client's branded sign-in looks; skippable since it's a preview.
+    (function () {
+      if (!getHashParam('signin')) return;
+      var sov = document.getElementById('signinScreen');
+      document.getElementById('signinTitle').textContent = 'Sign in to ' + company;
+      var logo = document.getElementById('signinLogo');
+      logo.textContent = company.trim()[0].toUpperCase();
+      var lc = avatarColor(company); logo.style.background = lc[0]; logo.style.color = lc[1];
+      document.getElementById('signinEmail').value = getHashParam('email') ||
+        ('client@' + (company.toLowerCase().replace(/[^a-z0-9]/g, '') || 'studio') + '.com');
+      sov.classList.add('show');
+      function enter() { sov.classList.remove('show'); }
+      document.getElementById('signinBtn').addEventListener('click', enter);
+      document.getElementById('signinSkip').addEventListener('click', enter);
+    })();
   </script>
-  <script src="ftux.js?v=6"></script>
+  <script src="ftux.js?v=17"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>
 </html>
