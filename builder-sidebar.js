@@ -593,17 +593,22 @@
   // Overlay (not innerHTML replace) so we never fight the bundle's React
   // reconciliation. Dashboard → just the SRI app; Portal → our own client
   // portal (dark sidebar + app), so the client sidebar is always present.
+  // The bundle card we've hidden behind our overlay, so its edges/shadow can't
+  // peek out as a "second layer". Kept layout-present (visibility, not display)
+  // so its rect still measures for positioning the overlay.
+  var overlaidCard = null;
+  function restoreOverlaidCard() { if (overlaidCard) { try { overlaidCard.style.visibility = ''; } catch (e) {} overlaidCard = null; } }
   function injectSriApp() {
     var ov = document.getElementById('asm-sri-overlay');
     // Only show the finished app once the build is done — during qa/plan/
     // building the bundle's own progress visuals must be visible.
     var phase = (window.__ASM_STATE || {}).phase;
-    if (phase !== 'done') { if (ov) ov.style.display = 'none'; return; }
+    if (phase !== 'done') { if (ov) ov.style.display = 'none'; restoreOverlaidCard(); return; }
     var tab = activePreviewTab();
     var card = null, mode = null;
     if (tab === 'Portal') { card = findPortalCard(); mode = 'portal'; }
     else if (tab === null || tab === 'Dashboard') { card = findAppCard(); mode = 'dash'; }
-    if (!card) { if (ov) ov.style.display = 'none'; return; }
+    if (!card) { if (ov) ov.style.display = 'none'; restoreOverlaidCard(); return; }
     if (!ov) { ov = document.createElement('div'); ov.id = 'asm-sri-overlay'; document.body.appendChild(ov); }
     // Service-request prompts get the hand-built app; everything else gets the
     // simplified placeholder. Both Dashboard and Portal previews show just the
@@ -615,6 +620,10 @@
       ov.setAttribute('data-mode', key);
     }
     var r = card.getBoundingClientRect();
+    // Hide the bundle card underneath so it can't peek out behind our overlay.
+    if (overlaidCard && overlaidCard !== card) { try { overlaidCard.style.visibility = ''; } catch (e) {} }
+    try { card.style.visibility = 'hidden'; } catch (e) {}
+    overlaidCard = card;
     // Clamp the left to the preview pane so the overlay never bleeds over chat.
     var left = Math.max(r.left, previewPaneLeft());
     var width = Math.max(0, r.right - left);
