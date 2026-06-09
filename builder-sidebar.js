@@ -436,6 +436,11 @@
       // Top-tab signature (padding 4px 10px + 12px) — avoids matching anything else.
       if (st.indexOf('padding: 4px 10px') === -1 || st.indexOf('font-size: 12px') === -1) continue;
       if (!b.classList.contains('asm-notif-disabled')) b.classList.add('asm-notif-disabled');
+      // Keep the tab reliably painted — the bundle's re-renders can leave it
+      // present-but-unpainted, so re-assert visibility every tick.
+      b.style.setProperty('opacity', '1', 'important');
+      b.style.setProperty('visibility', 'visible', 'important');
+      b.style.setProperty('display', 'block', 'important');
       if (!b.hasAttribute('data-asm-noclick')) {
         b.setAttribute('data-asm-noclick', '1');
         // Capture phase + stopImmediatePropagation beats the bundle's onClick.
