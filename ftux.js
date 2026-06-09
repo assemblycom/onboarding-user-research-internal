@@ -278,10 +278,10 @@
 
   // Show the interstitial first; if already seen, go straight to the portal.
   function openPortalIntro() {
-    // Guard: if the test client hasn't been engaged in the CRM yet (the Explore
-    // step hasn't started), guide the user there before previewing the portal.
+    // Guard: until "Explore the client experience" is completed (which only happens
+    // via the CRM — opening the portal as the test client), redirect there first.
     var exp; try { exp = (get() || {}).explore; } catch (e) {}
-    if (exp !== 'progress' && exp !== 'done') { showClientFirst(); return; }
+    if (exp !== 'done') { showClientFirst(); return; }
     // Option 3 teaches nothing — go straight into the Open Portal experience
     // (branded sign-in → portal), no explanatory interstitial.
     var v3; try { v3 = localStorage.getItem('onb.crmVariant') === '3'; } catch (e) {}
@@ -298,11 +298,11 @@
 
     var cl = document.querySelector('.checklist');
 
-    // Pages with no checklist but a portal sidebar — opening the client portal
-    // completes "Explore the client experience", upgrading it from the
-    // in-progress state set when the CRM coachmark reached its magic-link card.
+    // Pages with no checklist but a portal sidebar — "Explore the client experience"
+    // completes ONLY when the portal is opened as the test client from the CRM
+    // (from=crm.html), not via a direct "Open Portal".
     if (!cl) {
-      if (document.querySelector('.side')) {
+      if (document.querySelector('.side') && hashParam('from') === 'crm.html') {
         var s = get(); if (s.explore !== 'done') { s.explore = 'done'; save(s); }
       }
       return;
