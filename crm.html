@@ -90,8 +90,10 @@
     .badge-sample { background: #ece8f6; color: #7a6cb2; }
 
     .date { color: var(--muted); }
-    .row-actions { border: none; background: transparent; cursor: pointer; padding: 5px; border-radius: 6px; display: inline-flex; }
+    .row-actions { border: none; background: transparent; cursor: pointer; padding: 5px; border-radius: 6px; display: inline-flex; transition: background 0.15s, box-shadow 0.15s; }
     .row-actions:hover { background: var(--bg-hover); }
+    /* Lightweight focus for the coachmark's step 2 — points at the ••• only. */
+    .row-actions.coach-focus { background: #e9f3ed; box-shadow: inset 0 0 0 1px #cfe3d6; }
 
     /* Empty state (mirrors the notifications empty state) */
     .crm-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
@@ -120,7 +122,7 @@
     .crm-pop-alt:hover { color: var(--text); }
 
     /* Anchored coachmark (variant B) — minimal: title · description · action */
-    .crm-coach { position: fixed; z-index: 500; width: 320px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 8px; box-shadow: 0 18px 44px rgba(16,24,40,0.14), 0 2px 6px rgba(16,24,40,0.05); padding: 18px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
+    .crm-coach { position: fixed; z-index: 500; width: 320px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 8px; box-shadow: 0 10px 34px rgba(16,24,40,0.10), 0 2px 8px rgba(16,24,40,0.05); padding: 18px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
     .crm-coach.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .crm-coach-title { font-size: 15px; font-weight: 500; color: #212b36; margin: 0 0 6px; letter-spacing: -0.005em; }
     .crm-coach-body { font-size: 13px; line-height: 1.55; color: var(--muted); margin: 0 0 18px; }
@@ -549,6 +551,8 @@
         const row = tbody.querySelector('tr');
         if (step === 1) {
           closeRowMenu();
+          // Step 1 introduces the client → highlight the whole row, not the dots.
+          if (row) { row.classList.add('spotlight'); var d1 = row.querySelector('.row-actions'); if (d1) d1.classList.remove('coach-focus'); }
           titleEl.textContent = 'Meet your test client';
           bodyEl.textContent = 'We’ve added a test client to help you test the platform.';
           bodyEl.style.display = '';
@@ -564,8 +568,10 @@
           document.getElementById('crmCoachLater').textContent = 'Back';
           open.querySelector('.coach-label').textContent = 'Open portal';
           markExploreProgress();   // seeing the magic-link card half-lights "Explore"
+          // Step 2 is about the action → drop the row highlight, point at the ••• only.
+          if (row) row.classList.remove('spotlight');
           const dots = row && row.querySelector('.row-actions');
-          if (dots) openRowMenu(dots, true);
+          if (dots) { dots.classList.add('coach-focus'); openRowMenu(dots, true); }
           requestAnimationFrame(function () {
             const mr = rowMenu.getBoundingClientRect();
             coach.style.left = Math.max(8, Math.round(mr.right - coach.offsetWidth)) + 'px';
@@ -587,6 +593,7 @@
         closeRowMenu();
         const row = tbody.querySelector('tr.spotlight');
         if (row) row.classList.remove('spotlight');
+        var fd = tbody.querySelector('.row-actions.coach-focus'); if (fd) fd.classList.remove('coach-focus');
         if (current && current.kind === 'sample') convert.style.display = 'flex';   // restore deferred strip
       }
 
