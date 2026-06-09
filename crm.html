@@ -562,6 +562,7 @@
           titleEl.style.marginBottom = '6px';
           document.getElementById('crmCoachLater').textContent = 'Back';
           open.querySelector('.coach-label').textContent = 'Copy magic link';
+          markExploreProgress();   // seeing the magic-link card half-lights "Explore"
           const dots = row && row.querySelector('.row-actions');
           if (dots) openRowMenu(dots, true);
           requestAnimationFrame(function () {
@@ -574,6 +575,7 @@
       function showCoach(c) {
         coachMode = 'coach';
         coachClient = c;
+        markClientDone();   // seeing card 1 completes "Meet your test client"
         const row = tbody.querySelector('tr');
         if (row) row.classList.add('spotlight');
         renderCoachB(1);
@@ -688,11 +690,14 @@
         });
       }
 
-      // Mark the CRM checklist step done + re-render. In Option 2 the client is
-      // pre-provisioned, so the step ("Meet your test client") completes only
-      // once the user engages — not on load.
+      // "Meet your test client" completes as soon as coachmark card 1 is seen.
       function markClientDone() {
         try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.client !== 'done') { s.client = 'done'; localStorage.setItem('onb.ftux', JSON.stringify(s)); if (typeof window.ftuxInit === 'function') window.ftuxInit(); } } catch (e) {}
+      }
+      // "Explore the client experience" goes half-lit (in-progress) when card 2 —
+      // the magic-link card — is seen; opening the portal then completes it.
+      function markExploreProgress() {
+        try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.explore !== 'done' && s.explore !== 'progress') { s.explore = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(s)); if (typeof window.ftuxInit === 'function') window.ftuxInit(); } } catch (e) {}
       }
 
       // ── Commit a client: persist, (optionally) mark the step done, render, showcase ──
@@ -824,8 +829,7 @@
         if (clientItem) [].forEach.call(clientItem.childNodes, function (n) {
           if (n.nodeType === 3 && n.textContent.indexOf('Create test client') > -1) n.textContent = 'Meet your test client';
         });
-        // Landing on the CRM puts the step in-progress; engaging with the card completes it.
-        try { var sp = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (sp.client !== 'done') { sp.client = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(sp)); } } catch (e) {}
+        // The step completes when coachmark card 1 is seen (showCoach → markClientDone).
       } else {
         // Options 2 & 3: the test client isn't a checklist task — hide the step (kept in
         // DOM so ftux's index mapping stays intact) and mark it done for the progress bar.
@@ -852,7 +856,7 @@
       }
     })();
   </script>
-  <script src="ftux.js?v=17"></script>
+  <script src="ftux.js?v=18"></script>
   <script src="apps-nav.js?v=2"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>

@@ -251,15 +251,12 @@
 
     var cl = document.querySelector('.checklist');
 
-    // Pages with no checklist but a portal sidebar — visiting the client
-    // portal completes "Explore the client experience".
+    // Pages with no checklist but a portal sidebar — opening the client portal
+    // completes "Explore the client experience", upgrading it from the
+    // in-progress state set when the CRM coachmark reached its magic-link card.
     if (!cl) {
-      // Visiting the client portal completes "Explore the client experience" —
-      // but NOT when it's the quick magic-link preview launched from the CRM
-      // create-client flow (from=crm.html). That preview belongs to "Create
-      // test client"; only a deliberate visit completes "Explore".
-      if (document.querySelector('.side') && hashParam('from') !== 'crm.html') {
-        var s = get(); if (!s.explore) { s.explore = 'done'; save(s); }
+      if (document.querySelector('.side')) {
+        var s = get(); if (s.explore !== 'done') { s.explore = 'done'; save(s); }
       }
       return;
     }
