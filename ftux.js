@@ -301,8 +301,8 @@
       clone.setAttribute('data-ftux-bound', '1');
       clone.addEventListener('click', function () {
         if (i === 0) location.href = 'studio.html' + suffix;      // Add app → build
-        else if (i === 1) location.href = 'crm.html' + suffix;    // Create test client → CRM (the page's "Add test client" marks it done)
-        else if (i === 2) openPortalIntro();                      // Explore → interstitial → client portal
+        else if (i === 1) location.href = 'crm.html' + suffix;    // (hidden) test-client step
+        else if (i === 2) location.href = 'crm.html' + suffix;    // Explore → CRM coachmark (preview the portal as the test client)
         else openInvite();                                        // Invite your team → modal
       });
     });
