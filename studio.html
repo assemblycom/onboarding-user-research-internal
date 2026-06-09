@@ -68,7 +68,10 @@
     .content { max-width: 740px; margin: 0 auto; width: 100%; padding: 64px 24px 60px; }
     .greeting { font-size: 26px; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 18px; }
 
-    .promptbox { border: 1.5px solid transparent; border-radius: 14px; background: linear-gradient(#fff,#fff) padding-box, linear-gradient(150deg, #c2caf0 0%, #d9ed92 100%) border-box; box-shadow: 0 1px 2px rgba(0,0,0,0.03); overflow: hidden; transition: box-shadow 0.15s; }
+    @property --asm-prompt-angle { syntax: "<angle>"; inherits: false; initial-value: 150deg; }
+    .promptbox { border: 1.5px solid transparent; border-radius: 14px; background: linear-gradient(#fff,#fff) padding-box, conic-gradient(from var(--asm-prompt-angle), #c2caf0, #d9ed92, #c2caf0, #d9ed92, #c2caf0) border-box; box-shadow: 0 1px 2px rgba(0,0,0,0.03); overflow: hidden; transition: box-shadow 0.15s; animation: asmPromptGlow 6s linear infinite; }
+    @keyframes asmPromptGlow { to { --asm-prompt-angle: 510deg; } }
+    @media (prefers-reduced-motion: reduce) { .promptbox { animation: none; } }
     .promptbox:focus-within { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
     .promptbox textarea { width: 100%; border: none; outline: none; resize: none; font-family: inherit; font-size: 15px; line-height: 1.55; color: var(--text); padding: 16px 18px 6px; min-height: 70px; max-height: 240px; background: transparent; }
     .promptbox textarea::placeholder { color: #9aa0a6; }
