@@ -863,6 +863,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       // Option rows — 56px tall with bottom border
       '.asm-qa-option { display:flex; align-items:center; gap:12px; height:56px; padding:8px 16px; border:0; border-bottom:1px solid #DFE1E4; background:#fff; cursor:pointer; text-align:left; font-family:inherit; font-size:14px; line-height:22px; color:#212B36; transition:background 0.12s ease; flex-shrink:0; width:100%; }',
       '.asm-qa-option:hover { background:#F8F9FB; }',
+      // Drop the last option\'s separator so it doesn\'t double up with the card border.
+      '.asm-qa-options:last-child .asm-qa-option:last-child { border-bottom:0; }',
       // Single-select 28px numbered badge
       '.asm-qa-option .asm-num { width:28px; height:28px; border-radius:6px; background:#EFF1F4; display:grid; place-items:center; font-family:inherit; font-size:12px; line-height:20px; font-weight:400; color:#6B6F76; flex-shrink:0; transition:background 0.12s ease; }',
       '.asm-qa-option.selected { background:#F8F9FB; }',
