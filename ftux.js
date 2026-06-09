@@ -79,6 +79,19 @@
       '.pi-line{height:8px;border-radius:4px;background:#eef0f2;}' +
       '.pi-line.short{width:56%;}' +
       '.pi-head2{height:10px;width:38%;border-radius:4px;background:#eef0f2;margin-top:6px;}' +
+      // ── "Meet your test client first" gate (Open Portal before visiting the CRM) ──
+      '.cf-ov{position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
+      '.cf-ov.show{opacity:1;pointer-events:auto;}' +
+      '.cf-card{width:420px;max-width:100%;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,0.28);padding:28px;}' +
+      '.cf-ic{width:44px;height:44px;border-radius:11px;background:#f0f1f3;color:#5a6068;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}' +
+      '.cf-ic svg{width:22px;height:22px;}' +
+      '.cf-title{font-size:19px;font-weight:500;margin:0 0 8px;color:#212b36;}' +
+      '.cf-copy{font-size:14px;line-height:1.55;color:#6b6f76;margin:0 0 22px;}' +
+      '.cf-actions{display:flex;gap:10px;justify-content:flex-end;}' +
+      '.cf-cancel{height:40px;padding:0 16px;background:#fff;border:1px solid #dfe1e4;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;color:#212b36;cursor:pointer;}' +
+      '.cf-cancel:hover{background:#eff1f4;}' +
+      '.cf-go{height:40px;padding:0 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}' +
+      '.cf-go:hover{background:#000;}' +
       '@media (max-width:640px){.pi-right{display:none;}}';
     document.head.appendChild(css);
   }
@@ -237,8 +250,38 @@
     ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('show'); });
     return ov;
   }
+  // Gate shown when "Open Portal" is clicked before the test client has been
+  // engaged in the CRM — points the user there to go through the coachmark first.
+  function ensureClientFirst() {
+    var ov = document.querySelector('.cf-ov');
+    if (ov) return ov;
+    var CRM_IC = '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.17969 2.6375C1.17969 1.37504 2.20316 0.351562 3.46563 0.351562H10.9469C11.9807 0.351562 12.8172 1.18801 12.8172 2.22188V8.87188C12.8172 9.52129 12.4873 10.0928 11.9859 10.4279V12.4047H12.1938C12.5392 12.4047 12.8172 12.6826 12.8172 13.0281C12.8172 13.3736 12.5392 13.6516 12.1938 13.6516H3.25781C2.10965 13.6516 1.17969 12.7216 1.17969 11.5734V2.6375ZM2.42656 11.5734C2.42656 12.0332 2.79803 12.4047 3.25781 12.4047H10.7391V10.7422H3.25781C2.79803 10.7422 2.42656 11.1137 2.42656 11.5734ZM2.42656 9.66936C2.68113 9.55766 2.96168 9.49531 3.25781 9.49531H10.9469C11.2924 9.49531 11.5703 9.21736 11.5703 8.87188V2.22188C11.5703 1.87639 11.2924 1.59844 10.9469 1.59844H3.46563C2.89154 1.59844 2.42656 2.06342 2.42656 2.6375V9.66936ZM5.75156 4.50781C5.75156 3.81998 6.31061 3.26094 6.99844 3.26094C7.68627 3.26094 8.24531 3.81998 8.24531 4.50781C8.24531 5.19564 7.68627 5.75469 6.99844 5.75469C6.31061 5.75469 5.75156 5.19564 5.75156 4.50781ZM5.25801 8.04063C4.87355 8.04063 4.57742 7.68475 4.79043 7.36524C5.09955 6.89766 5.63207 6.58594 6.23732 6.58594H7.76215C8.3674 6.58594 8.89732 6.89506 9.20904 7.36524C9.41945 7.68475 9.12592 8.04063 8.74147 8.04063H5.25801Z" fill="currentColor"/></svg>';
+    ov = document.createElement('div');
+    ov.className = 'cf-ov';
+    ov.innerHTML = '<div class="cf-card">' +
+      '<div class="cf-ic">' + CRM_IC + '</div>' +
+      '<h2 class="cf-title">Meet your test client first</h2>' +
+      '<p class="cf-copy">To preview the client portal, head to your CRM and open it as your test client — we’ll walk you through it from there.</p>' +
+      '<div class="cf-actions"><button class="cf-cancel" type="button">Not now</button><button class="cf-go" type="button">Go to CRM</button></div>' +
+    '</div>';
+    document.body.appendChild(ov);
+    function close() { ov.classList.remove('show'); }
+    ov.querySelector('.cf-cancel').addEventListener('click', close);
+    ov.querySelector('.cf-go').addEventListener('click', function () { location.href = 'crm.html' + navSuffix(); });
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    return ov;
+  }
+  function showClientFirst() {
+    var ov = ensureClientFirst();
+    requestAnimationFrame(function () { ov.classList.add('show'); });
+  }
+
   // Show the interstitial first; if already seen, go straight to the portal.
   function openPortalIntro() {
+    // Guard: if the test client hasn't been engaged in the CRM yet (the Explore
+    // step hasn't started), guide the user there before previewing the portal.
+    var exp; try { exp = (get() || {}).explore; } catch (e) {}
+    if (exp !== 'progress' && exp !== 'done') { showClientFirst(); return; }
     // Option 3 teaches nothing — go straight into the Open Portal experience
     // (branded sign-in → portal), no explanatory interstitial.
     var v3; try { v3 = localStorage.getItem('onb.crmVariant') === '3'; } catch (e) {}
