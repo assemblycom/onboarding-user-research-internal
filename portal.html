@@ -65,6 +65,8 @@
     .exit-preview { position: fixed; top: 16px; right: 18px; z-index: 130; display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; background: #1a1a1a; color: #fff; border: none; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18); text-decoration: none; }
     .exit-preview:hover { background: #000; }
     .exit-preview svg { width: 14px; height: 14px; }
+    .exit-preview::after { content: attr(data-tip); position: absolute; top: calc(100% + 9px); right: 0; width: max-content; max-width: 230px; white-space: normal; text-align: left; background: #1a1a1a; color: #fff; font-size: 12px; font-weight: 400; line-height: 1.45; padding: 8px 11px; border-radius: 9px; box-shadow: 0 8px 24px rgba(0,0,0,0.22); opacity: 0; transform: translateY(-3px); pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; }
+    .exit-preview:hover::after { opacity: 1; transform: translateY(0); }
 
 
     /* First-visit interstitial — centered modal (text left, visual right). */
@@ -140,7 +142,7 @@
     </div>
   </div>
 
-  <a class="exit-preview" id="exitPreview" href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Exit preview</a>
+  <a class="exit-preview" id="exitPreview" data-live="1" data-tip="Only here for the prototype — in the real product the client portal opens in its own tab." href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Exit preview</a>
 
   <div class="shell">
     <!-- Themed client sidebar -->
