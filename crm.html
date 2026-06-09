@@ -576,7 +576,6 @@
         coachMode = 'coach';
         coachClient = c;
         markClientDone();   // seeing card 1 completes "Meet your test client"
-        resetExploreProgress();   // starting at card 1 → "Explore" isn't half-lit yet
         const row = tbody.querySelector('tr');
         if (row) row.classList.add('spotlight');
         renderCoachB(1);
@@ -699,11 +698,6 @@
       // the magic-link card — is seen; opening the portal then completes it.
       function markExploreProgress() {
         try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.explore !== 'done' && s.explore !== 'progress') { s.explore = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(s)); if (typeof window.ftuxInit === 'function') window.ftuxInit(); } } catch (e) {}
-      }
-      // Landing back at card 1 clears a lingering half-lit state (but never a
-      // completed one) so "Explore" only re-lights once card 2 is reached again.
-      function resetExploreProgress() {
-        try { const s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (s.explore === 'progress') { delete s.explore; localStorage.setItem('onb.ftux', JSON.stringify(s)); if (typeof window.ftuxInit === 'function') window.ftuxInit(); } } catch (e) {}
       }
 
       // ── Commit a client: persist, (optionally) mark the step done, render, showcase ──
@@ -844,12 +838,15 @@
       if (getHashParam('addclient')) {
         setTimeout(openInviteForm, 200);
       } else {
-        // The coachmark auto-shows the first time the CRM is opened (introducing the
-        // test client + magic-link preview, and updating the checklist). Once "Explore
-        // the client experience" is completed, it no longer appears on its own.
+        // Being on the CRM means you've started exploring the client experience, so
+        // half-light that step (unless it's already completed). The coachmark also
+        // auto-shows on the first visit and stops once "Explore" is done.
         var exploreDone = false;
         try { exploreDone = (JSON.parse(localStorage.getItem('onb.ftux')) || {}).explore === 'done'; } catch (e) {}
-        if (!exploreDone) setTimeout(function () { showCoach(current); }, 280);
+        if (!exploreDone) {
+          markExploreProgress();
+          setTimeout(function () { showCoach(current); }, 280);
+        }
       }
     })();
   </script>
