@@ -53,10 +53,10 @@
       '.inv-list{border:1px solid #dfe1e4;border-radius:10px;overflow:hidden;}' +
       '.inv-person{display:flex;align-items:center;gap:11px;padding:9px 13px;cursor:pointer;transition:background .12s;}' +
       '.inv-person:hover{background:#f8f9fb;}' +
-      '.inv-person.selected{background:#f2f4fc;}' +
+      '.inv-person.selected{background:#f1f3f5;}' +
       '.inv-person+.inv-person{border-top:1px solid #f1f3f4;}' +
       '.inv-av{width:30px;height:30px;border-radius:50%;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
-      '.inv-person-add{margin-left:auto;flex-shrink:0;color:#6e7cbb;opacity:0;display:flex;align-items:center;}' +
+      '.inv-person-add{margin-left:auto;flex-shrink:0;color:#6b6f76;opacity:0;display:flex;align-items:center;}' +
       '.inv-person-add svg{width:17px;height:17px;}' +
       '.inv-person.selected .inv-person-add{opacity:1;}' +
       '.inv-nm{font-size:13.5px;font-weight:500;line-height:1.3;}' +
