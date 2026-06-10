@@ -34,15 +34,26 @@
       '.inv-overlay.show{opacity:1;pointer-events:auto;}' +
       '.inv-modal{width:448px;max-width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.28);max-height:90vh;display:flex;flex-direction:column;}' +
       '.inv-banner{height:150px;flex-shrink:0;background:linear-gradient(180deg,#ffffff 0%,#c4cbf0 48%,#d9ed92 100%);}' +
-      '.inv-body{padding:22px 22px 0;overflow-y:auto;color:#212b36;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
-      '.inv-body::-webkit-scrollbar{width:6px;}' +
-      '.inv-body::-webkit-scrollbar-track{background:transparent;}' +
-      '.inv-body::-webkit-scrollbar-thumb{background:#cfd2d8;border-radius:3px;}' +
-      '.inv-body::-webkit-scrollbar-thumb:hover{background:#b9bcc1;}' +
+      '.inv-body{padding:22px 22px 0;flex-shrink:0;color:#212b36;}' +
+      '.inv-scroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 22px 2px;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
+      '.inv-scroll::-webkit-scrollbar{width:6px;}' +
+      '.inv-scroll::-webkit-scrollbar-track{background:transparent;}' +
+      '.inv-scroll::-webkit-scrollbar-thumb{background:#cfd2d8;border-radius:3px;}' +
+      '.inv-scroll::-webkit-scrollbar-thumb:hover{background:#b9bcc1;}' +
       '.inv-title{font-size:18px;font-weight:500;margin:0 0 6px;}' +
       '.inv-sub{font-size:13.5px;color:#6b6f76;line-height:1.5;margin:0 0 18px;}' +
-      '.inv-input-row{display:flex;align-items:stretch;border:1px solid #dfe1e4;border-radius:8px;overflow:hidden;margin-bottom:16px;}' +
+      '.inv-input-row{display:flex;align-items:stretch;border:1px solid #dfe1e4;border-radius:8px;margin-bottom:16px;}' +
       '.inv-input-row:focus-within{border-color:#b9bcc1;}' +
+      '.inv-role-wrap{position:relative;flex-shrink:0;border-left:1px solid #dfe1e4;display:flex;align-items:center;}' +
+      '.inv-role-btn{height:100%;display:flex;align-items:center;gap:5px;padding:0 12px;background:none;border:0;font-family:inherit;font-size:13px;color:#212b36;cursor:pointer;white-space:nowrap;border-radius:0 7px 7px 0;}' +
+      '.inv-role-btn:hover{background:#f8f9fb;}' +
+      '.inv-role-btn svg{width:13px;height:13px;color:#6b6f76;}' +
+      '.inv-role-menu{position:absolute;top:calc(100% + 5px);right:0;min-width:150px;background:#fff;border:1px solid #e6e8eb;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.14);padding:4px;display:none;z-index:10;}' +
+      '.inv-role-menu.open{display:block;}' +
+      '.inv-role-opt{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;padding:7px 10px;background:none;border:0;font-family:inherit;border-radius:6px;cursor:pointer;}' +
+      '.inv-role-opt:hover{background:#f1f3f5;}' +
+      '.inv-role-opt b{font-size:13px;font-weight:500;color:#212b36;}' +
+      '.inv-role-opt span{font-size:11.5px;color:#9aa0a6;line-height:1.3;}' +
       '.inv-chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;padding:8px 10px;max-height:82px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
       '.inv-chips::-webkit-scrollbar{width:6px;}' +
       '.inv-chips::-webkit-scrollbar-track{background:transparent;}' +
@@ -154,9 +165,15 @@
       '<div class="inv-body">' +
       '<h2 class="inv-title">Bring your team into Studio</h2>' +
       '<p class="inv-sub">Your app is now available to your team. Add teammates to get everyone working in one place.</p>' +
-      '<div class="inv-input-row"><div class="inv-chips" id="invChips"><input type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" /></div></div>' +
-      '<div class="inv-list">' + listHtml + '</div>' +
+      '<div class="inv-input-row"><div class="inv-chips" id="invChips"><input type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" /></div>' +
+        '<div class="inv-role-wrap"><button type="button" class="inv-role-btn" id="invRoleBtn"><span class="inv-role-label">Member</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' +
+          '<div class="inv-role-menu" id="invRoleMenu">' +
+            '<button type="button" class="inv-role-opt" data-role="Member"><b>Member</b><span>Can use apps and work in the portal</span></button>' +
+            '<button type="button" class="inv-role-opt" data-role="Admin"><b>Admin</b><span>Full access, including settings and billing</span></button>' +
+          '</div></div>' +
       '</div>' +
+      '</div>' +
+      '<div class="inv-scroll"><div class="inv-list">' + listHtml + '</div></div>' +
       '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
       '</div>';
     document.body.appendChild(ov);
@@ -169,6 +186,7 @@
     var inviteBtn = ov.querySelector('.inv-btn');
     var chipBox = ov.querySelector('#invChips');
     var emailInput = ov.querySelector('#invChips input');
+    var inviteRole = 'Member';   // one role for the whole invite batch
     var X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
     function chipFor(email) { return chipBox.querySelector('.inv-chip[data-email="' + email.replace(/"/g, '') + '"]'); }
     function rowFor(email) { return ov.querySelector('.inv-person[data-email="' + email.replace(/"/g, '') + '"]'); }
@@ -176,6 +194,8 @@
       var n = chipBox.querySelectorAll('.inv-chip').length;
       inviteBtn.textContent = n ? 'Invite ' + n + (n > 1 ? ' members' : ' member') : 'Invite';
       inviteBtn.disabled = !n;
+      // Drop the placeholder once at least one email is in — it reads as redundant.
+      if (emailInput) emailInput.placeholder = n ? '' : 'name@company.com';
     }
     function addChip(email) {
       email = (email || '').trim().replace(/,$/, '');
@@ -222,13 +242,28 @@
         '<div class="inv-body inv-success">' +
         '<div class="inv-check-circle">' + check + '</div>' +
         '<h2 class="inv-title">' + (n > 1 ? n + ' invitations sent' : 'Invitation sent') + '</h2>' +
-        '<p class="inv-sub">' + (n > 1 ? 'Your teammates' : 'Your teammate') + ' will get an email to join Studio.</p>' +
+        '<p class="inv-sub">' + (n > 1 ? 'Your teammates' : 'Your teammate') + ' will get an email to join Studio as ' + (inviteRole === 'Admin' ? (n > 1 ? 'admins' : 'an admin') : (n > 1 ? 'members' : 'a member')) + '.</p>' +
         '</div>' +
         '<div class="inv-foot"><button class="inv-btn">Done</button></div>';
       modal.querySelector('.inv-btn').addEventListener('click', completeInvite);
     }
     inviteBtn.addEventListener('click', function () { if (!inviteBtn.disabled) showInviteSuccess(); });
     ov.querySelector('.inv-later').addEventListener('click', completeInvite);
+    // Role selector (Member / Admin) — applies to everyone in this invite.
+    var roleBtn = ov.querySelector('#invRoleBtn');
+    var roleMenu = ov.querySelector('#invRoleMenu');
+    if (roleBtn && roleMenu) {
+      roleBtn.addEventListener('click', function (e) { e.stopPropagation(); roleMenu.classList.toggle('open'); });
+      [].forEach.call(roleMenu.querySelectorAll('.inv-role-opt'), function (opt) {
+        opt.addEventListener('click', function (e) {
+          e.stopPropagation();
+          inviteRole = opt.getAttribute('data-role');
+          roleBtn.querySelector('.inv-role-label').textContent = inviteRole;
+          roleMenu.classList.remove('open');
+        });
+      });
+      ov.addEventListener('click', function () { roleMenu.classList.remove('open'); });
+    }
     syncInviteCount();
     return ov;
   }
