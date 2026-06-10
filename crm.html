@@ -137,7 +137,11 @@
     .crm-coach-btn:hover { background: #000; }
 
     /* Spotlight the freshly-added test client row (variants B + C) — soft tint, no edge line */
-    .crm-table tbody tr.spotlight, .crm-table tbody tr.spotlight:hover { background: #edf0f5; }
+    /* Match the coachmark's periwinkle highlight (fill + outline) on the selected row. */
+    .crm-table tbody tr.spotlight, .crm-table tbody tr.spotlight:hover { background: #edeff8; }
+    .crm-table tbody tr.spotlight td { border-top: 1px solid #c8d0ea; border-bottom: 1px solid #c8d0ea; }
+    .crm-table tbody tr.spotlight td:first-child { border-left: 1px solid #c8d0ea; }
+    .crm-table tbody tr.spotlight td:last-child { border-right: 1px solid #c8d0ea; }
 
     /* Row ••• actions menu (the real home of the magic link) */
     .crm-menu { position: fixed; z-index: 600; width: 240px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 12px 32px rgba(16,24,40,0.12), 0 1px 3px rgba(16,24,40,0.06); padding: 5px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease; }
