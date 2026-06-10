@@ -479,13 +479,12 @@
     // out (ending with "…", as if there's more to write), cycling gently. Stops
     // the moment the box is focused; resumes on blur if still empty.
     (function () {
-      var PREFIX = 'Ask Assembly to create a client app that ';
+      var PREFIX = 'Ask Assembly to ';
       var IDEAS = [
-        'sends invoices and collects payments',
-        'books and manages appointments',
-        'tracks hours across projects',
-        'shares files securely with clients',
-        'handles new-client intake'
+        'build me a dashboard for my clients that shows',
+        'build an internal ticketing tool for my team that tracks',
+        'create a proposal builder for my clients to',
+        'make an onboarding wizard for my clients that'
       ];
       var DEFAULT_PH = PREFIX + '…';
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
