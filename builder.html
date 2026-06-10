@@ -1377,6 +1377,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-textarea:disabled { color:#9FA1A6; cursor:not-allowed; }',
       '.asm-composer-bar { display:flex; align-items:center; gap:6px; margin-top:8px; }',
       '.asm-attach { width:26px; height:26px; border-radius:6px; border:0; background:transparent; cursor:pointer; color:#6B6F76; display:grid; place-items:center; }',
+      // Attach + voice aren\'t wired in this prototype — non-interactive, tooltip on hover.
+      '.asm-composer-bar [data-asm-na]{cursor:default;position:relative;}' +
+      '.asm-composer-bar [data-asm-na]::after{content:attr(data-asm-na);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#1a1a1a;color:#fff;font-size:12px;font-weight:400;line-height:1;padding:7px 10px;border-radius:7px;opacity:0;pointer-events:none;transition:opacity .12s ease;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:30;}' +
+      '.asm-composer-bar [data-asm-na]::before{content:"";position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1a1a1a;opacity:0;transition:opacity .12s ease;}' +
+      '.asm-composer-bar [data-asm-na]:hover::after,.asm-composer-bar [data-asm-na]:hover::before{opacity:1;}',
       '.asm-attach:hover { background:rgba(16,16,16,0.04); color:#101010; }',
       // Voice button sits to the left of Send. Picks up margin-left:auto so
       // it pushes itself + Send to the right, aligning with the prior Send-only layout.
@@ -1766,8 +1771,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         '    <div class="asm-composer-box">',
         '      <textarea class="asm-textarea" id="asm-textarea" placeholder="How might you improve your app?" rows="1"></textarea>',
         '      <div class="asm-composer-bar">',
-        '        <button type="button" class="asm-attach" tabindex="-1" aria-label="Attach"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.48-8.48l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>',
-        '        <button type="button" class="asm-voice" id="asm-voice" aria-label="Voice input"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>',
+        '        <button type="button" class="asm-attach" tabindex="-1" aria-label="Attach" data-asm-na="Not part of this prototype"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.48-8.48l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>',
+        '        <button type="button" class="asm-voice" id="asm-voice" tabindex="-1" aria-label="Voice input" data-asm-na="Not part of this prototype"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>',
         '        <button type="button" class="asm-send asm-send--icon" id="asm-send" data-asm-icon="up" aria-label="Send" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>',
         '      </div>',
         '    </div>',
@@ -1791,6 +1796,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         recognition = null;
       }
       voice.addEventListener('click', function() {
+        return;   // Voice input isn't part of this prototype (hover tooltip explains).
         if (ta.disabled) return;
         if (voice.classList.contains('recording')) { stopRecognition(); return; }
         if (!SR) {
