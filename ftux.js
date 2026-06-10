@@ -33,7 +33,7 @@
       '.inv-overlay{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
       '.inv-overlay.show{opacity:1;pointer-events:auto;}' +
       '.inv-modal{width:448px;max-width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.28);max-height:90vh;display:flex;flex-direction:column;}' +
-      '.inv-banner{height:150px;flex-shrink:0;background:#aeb8e8;}' +
+      '.inv-banner{height:150px;flex-shrink:0;background:linear-gradient(180deg,#ffffff 0%,#c4cbf0 48%,#d9ed92 100%);}' +
       '.inv-body{padding:22px 22px 0;overflow-y:auto;color:#212b36;}' +
       '.inv-title{font-size:18px;font-weight:500;margin:0 0 6px;}' +
       '.inv-sub{font-size:13.5px;color:#6b6f76;line-height:1.5;margin:0 0 18px;}' +
@@ -41,9 +41,15 @@
       '.inv-input-row input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;padding:0 14px;height:42px;color:#212b36;}' +
       '.inv-role{display:flex;align-items:center;gap:5px;border-left:1px solid #dfe1e4;padding:0 12px;height:42px;font-size:13px;color:#212b36;cursor:pointer;white-space:nowrap;}' +
       '.inv-list{border:1px solid #dfe1e4;border-radius:10px;overflow:hidden;}' +
-      '.inv-person{display:flex;align-items:center;gap:11px;padding:9px 13px;}' +
+      '.inv-person{display:flex;align-items:center;gap:11px;padding:9px 13px;cursor:pointer;transition:background .12s;}' +
+      '.inv-person:hover{background:#f8f9fb;}' +
+      '.inv-person.selected{background:#f2f4fc;}' +
       '.inv-person+.inv-person{border-top:1px solid #f1f3f4;}' +
       '.inv-av{width:30px;height:30px;border-radius:50%;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+      '.inv-check{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1.5px solid #c7ccd3;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;}' +
+      '.inv-check svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .12s;}' +
+      '.inv-person.selected .inv-check{background:#1a1a1a;border-color:#1a1a1a;}' +
+      '.inv-person.selected .inv-check svg{opacity:1;}' +
       '.inv-nm{font-size:13.5px;font-weight:500;line-height:1.3;}' +
       '.inv-em{font-size:12.5px;color:#6b6f76;line-height:1.3;}' +
       '.inv-foot{padding:16px 22px 22px;flex-shrink:0;}' +
@@ -120,7 +126,8 @@
       ['Taylor Brooks', 'taylor'], ['Morgan Diaz', 'morgan']
     ].map(function (p) { return [p[0], p[1] + '@' + inviteDomain]; });
     function initials(n) { var p = n.trim().split(/\s+/); return ((p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '')).toUpperCase(); }
-    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div></div>'; }).join('');
+    var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person" data-email="' + p[1] + '"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div><span class="inv-check">' + CHECK + '</span></div>'; }).join('');
     ov = document.createElement('div');
     ov.className = 'inv-overlay';
     ov.innerHTML = '<div class="inv-modal">' +
@@ -137,7 +144,20 @@
     // Closing the modal any way — "Invite", "Maybe later", or the backdrop —
     // marks the checklist item done.
     ov.addEventListener('click', function (e) { if (e.target === ov) completeInvite(); });
-    ov.querySelector('.inv-btn').addEventListener('click', completeInvite);
+    // Click a suggested teammate to add them; multiple can be selected. The
+    // Invite button reflects the running count (selected rows + a typed email).
+    var inviteBtn = ov.querySelector('.inv-btn');
+    var emailInput = ov.querySelector('input[type="email"]');
+    function syncInviteCount() {
+      var n = ov.querySelectorAll('.inv-person.selected').length;
+      if (emailInput && emailInput.value.trim()) n++;
+      inviteBtn.textContent = n ? 'Invite ' + n + (n > 1 ? ' members' : ' member') : 'Invite';
+    }
+    [].forEach.call(ov.querySelectorAll('.inv-person'), function (p) {
+      p.addEventListener('click', function () { p.classList.toggle('selected'); syncInviteCount(); });
+    });
+    if (emailInput) emailInput.addEventListener('input', syncInviteCount);
+    inviteBtn.addEventListener('click', completeInvite);
     ov.querySelector('.inv-later').addEventListener('click', completeInvite);
     return ov;
   }
