@@ -394,13 +394,14 @@ document.addEventListener('DOMContentLoaded', async function() {
   // ============================================================
   // Q&A questions (rendered inline as a chat card)
   // ============================================================
+  // Every question ends with "Skip" so the user can always move on without answering.
   var QA_QUESTIONS = [
     { question: "Should this app be visible to your clients?",
-      options: ["Internal-only", "Show in my client portal"] },
+      options: ["Internal-only", "Show in my client portal", "Skip"] },
     { question: "How will the data get into the app?",
-      options: ["Manual entries only", "Synced from another tool", "Imported from a spreadsheet", "Mix of sources"] },
+      options: ["Manual entries only", "Synced from another tool", "Imported from a spreadsheet", "Skip"] },
     { question: "Who else on your team needs access?",
-      options: ["Just me", "A small team (2-5)", "My whole org", "I'll set up later"] }
+      options: ["Just me", "A small team (2-5)", "My whole org", "Skip"] }
   ];
 
   var BUILD_STATES = [
