@@ -54,12 +54,14 @@
       '.inv-role-opt:hover{background:#f1f3f5;}' +
       '.inv-role-opt b{font-size:13px;font-weight:500;color:#212b36;}' +
       '.inv-role-opt span{font-size:11.5px;color:#9aa0a6;line-height:1.3;}' +
-      '.inv-chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;padding:8px 10px;max-height:82px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
-      '.inv-chips::-webkit-scrollbar{width:6px;}' +
-      '.inv-chips::-webkit-scrollbar-track{background:transparent;}' +
-      '.inv-chips::-webkit-scrollbar-thumb{background:#cfd2d8;border-radius:3px;}' +
-      '.inv-chips::-webkit-scrollbar-thumb:hover{background:#b9bcc1;}' +
-      '.inv-chips input{flex:1;min-width:130px;border:none;outline:none;font-family:inherit;font-size:14px;padding:4px 0;color:#212b36;background:transparent;}' +
+      '.inv-email-input{flex:1;min-width:0;border:none;outline:none;font-family:inherit;font-size:14px;padding:11px 12px;color:#212b36;background:transparent;}' +
+      // Added emails live in their own area below the input, so the input never grows.
+      '.inv-recipients{display:none;flex-wrap:wrap;align-content:flex-start;gap:6px;max-height:78px;overflow-y:auto;margin:-4px 0 16px;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
+      '.inv-recipients.has{display:flex;}' +
+      '.inv-recipients::-webkit-scrollbar{width:6px;}' +
+      '.inv-recipients::-webkit-scrollbar-track{background:transparent;}' +
+      '.inv-recipients::-webkit-scrollbar-thumb{background:#cfd2d8;border-radius:3px;}' +
+      '.inv-recipients::-webkit-scrollbar-thumb:hover{background:#b9bcc1;}' +
       '.inv-chip{display:inline-flex;align-items:center;gap:5px;background:#eef0f4;border-radius:6px;padding:3px 4px 3px 9px;font-size:13px;color:#212b36;max-width:100%;}' +
       '.inv-chip-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
       '.inv-chip-x{border:0;background:none;cursor:pointer;color:#6b6f76;padding:1px;border-radius:4px;display:flex;align-items:center;line-height:1;}' +
@@ -165,13 +167,14 @@
       '<div class="inv-body">' +
       '<h2 class="inv-title">Bring your team into Studio</h2>' +
       '<p class="inv-sub">Your app is now available to your team. Add teammates to get everyone working in one place.</p>' +
-      '<div class="inv-input-row"><div class="inv-chips" id="invChips"><input type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" /></div>' +
+      '<div class="inv-input-row"><input type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" id="invEmail" class="inv-email-input" />' +
         '<div class="inv-role-wrap"><button type="button" class="inv-role-btn" id="invRoleBtn"><span class="inv-role-label">Member</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' +
           '<div class="inv-role-menu" id="invRoleMenu">' +
             '<button type="button" class="inv-role-opt" data-role="Member"><b>Member</b><span>Can use apps and work in the portal</span></button>' +
             '<button type="button" class="inv-role-opt" data-role="Admin"><b>Admin</b><span>Full access, including settings and billing</span></button>' +
           '</div></div>' +
       '</div>' +
+      '<div class="inv-recipients" id="invRecipients"></div>' +
       '</div>' +
       '<div class="inv-scroll"><div class="inv-list">' + listHtml + '</div></div>' +
       '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
@@ -184,16 +187,17 @@
     // their email as a chip (clicking again removes it); typing + Enter/comma
     // adds a typed one. The Invite button reflects the chip count.
     var inviteBtn = ov.querySelector('.inv-btn');
-    var chipBox = ov.querySelector('#invChips');
-    var emailInput = ov.querySelector('#invChips input');
+    var recipients = ov.querySelector('#invRecipients');
+    var emailInput = ov.querySelector('#invEmail');
     var inviteRole = 'Member';   // one role for the whole invite batch
     var X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    function chipFor(email) { return chipBox.querySelector('.inv-chip[data-email="' + email.replace(/"/g, '') + '"]'); }
+    function chipFor(email) { return recipients.querySelector('.inv-chip[data-email="' + email.replace(/"/g, '') + '"]'); }
     function rowFor(email) { return ov.querySelector('.inv-person[data-email="' + email.replace(/"/g, '') + '"]'); }
     function syncInviteCount() {
-      var n = chipBox.querySelectorAll('.inv-chip').length;
+      var n = recipients.querySelectorAll('.inv-chip').length;
       inviteBtn.textContent = n ? 'Invite ' + n + (n > 1 ? ' members' : ' member') : 'Invite';
       inviteBtn.disabled = !n;
+      recipients.classList.toggle('has', n > 0);   // the chip area only shows once there's a recipient
       // Drop the placeholder once at least one email is in — it reads as redundant.
       if (emailInput) emailInput.placeholder = n ? '' : 'name@company.com';
     }
@@ -206,7 +210,7 @@
       chip.innerHTML = '<span class="inv-chip-label"></span><button type="button" class="inv-chip-x" aria-label="Remove">' + X + '</button>';
       chip.querySelector('.inv-chip-label').textContent = email;
       chip.querySelector('.inv-chip-x').addEventListener('click', function (e) { e.stopPropagation(); removeChip(email); });
-      chipBox.insertBefore(chip, emailInput);
+      recipients.appendChild(chip);
       var row = rowFor(email); if (row) row.classList.add('selected');
       syncInviteCount();
     }
@@ -223,17 +227,18 @@
       emailInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addChip(emailInput.value); emailInput.value = ''; }
         else if (e.key === 'Backspace' && !emailInput.value) {
-          var chips = chipBox.querySelectorAll('.inv-chip'); if (chips.length) { removeChip(chips[chips.length - 1].getAttribute('data-email')); }
+          var chips = recipients.querySelectorAll('.inv-chip'); if (chips.length) { removeChip(chips[chips.length - 1].getAttribute('data-email')); }
         }
       });
       emailInput.addEventListener('blur', function () { if (emailInput.value.trim()) { addChip(emailInput.value); emailInput.value = ''; } });
     }
-    // Clicking anywhere in the box focuses the text input.
-    if (chipBox) chipBox.addEventListener('click', function (e) { if (e.target === chipBox) emailInput && emailInput.focus(); });
+    // Clicking the input row focuses the text field.
+    var inputRow = ov.querySelector('.inv-input-row');
+    if (inputRow) inputRow.addEventListener('click', function (e) { if (e.target === inputRow) emailInput && emailInput.focus(); });
     // Clicking Invite confirms with a success state (the button is disabled
     // until at least one email is added); "Maybe later" just closes.
     function showInviteSuccess() {
-      var emails = [].map.call(chipBox.querySelectorAll('.inv-chip'), function (c) { return c.getAttribute('data-email'); });
+      var emails = [].map.call(recipients.querySelectorAll('.inv-chip'), function (c) { return c.getAttribute('data-email'); });
       var n = emails.length;
       if (!n) return;
       var modal = ov.querySelector('.inv-modal');
