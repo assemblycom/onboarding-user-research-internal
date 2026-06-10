@@ -474,6 +474,45 @@
     });
     // Restore a prompt typed before reloading / switching tabs.
     try { var savedPrompt = localStorage.getItem(PROMPT_KEY); if (savedPrompt && !promptInput.value) { promptInput.value = savedPrompt; promptInput.dispatchEvent(new Event('input')); } } catch (e) {}
+
+    // Animated placeholder: the lead-in stays put while example app ideas type
+    // out (ending with "…", as if there's more to write), cycling gently. Stops
+    // the moment the box is focused; resumes on blur if still empty.
+    (function () {
+      var PREFIX = 'Ask Assembly to create a client app that ';
+      var IDEAS = [
+        'sends invoices and collects payments',
+        'books and manages appointments',
+        'tracks hours across projects',
+        'shares files securely with clients',
+        'handles new-client intake'
+      ];
+      var DEFAULT_PH = PREFIX + '…';
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) { promptInput.placeholder = DEFAULT_PH; return; }
+      var i = 0, ch = 0, deleting = false, timer = null, running = false;
+      function step() {
+        if (!running) return;
+        var idea = IDEAS[i];
+        if (!deleting) {
+          ch++;
+          promptInput.placeholder = PREFIX + idea.slice(0, ch) + '…';
+          if (ch >= idea.length) { deleting = true; timer = setTimeout(step, 1700); return; }
+          timer = setTimeout(step, 46);
+        } else {
+          ch--;
+          promptInput.placeholder = PREFIX + idea.slice(0, Math.max(0, ch)) + '…';
+          if (ch <= 0) { deleting = false; i = (i + 1) % IDEAS.length; timer = setTimeout(step, 420); return; }
+          timer = setTimeout(step, 26);
+        }
+      }
+      function start() { if (running || promptInput.value) return; running = true; step(); }
+      function stop() { running = false; if (timer) { clearTimeout(timer); timer = null; } }
+      promptInput.addEventListener('focus', function () { stop(); promptInput.placeholder = DEFAULT_PH; });
+      promptInput.addEventListener('blur', function () { if (!promptInput.value) { ch = 0; deleting = false; promptInput.placeholder = DEFAULT_PH; start(); } });
+      promptInput.placeholder = DEFAULT_PH;
+      if (!promptInput.value && document.activeElement !== promptInput) start();
+    })();
   }
 
   if (sendBtn) sendBtn.addEventListener('click', () => { if (currentPrompt) openAuthModal(); });
