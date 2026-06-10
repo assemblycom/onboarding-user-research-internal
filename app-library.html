@@ -101,11 +101,12 @@
     .pb-card { background: #fff; border: 1px solid #ececea; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 9px; }
     .pb-ic { width: 30px; height: 30px; border-radius: 8px; background: #eef0f3; }
 
+    /* On narrow screens there isn't room for the client-portal preview, so hide
+       it entirely and let the app list use the full width. */
     @media (max-width: 980px) {
       .al-body { flex-direction: column; }
-      .al-apps { border-right: none; border-bottom: 1px solid var(--border); }
-      .al-preview { width: 100%; max-width: none; padding: 26px 32px; }
-      .al-device { flex: none; height: 420px; border: 1px solid var(--border); border-radius: 14px; }
+      .al-apps { border-right: none; }
+      .al-preview { display: none; }
     }
   </style>
 </head>
