@@ -223,11 +223,8 @@
         '<div class="inv-check-circle">' + check + '</div>' +
         '<h2 class="inv-title">' + (n > 1 ? n + ' invitations sent' : 'Invitation sent') + '</h2>' +
         '<p class="inv-sub">' + (n > 1 ? 'Your teammates' : 'Your teammate') + ' will get an email to join Studio.</p>' +
-        '<div class="inv-sent">' + emails.map(function (e) { return '<span></span>'; }).join('') + '</div>' +
         '</div>' +
         '<div class="inv-foot"><button class="inv-btn">Done</button></div>';
-      var sent = modal.querySelectorAll('.inv-sent span');
-      emails.forEach(function (e, i) { sent[i].textContent = e; });
       modal.querySelector('.inv-btn').addEventListener('click', completeInvite);
     }
     inviteBtn.addEventListener('click', function () { if (!inviteBtn.disabled) showInviteSuccess(); });

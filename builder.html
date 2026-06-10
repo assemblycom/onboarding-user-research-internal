@@ -46,7 +46,7 @@
     })();
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
-  <script src="ftux.js?v=38"></script>
+  <script src="ftux.js?v=39"></script>
   <script src="builder-sidebar.js?v=18"></script>
 </head>
 <body>
@@ -719,6 +719,12 @@ document.addEventListener('DOMContentLoaded', async function() {
       '.asm-vis-or { font-size: 11px; font-weight: 500; letter-spacing: 0.04em; color: #9aa0a6; }',
       '.asm-vis-addrule { align-self: flex-start; background: none; border: 0; color: #1a1a1a; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; padding: 4px 2px; }',
       '.asm-vis-addrule:hover { text-decoration: underline; }',
+      // The rule builder is illustrative in this prototype — show the rules but make
+      // the controls inert (the visibility option + Done/Publish still work fully).
+      '.asm-vis-rules[data-asm-na] { position: relative; cursor: default; }',
+      '.asm-vis-rules[data-asm-na] #asm-vis-rule-list, .asm-vis-rules[data-asm-na] .asm-vis-addrule { pointer-events: none; }',
+      '.asm-vis-rules[data-asm-na]::after { content: attr(data-asm-na); position: absolute; top: 4px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: #1a1a1a; color: #fff; font-size: 12px; font-weight: 400; line-height: 1; padding: 7px 10px; border-radius: 7px; opacity: 0; pointer-events: none; transition: opacity .12s ease; box-shadow: 0 4px 14px rgba(0,0,0,0.18); z-index: 30; }',
+      '.asm-vis-rules[data-asm-na]:hover::after { opacity: 1; }',
 
       // ── Right-side actions (always visible — replaces bundle) ──
       '.asm-topbar-right { display: flex; align-items: center; gap: 8px; }',
@@ -2562,7 +2568,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       '<div class="asm-pub-view" data-pview="visibility">',
       '  <div class="asm-pub-subhead"><button type="button" class="asm-pub-back" data-back>' + BACK + '</button><div><div class="asm-pub-title">Visibility</div><div class="asm-pub-sub">Who can see this app?</div></div></div>',
       '  <div class="asm-pub-options">' + optsHTML('visibility', visOpts) + '</div>',
-      '  <div class="asm-vis-rules" id="asm-vis-rules">',
+      '  <div class="asm-vis-rules" id="asm-vis-rules" data-asm-na="Not part of this prototype">',
       '    <div class="asm-vis-rules-label">Show to clients who match</div>',
       '    <div id="asm-vis-rule-list">',
             visRule(['Client', 'Company', 'Plan'], ['is any of', 'is', 'is not'], ['Meridian Corp', 'Oakwood LLC']),
