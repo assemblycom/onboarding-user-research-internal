@@ -39,7 +39,9 @@
       '.inv-sub{font-size:13.5px;color:#6b6f76;line-height:1.5;margin:0 0 18px;}' +
       '.inv-input-row{display:flex;align-items:center;border:1px solid #dfe1e4;border-radius:8px;overflow:hidden;margin-bottom:16px;}' +
       '.inv-input-row input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;padding:0 14px;height:42px;color:#212b36;}' +
-      '.inv-role{display:flex;align-items:center;gap:5px;border-left:1px solid #dfe1e4;padding:0 12px;height:42px;font-size:13px;color:#212b36;cursor:pointer;white-space:nowrap;}' +
+      '.inv-role{position:relative;display:flex;align-items:center;gap:5px;border-left:1px solid #dfe1e4;padding:0 12px;height:42px;font-size:13px;color:#212b36;cursor:default;white-space:nowrap;}' +
+      '.inv-role::after{content:attr(data-na);position:absolute;bottom:calc(100% + 9px);right:0;white-space:nowrap;background:#1a1a1a;color:#fff;font-size:12px;font-weight:400;line-height:1;padding:7px 10px;border-radius:7px;opacity:0;pointer-events:none;transition:opacity .12s ease;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:5;}' +
+      '.inv-role:hover::after{opacity:1;}' +
       '.inv-list{border:1px solid #dfe1e4;border-radius:10px;overflow:hidden;}' +
       '.inv-person{display:flex;align-items:center;gap:11px;padding:9px 13px;cursor:pointer;transition:background .12s;}' +
       '.inv-person:hover{background:#f8f9fb;}' +
@@ -135,7 +137,7 @@
       '<div class="inv-body">' +
       '<h2 class="inv-title">Bring your team into Studio</h2>' +
       '<p class="inv-sub">Your app is now available to your team. Add teammates to get everyone working in one place.</p>' +
-      '<div class="inv-input-row"><input type="email" placeholder="name@company.com" /><span class="inv-role">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
+      '<div class="inv-input-row"><input type="email" placeholder="name@company.com" /><span class="inv-role" data-na="Not part of this prototype">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
       '<div class="inv-list">' + listHtml + '</div>' +
       '</div>' +
       '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
