@@ -535,11 +535,13 @@
 
       // ── Anchored coachmark (variant B): sits under the ••• dots, like the menu ──
       function positionCoach() {
-        const dots = tbody.querySelector('.row-actions');
-        if (!dots || !coach) return;
-        const r = dots.getBoundingClientRect();
-        coach.style.left = Math.max(8, Math.round(r.right - coach.offsetWidth)) + 'px';
-        coach.style.top = Math.round(r.bottom + 8) + 'px';
+        if (!coach) return;
+        // Clean, predictable spot: pinned to the bottom-right of the viewport
+        // (a product-tour card) so it never overlaps the row or floats oddly.
+        coach.style.left = 'auto';
+        coach.style.top = 'auto';
+        coach.style.right = '24px';
+        coach.style.bottom = '24px';
       }
       // Variant B is a 2-step tour: "test client ready" → reveal the ••• magic link.
       function renderCoachB(step) {
@@ -574,15 +576,12 @@
           document.getElementById('crmCoachLater').textContent = 'Back';
           open.querySelector('.coach-label').textContent = 'Open portal';
           markExploreProgress();   // seeing the magic-link card half-lights "Explore"
-          // Step 2 is about the action → drop the row highlight, point at the ••• only.
+          // Step 2 is about the action → drop the row highlight, point at the ••• only
+          // and open its menu. The card stays pinned bottom-right (positionCoach).
           if (row) row.classList.remove('spotlight');
           const dots = row && row.querySelector('.row-actions');
           if (dots) { dots.classList.add('coach-focus'); openRowMenu(dots, true); }
-          requestAnimationFrame(function () {
-            const mr = rowMenu.getBoundingClientRect();
-            coach.style.left = Math.max(8, Math.round(mr.right - coach.offsetWidth)) + 'px';
-            coach.style.top = Math.round(mr.bottom + 10) + 'px';
-          });
+          positionCoach();
         }
       }
       function showCoach(c) {
