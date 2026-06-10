@@ -646,8 +646,6 @@
         coachMode = 'coach';
         coachClient = c;
         markClientDone();   // seeing card 1 completes "Meet your test client"
-        var cb = document.getElementById('crmCoachClose');
-        if (cb) cb.style.display = 'none';   // not dismissable for now — must follow the flow
         const row = tbody.querySelector('tr');
         if (row) row.classList.add('spotlight');
         renderCoachB(1);
