@@ -55,8 +55,9 @@
       '.inv-person.selected{background:#f2f4fc;}' +
       '.inv-person+.inv-person{border-top:1px solid #f1f3f4;}' +
       '.inv-av{width:30px;height:30px;border-radius:50%;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
-      '.inv-person-add{margin-left:auto;font-size:18px;line-height:1;color:#9aa0a6;flex-shrink:0;}' +
-      '.inv-person.selected .inv-person-add{color:#6e7cbb;}' +
+      '.inv-person-add{margin-left:auto;flex-shrink:0;color:#6e7cbb;opacity:0;display:flex;align-items:center;}' +
+      '.inv-person-add svg{width:17px;height:17px;}' +
+      '.inv-person.selected .inv-person-add{opacity:1;}' +
       '.inv-nm{font-size:13.5px;font-weight:500;line-height:1.3;}' +
       '.inv-em{font-size:12.5px;color:#6b6f76;line-height:1.3;}' +
       '.inv-foot{padding:16px 22px 22px;flex-shrink:0;}' +
@@ -133,7 +134,7 @@
       ['Taylor Brooks', 'taylor'], ['Morgan Diaz', 'morgan']
     ].map(function (p) { return [p[0], p[1] + '@' + inviteDomain]; });
     function initials(n) { var p = n.trim().split(/\s+/); return ((p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '')).toUpperCase(); }
-    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person" data-email="' + p[1] + '"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div><span class="inv-person-add">+</span></div>'; }).join('');
+    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person" data-email="' + p[1] + '"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div><span class="inv-person-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>'; }).join('');
     ov = document.createElement('div');
     ov.className = 'inv-overlay';
     ov.innerHTML = '<div class="inv-modal">' +
@@ -141,7 +142,7 @@
       '<div class="inv-body">' +
       '<h2 class="inv-title">Bring your team into Studio</h2>' +
       '<p class="inv-sub">Your app is now available to your team. Add teammates to get everyone working in one place.</p>' +
-      '<div class="inv-input-row"><div class="inv-chips" id="invChips"><input type="email" placeholder="name@company.com" /></div><span class="inv-role" data-na="Not part of this prototype">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
+      '<div class="inv-input-row"><div class="inv-chips" id="invChips"><input type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" /></div><span class="inv-role" data-na="Not part of this prototype">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
       '<div class="inv-list">' + listHtml + '</div>' +
       '</div>' +
       '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
