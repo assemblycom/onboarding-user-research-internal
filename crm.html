@@ -137,11 +137,12 @@
     .crm-coach-btn:hover { background: #000; }
 
     /* Spotlight the freshly-added test client row (variants B + C) — soft tint, no edge line */
-    /* Match the coachmark's periwinkle highlight (fill + full rounded outline) on the selected row. */
+    /* Selected-row highlight: a clean rounded periwinkle fill (no border, so it
+       never doubles up with the header/row separators). */
     .crm-table tbody tr.spotlight, .crm-table tbody tr.spotlight:hover { background: #edeff8; }
-    .crm-table tbody tr.spotlight td { border-top: 1px solid #c8d0ea; border-bottom: 1px solid #c8d0ea; }
-    .crm-table tbody tr.spotlight td:first-child { border-left: 1px solid #c8d0ea; border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
-    .crm-table tbody tr.spotlight td:last-child { border-right: 1px solid #c8d0ea; border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+    .crm-table tbody tr.spotlight td { border-bottom-color: transparent; }
+    .crm-table tbody tr.spotlight td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+    .crm-table tbody tr.spotlight td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
     /* Row ••• actions menu (the real home of the magic link) */
     .crm-menu { position: fixed; z-index: 600; width: 240px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 12px 32px rgba(16,24,40,0.12), 0 1px 3px rgba(16,24,40,0.06); padding: 5px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease; }

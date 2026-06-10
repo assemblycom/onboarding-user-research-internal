@@ -1176,6 +1176,9 @@ document.addEventListener('DOMContentLoaded', async function() {
       // cleanly instead of hard-clipping mid-text at the seam.
       '.asm-plan-todos--tl .asm-plan-todos-header::after { content:""; position:absolute; left:0; right:0; top:100%; height:12px; background:linear-gradient(#FFFFFF, rgba(255,255,255,0)); pointer-events:none; }',
       '.asm-plan-todos--tl.collapsed .asm-plan-todos-header { border-bottom: 0; border-radius: 10px; }',
+      // Collapsed → no body to scroll under, so hide the seam fade (it would
+      // otherwise bleed out below the collapsed header).
+      '.asm-plan-todos--tl.collapsed .asm-plan-todos-header::after { display: none; }',
       '.asm-plan-todos--tl .asm-plan-todos-icon { background: conic-gradient(#115B3B 0%, rgba(16,16,16,0.14) 0); }',
       // While building, the header node reads as a clean spinner (a green arc on a
       // faint track) rather than a near-empty progress fill that looks broken.
