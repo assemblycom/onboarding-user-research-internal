@@ -126,6 +126,8 @@
     .crm-coach.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     /* Step 2: a caret on the right edge points the card at the highlighted menu action. */
     .crm-coach.arrow-right::after { content: ''; position: absolute; right: -6px; width: 12px; height: 12px; background: #fff; border-top: 1px solid #e6e8eb; border-right: 1px solid #e6e8eb; transform: rotate(45deg); top: var(--caret-top, 26px); }
+    /* Step 1: a caret on the top edge points the card up at the client row. */
+    .crm-coach.arrow-up::after { content: ''; position: absolute; top: -6px; width: 12px; height: 12px; background: #fff; border-top: 1px solid #e6e8eb; border-left: 1px solid #e6e8eb; transform: rotate(45deg); left: var(--caret-left, 36px); }
     .crm-coach-close { position: absolute; top: 11px; right: 11px; width: 24px; height: 24px; border: 0; background: none; color: #9aa0a6; font-size: 14px; line-height: 1; cursor: pointer; border-radius: 6px; display: flex; align-items: center; justify-content: center; padding: 0; }
     .crm-coach-close:hover { background: #eff1f4; color: #6b6f76; }
     .crm-coach-title { font-size: 15px; font-weight: 500; color: #212b36; margin: 0 0 6px; letter-spacing: -0.005em; padding-right: 20px; }
@@ -555,6 +557,7 @@
           var ic = item ? (item.getBoundingClientRect().top + item.getBoundingClientRect().height / 2) : (mr.top + 28);
           var l2 = mr.left - cw - 13;                 // just left of the menu (room for the caret)
           coach.classList.add('arrow-right');
+          coach.classList.remove('arrow-up');
           if (l2 < 16) { l2 = mr.right + 13; coach.classList.remove('arrow-right'); }   // no room left → flip, drop caret
           var t2 = ic - 32;                           // caret (~32px from card top) lands on the item
           if (t2 < 16) t2 = 16;
@@ -569,6 +572,7 @@
         // Step 1 is about the client → float beneath the highlighted row.
         var row = tbody.querySelector('tr.spotlight') || tbody.querySelector('tr');
         if (!row) {   // no row yet — fall back to a corner so it never floats at 0,0
+          coach.classList.remove('arrow-up');
           coach.style.left = 'auto'; coach.style.top = 'auto';
           coach.style.right = '24px'; coach.style.bottom = '24px';
           return;
@@ -579,7 +583,18 @@
         if (left > maxLeft) left = maxLeft;
         if (left < 16) left = 16;
         var top = r.bottom + 10;
-        if (top + ch > window.innerHeight - 16) top = Math.max(16, r.top - ch - 10);   // flip above if no room below
+        var below = top + ch <= window.innerHeight - 16;
+        if (!below) top = Math.max(16, r.top - ch - 10);   // flip above if no room below
+        // Point the caret up at the client (only when the card sits below the row);
+        // align it under the contact name/avatar.
+        if (below) {
+          coach.classList.add('arrow-up');
+          var av = row.querySelector('.crm-av, .avatar, td:first-child');
+          var caretL = av ? (av.getBoundingClientRect().left + av.getBoundingClientRect().width / 2 - left - 6) : 36;
+          coach.style.setProperty('--caret-left', Math.max(14, Math.round(caretL)) + 'px');
+        } else {
+          coach.classList.remove('arrow-up');   // no caret when flipped above
+        }
         coach.style.right = 'auto';
         coach.style.bottom = 'auto';
         coach.style.left = Math.round(left) + 'px';
