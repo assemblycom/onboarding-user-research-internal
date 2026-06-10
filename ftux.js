@@ -479,6 +479,11 @@
   window.ftuxOpenInvite = openInvite;
   window.ftuxMarkPublishProgress = function () { markPublish('progress'); };
   window.ftuxMarkPublishDone = function () { markPublish('done'); };
+  // Keep the checklist in sync across open tabs — without this a page only
+  // re-renders on load, so two tabs can show different progress until reloaded.
+  window.addEventListener('storage', function (e) {
+    if (e.key === KEY || e.key === 'onb.ftuxDone') { try { ftuxInit(); } catch (_) {} }
+  });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ftuxInit);
   else ftuxInit();
 })();
