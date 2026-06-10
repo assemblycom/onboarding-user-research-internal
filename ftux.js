@@ -455,9 +455,15 @@
       it.parentNode.replaceChild(clone, it);
       clone.setAttribute('data-ftux-bound', '1');
       clone.addEventListener('click', function () {
-        if (i === 0) location.href = 'studio.html' + suffix;      // Add app → build
+        if (i === 0) {
+          // If a build was already started, resume it in the builder (where they
+          // left off) instead of dropping back on the "Add app" start page.
+          var app = null;
+          try { var al = JSON.parse(localStorage.getItem('onb.buildApps')); if (Array.isArray(al) && al.length) app = al[al.length - 1]; } catch (e) {}
+          location.href = app ? ('builder.html' + (app.hash || suffix)) : ('studio.html' + suffix);
+        }
         else if (i === 1) location.href = 'crm.html' + suffix;    // (hidden) test-client step
-        else if (i === 2) location.href = 'crm.html' + suffix;    // Explore → CRM coachmark (preview the portal as the test client)
+        else if (i === 2) location.href = 'crm.html' + suffix;    // Explore → CRM coachmark (resumes at the last step if in-progress)
         else openInvite();                                        // Invite your team → modal
       });
     });
