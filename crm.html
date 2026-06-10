@@ -124,6 +124,8 @@
     /* Anchored coachmark (variant B) — minimal: title · description · action */
     .crm-coach { position: fixed; z-index: 500; width: 320px; max-width: calc(100vw - 32px); background: #fff; border: 1px solid #e6e8eb; border-radius: 8px; box-shadow: 0 10px 34px rgba(16,24,40,0.10), 0 2px 8px rgba(16,24,40,0.05); padding: 18px; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
     .crm-coach.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    /* Step 2: a caret on the right edge points the card at the highlighted menu action. */
+    .crm-coach.arrow-right::after { content: ''; position: absolute; right: -6px; width: 12px; height: 12px; background: #fff; border-top: 1px solid #e6e8eb; border-right: 1px solid #e6e8eb; transform: rotate(45deg); top: var(--caret-top, 26px); }
     .crm-coach-close { position: absolute; top: 11px; right: 11px; width: 24px; height: 24px; border: 0; background: none; color: #9aa0a6; font-size: 14px; line-height: 1; cursor: pointer; border-radius: 6px; display: flex; align-items: center; justify-content: center; padding: 0; }
     .crm-coach-close:hover { background: #eff1f4; color: #6b6f76; }
     .crm-coach-title { font-size: 15px; font-weight: 500; color: #212b36; margin: 0 0 6px; letter-spacing: -0.005em; padding-right: 20px; }
@@ -548,15 +550,22 @@
         // instruction and the thing it references read as one unit (no cross-screen jump).
         if (coachStep === 2 && rowMenu && rowMenu.classList.contains('show')) {
           var mr = rowMenu.getBoundingClientRect();
-          var l2 = mr.left - cw - 14;                 // just left of the menu
-          if (l2 < 16) l2 = mr.right + 14;            // no room left → flip to its right
-          var t2 = mr.top;
+          // Align the card so its caret points at the highlighted action (first item).
+          var item = rowMenu.querySelector('.crm-menu-item.spotlight') || rowMenu.querySelector('.crm-menu-item');
+          var ic = item ? (item.getBoundingClientRect().top + item.getBoundingClientRect().height / 2) : (mr.top + 28);
+          var l2 = mr.left - cw - 13;                 // just left of the menu (room for the caret)
+          coach.classList.add('arrow-right');
+          if (l2 < 16) { l2 = mr.right + 13; coach.classList.remove('arrow-right'); }   // no room left → flip, drop caret
+          var t2 = ic - 32;                           // caret (~32px from card top) lands on the item
+          if (t2 < 16) t2 = 16;
           if (t2 + ch > window.innerHeight - 16) t2 = Math.max(16, window.innerHeight - ch - 16);
+          coach.style.setProperty('--caret-top', Math.round(ic - t2 - 6) + 'px');
           coach.style.right = 'auto'; coach.style.bottom = 'auto';
           coach.style.left = Math.round(l2) + 'px';
           coach.style.top = Math.round(t2) + 'px';
           return;
         }
+        coach.classList.remove('arrow-right');
         // Step 1 is about the client → float beneath the highlighted row.
         var row = tbody.querySelector('tr.spotlight') || tbody.querySelector('tr');
         if (!row) {   // no row yet — fall back to a corner so it never floats at 0,0
