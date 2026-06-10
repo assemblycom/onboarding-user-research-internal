@@ -478,6 +478,11 @@
     // Restore a prompt typed before reloading / switching tabs.
     try { var savedPrompt = localStorage.getItem(PROMPT_KEY); if (savedPrompt && !promptInput.value) { promptInput.value = savedPrompt; promptInput.dispatchEvent(new Event('input')); } } catch (e) {}
 
+    // Preset the canonical research prompt (builds the "Requests" service-request
+    // app) so participants start from the same place. Only when nothing's typed.
+    var PRESET_PROMPT = 'A service request intake app for your team to capture, triage, and resolve client requests in one place — turning scattered emails and messages into a clear, trackable queue with status, priority, and ownership.';
+    if (!promptInput.value) { promptInput.value = PRESET_PROMPT; promptInput.dispatchEvent(new Event('input')); }
+
     // Animated placeholder: the lead-in stays put while example app ideas type
     // out (ending with "…", as if there's more to write), cycling gently. Stops
     // the moment the box is focused; resumes on blur if still empty.
