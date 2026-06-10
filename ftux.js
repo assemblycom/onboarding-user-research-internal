@@ -37,8 +37,15 @@
       '.inv-body{padding:22px 22px 0;overflow-y:auto;color:#212b36;}' +
       '.inv-title{font-size:18px;font-weight:500;margin:0 0 6px;}' +
       '.inv-sub{font-size:13.5px;color:#6b6f76;line-height:1.5;margin:0 0 18px;}' +
-      '.inv-input-row{display:flex;align-items:center;border:1px solid #dfe1e4;border-radius:8px;overflow:hidden;margin-bottom:16px;}' +
-      '.inv-input-row input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;padding:0 14px;height:42px;color:#212b36;}' +
+      '.inv-input-row{display:flex;align-items:stretch;border:1px solid #dfe1e4;border-radius:8px;overflow:hidden;margin-bottom:16px;}' +
+      '.inv-input-row:focus-within{border-color:#b9bcc1;}' +
+      '.inv-chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:7px 8px 7px 10px;}' +
+      '.inv-chips input{flex:1;min-width:130px;border:none;outline:none;font-family:inherit;font-size:14px;padding:4px 0;color:#212b36;background:transparent;}' +
+      '.inv-chip{display:inline-flex;align-items:center;gap:5px;background:#eef0f4;border-radius:6px;padding:3px 4px 3px 9px;font-size:13px;color:#212b36;max-width:100%;}' +
+      '.inv-chip-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+      '.inv-chip-x{border:0;background:none;cursor:pointer;color:#6b6f76;padding:1px;border-radius:4px;display:flex;align-items:center;line-height:1;}' +
+      '.inv-chip-x:hover{background:rgba(0,0,0,0.07);color:#212b36;}' +
+      '.inv-chip-x svg{width:13px;height:13px;}' +
       '.inv-role{position:relative;display:flex;align-items:center;gap:5px;border-left:1px solid #dfe1e4;padding:0 12px;height:42px;font-size:13px;color:#212b36;cursor:default;white-space:nowrap;}' +
       '.inv-role::after{content:attr(data-na);position:absolute;bottom:calc(100% + 9px);right:0;white-space:nowrap;background:#1a1a1a;color:#fff;font-size:12px;font-weight:400;line-height:1;padding:7px 10px;border-radius:7px;opacity:0;pointer-events:none;transition:opacity .12s ease;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:5;}' +
       '.inv-role:hover::after{opacity:1;}' +
@@ -48,10 +55,8 @@
       '.inv-person.selected{background:#f2f4fc;}' +
       '.inv-person+.inv-person{border-top:1px solid #f1f3f4;}' +
       '.inv-av{width:30px;height:30px;border-radius:50%;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
-      '.inv-check{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1.5px solid #c7ccd3;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;}' +
-      '.inv-check svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .12s;}' +
-      '.inv-person.selected .inv-check{background:#1a1a1a;border-color:#1a1a1a;}' +
-      '.inv-person.selected .inv-check svg{opacity:1;}' +
+      '.inv-person-add{margin-left:auto;font-size:18px;line-height:1;color:#9aa0a6;flex-shrink:0;}' +
+      '.inv-person.selected .inv-person-add{color:#6e7cbb;}' +
       '.inv-nm{font-size:13.5px;font-weight:500;line-height:1.3;}' +
       '.inv-em{font-size:12.5px;color:#6b6f76;line-height:1.3;}' +
       '.inv-foot{padding:16px 22px 22px;flex-shrink:0;}' +
@@ -128,8 +133,7 @@
       ['Taylor Brooks', 'taylor'], ['Morgan Diaz', 'morgan']
     ].map(function (p) { return [p[0], p[1] + '@' + inviteDomain]; });
     function initials(n) { var p = n.trim().split(/\s+/); return ((p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '')).toUpperCase(); }
-    var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person" data-email="' + p[1] + '"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div><span class="inv-check">' + CHECK + '</span></div>'; }).join('');
+    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person" data-email="' + p[1] + '"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div><span class="inv-person-add">+</span></div>'; }).join('');
     ov = document.createElement('div');
     ov.className = 'inv-overlay';
     ov.innerHTML = '<div class="inv-modal">' +
@@ -137,7 +141,7 @@
       '<div class="inv-body">' +
       '<h2 class="inv-title">Bring your team into Studio</h2>' +
       '<p class="inv-sub">Your app is now available to your team. Add teammates to get everyone working in one place.</p>' +
-      '<div class="inv-input-row"><input type="email" placeholder="name@company.com" /><span class="inv-role" data-na="Not part of this prototype">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
+      '<div class="inv-input-row"><div class="inv-chips" id="invChips"><input type="email" placeholder="name@company.com" /></div><span class="inv-role" data-na="Not part of this prototype">Member <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
       '<div class="inv-list">' + listHtml + '</div>' +
       '</div>' +
       '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
@@ -146,19 +150,52 @@
     // Closing the modal any way — "Invite", "Maybe later", or the backdrop —
     // marks the checklist item done.
     ov.addEventListener('click', function (e) { if (e.target === ov) completeInvite(); });
-    // Click a suggested teammate to add them; multiple can be selected. The
-    // Invite button reflects the running count (selected rows + a typed email).
+    // Emails live as chips in the top box. Clicking a suggested teammate adds
+    // their email as a chip (clicking again removes it); typing + Enter/comma
+    // adds a typed one. The Invite button reflects the chip count.
     var inviteBtn = ov.querySelector('.inv-btn');
-    var emailInput = ov.querySelector('input[type="email"]');
+    var chipBox = ov.querySelector('#invChips');
+    var emailInput = ov.querySelector('#invChips input');
+    var X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    function chipFor(email) { return chipBox.querySelector('.inv-chip[data-email="' + email.replace(/"/g, '') + '"]'); }
+    function rowFor(email) { return ov.querySelector('.inv-person[data-email="' + email.replace(/"/g, '') + '"]'); }
     function syncInviteCount() {
-      var n = ov.querySelectorAll('.inv-person.selected').length;
-      if (emailInput && emailInput.value.trim()) n++;
+      var n = chipBox.querySelectorAll('.inv-chip').length;
       inviteBtn.textContent = n ? 'Invite ' + n + (n > 1 ? ' members' : ' member') : 'Invite';
     }
+    function addChip(email) {
+      email = (email || '').trim().replace(/,$/, '');
+      if (!email || chipFor(email)) return;
+      var chip = document.createElement('span');
+      chip.className = 'inv-chip';
+      chip.setAttribute('data-email', email);
+      chip.innerHTML = '<span class="inv-chip-label"></span><button type="button" class="inv-chip-x" aria-label="Remove">' + X + '</button>';
+      chip.querySelector('.inv-chip-label').textContent = email;
+      chip.querySelector('.inv-chip-x').addEventListener('click', function (e) { e.stopPropagation(); removeChip(email); });
+      chipBox.insertBefore(chip, emailInput);
+      var row = rowFor(email); if (row) row.classList.add('selected');
+      syncInviteCount();
+    }
+    function removeChip(email) {
+      var chip = chipFor(email); if (chip) chip.remove();
+      var row = rowFor(email); if (row) row.classList.remove('selected');
+      syncInviteCount();
+    }
     [].forEach.call(ov.querySelectorAll('.inv-person'), function (p) {
-      p.addEventListener('click', function () { p.classList.toggle('selected'); syncInviteCount(); });
+      var email = p.getAttribute('data-email');
+      p.addEventListener('click', function () { if (chipFor(email)) removeChip(email); else addChip(email); });
     });
-    if (emailInput) emailInput.addEventListener('input', syncInviteCount);
+    if (emailInput) {
+      emailInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addChip(emailInput.value); emailInput.value = ''; }
+        else if (e.key === 'Backspace' && !emailInput.value) {
+          var chips = chipBox.querySelectorAll('.inv-chip'); if (chips.length) { removeChip(chips[chips.length - 1].getAttribute('data-email')); }
+        }
+      });
+      emailInput.addEventListener('blur', function () { if (emailInput.value.trim()) { addChip(emailInput.value); emailInput.value = ''; } });
+    }
+    // Clicking anywhere in the box focuses the text input.
+    if (chipBox) chipBox.addEventListener('click', function (e) { if (e.target === chipBox) emailInput && emailInput.focus(); });
     inviteBtn.addEventListener('click', completeInvite);
     ov.querySelector('.inv-later').addEventListener('click', completeInvite);
     return ov;
