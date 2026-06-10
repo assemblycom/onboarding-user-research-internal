@@ -473,6 +473,33 @@
     if (!t) { t = document.createElement('div'); t.id = 'asm-notif-tip'; t.textContent = 'Not part of this prototype'; document.body.appendChild(t); }
     return t;
   }
+  // The Editor/Live toggle's "Live" view isn't built for the prototype —
+  // neutralise its click and show the "Not part of this prototype" tooltip.
+  function disableLiveToggle() {
+    var btns = document.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) {
+      var b = btns[i];
+      if ((b.innerText || '').trim() !== 'Live') continue;
+      // Confirm it's the Editor/Live toggle (a sibling "Editor" button).
+      var sib = b.parentElement ? b.parentElement.querySelectorAll('button') : [];
+      var hasEditor = false;
+      for (var j = 0; j < sib.length; j++) { if ((sib[j].innerText || '').trim() === 'Editor') { hasEditor = true; break; } }
+      if (!hasEditor) continue;
+      b.style.cursor = 'default';
+      if (!b.hasAttribute('data-asm-noclick')) {
+        b.setAttribute('data-asm-noclick', '1');
+        b.addEventListener('click', function (e) { e.preventDefault(); e.stopImmediatePropagation(); }, true);
+        b.addEventListener('mouseenter', function () {
+          var tip = notifTip();
+          var r = this.getBoundingClientRect();
+          tip.style.display = 'block';
+          tip.style.left = Math.round(r.left) + 'px';
+          tip.style.top = Math.round(r.bottom + 8) + 'px';
+        });
+        b.addEventListener('mouseleave', function () { var t = document.getElementById('asm-notif-tip'); if (t) t.style.display = 'none'; });
+      }
+    }
+  }
 
   // Hand-built Service Request Intake app preview (Assembly UI). Replaces the
   // bundle's Time Tracker artboard in the preview pane so the built app reads
@@ -648,6 +675,7 @@
     relabelTimeTracker();
     fixPreviewIcons();
     disableNotifTab();
+    disableLiveToggle();
     injectSriApp();
     var sb = findBundleSidebar();
     if (!sb) { ensureCover(); return; }
