@@ -542,6 +542,22 @@
       //    row so it reads as attached to that client (not a detached corner card). ──
       function positionCoach() {
         if (!coach) return;
+        var cw = coach.offsetWidth || 320;
+        var ch = coach.offsetHeight || 130;
+        // Step 2 points at the ••• menu — sit the card right beside that menu so the
+        // instruction and the thing it references read as one unit (no cross-screen jump).
+        if (coachStep === 2 && rowMenu && rowMenu.classList.contains('show')) {
+          var mr = rowMenu.getBoundingClientRect();
+          var l2 = mr.left - cw - 14;                 // just left of the menu
+          if (l2 < 16) l2 = mr.right + 14;            // no room left → flip to its right
+          var t2 = mr.top;
+          if (t2 + ch > window.innerHeight - 16) t2 = Math.max(16, window.innerHeight - ch - 16);
+          coach.style.right = 'auto'; coach.style.bottom = 'auto';
+          coach.style.left = Math.round(l2) + 'px';
+          coach.style.top = Math.round(t2) + 'px';
+          return;
+        }
+        // Step 1 is about the client → float beneath the highlighted row.
         var row = tbody.querySelector('tr.spotlight') || tbody.querySelector('tr');
         if (!row) {   // no row yet — fall back to a corner so it never floats at 0,0
           coach.style.left = 'auto'; coach.style.top = 'auto';
@@ -549,8 +565,6 @@
           return;
         }
         var r = row.getBoundingClientRect();
-        var cw = coach.offsetWidth || 320;
-        var ch = coach.offsetHeight || 130;
         var left = r.left;
         var maxLeft = window.innerWidth - cw - 16;
         if (left > maxLeft) left = maxLeft;
@@ -601,6 +615,7 @@
           const dots = row && row.querySelector('.row-actions');
           if (dots) { dots.classList.add('coach-focus'); openRowMenu(dots, true); }
           positionCoach();
+          requestAnimationFrame(positionCoach);   // re-measure once the menu has laid out
         }
       }
       function showCoach(c) {
