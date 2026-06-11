@@ -14,7 +14,7 @@
     '.start-btn,#startBuilding,.template-card,.ac-chip,.ac-item,.ac-arrow,' +
     '.studio-primary,.studio-google,.studio-theme,' +
     // FTUX flows are real, working modals — never hint inside them.
-    '.pi-ov,.inv-overlay';
+    '.pi-ov';
 
   // Clickable-looking things that often lack a pointer cursor (flat tabs and
   // settings rows). Inactive tabs / these rows are decorative in the prototype.

@@ -3565,13 +3565,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     appendMsg(scroll, 'agent', recap, 'recap');
 
     setTimeout(function() {
-      appendMsg(scroll, 'agent', 'Perfect — I have what I need. Let me put this together for you.', 'perfect');
+      var html = 'Requirements approved!<br><br>' +
+        'I\'m starting the app build now. Most projects take 1–2 minutes to complete.<br><br>' +
+        'Feel free to follow along or come back later. We\'ll notify you when your app is ready.';
+      appendMsg(scroll, 'agent', html, 'perfect');
     }, 600);
-
-    setTimeout(function() {
-      var html = '<div class="asm-email"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> Feel free to step away — we\'ll notify you once it\'s complete.</div>';
-      appendMsg(scroll, 'agent', html, 'email');
-    }, 1400);
 
     // Skip the inline "Designing the data model…" thinking row during
     // build — the Build Plan above already gives per-step feedback by

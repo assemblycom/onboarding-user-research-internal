@@ -244,7 +244,6 @@
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Add your first app</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Create test client</div>
         <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Explore the client experience</div>
-        <div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Invite your team</div>
       </div>
 
       <div class="sidebar-foot">
@@ -626,6 +625,7 @@
           open.querySelector('.coach-label').textContent = 'Next';
           positionCoach();
         } else {
+          try { localStorage.setItem('onb.crmCoachStep', '2'); } catch (e) {}   // remember they reached step 2, so a later return resumes here
           titleEl.textContent = 'Open the client experience';
           bodyEl.textContent = 'Open the portal as your client from the actions menu to preview exactly what they’ll see.';
           bodyEl.style.display = '';
@@ -648,10 +648,13 @@
         markClientDone();   // seeing card 1 completes "Meet your test client"
         const row = tbody.querySelector('tr');
         if (row) row.classList.add('spotlight');
-        // Resume where they left off: if they already advanced past the intro
-        // (explore is in-progress), jump straight to the last step.
-        var exp; try { exp = (JSON.parse(localStorage.getItem('onb.ftux')) || {}).explore; } catch (e) {}
-        renderCoachB(exp === 'progress' ? 2 : 1);
+        // Resume where they left off — but only if they genuinely advanced to
+        // step 2 before (tracked explicitly below). Being on the CRM half-lights
+        // "Explore" on its own, so the ftux 'progress' flag can't tell "just
+        // arrived" from "saw step 2" — first-time visitors must start at step 1.
+        var resumeStep = 1;
+        try { if (localStorage.getItem('onb.crmCoachStep') === '2') resumeStep = 2; } catch (e) {}
+        renderCoachB(resumeStep);
         requestAnimationFrame(function () { positionCoach(); coach.classList.add('show'); });
       }
       function closeCoach() {

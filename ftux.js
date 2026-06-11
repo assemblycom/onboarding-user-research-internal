@@ -30,66 +30,6 @@
       '.checklist.ftux-dismiss-out{opacity:0;transform:translateY(10px);pointer-events:none;}' +
       '.checklist-item img{flex-shrink:0;}' +
       '.ci-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-      '.inv-overlay{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
-      '.inv-overlay.show{opacity:1;pointer-events:auto;}' +
-      '.inv-modal{width:448px;max-width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.28);max-height:90vh;display:flex;flex-direction:column;}' +
-      '.inv-banner{height:150px;flex-shrink:0;background:linear-gradient(180deg,#ffffff 0%,#c4cbf0 48%,#d9ed92 100%);}' +
-      '.inv-body{padding:22px 22px 0;flex-shrink:0;color:#212b36;}' +
-      '.inv-scroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 22px 2px;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
-      '.inv-scroll::-webkit-scrollbar{width:6px;}' +
-      '.inv-scroll::-webkit-scrollbar-track{background:transparent;}' +
-      '.inv-scroll::-webkit-scrollbar-thumb{background:#cfd2d8;border-radius:3px;}' +
-      '.inv-scroll::-webkit-scrollbar-thumb:hover{background:#b9bcc1;}' +
-      '.inv-title{font-size:18px;font-weight:500;margin:0 0 6px;}' +
-      '.inv-sub{font-size:13.5px;color:#6b6f76;line-height:1.5;margin:0 0 18px;}' +
-      '.inv-input-row{display:flex;align-items:stretch;border:1px solid #dfe1e4;border-radius:8px;margin-bottom:16px;}' +
-      '.inv-input-row:focus-within{border-color:#b9bcc1;}' +
-      '.inv-role-wrap{position:relative;flex-shrink:0;border-left:1px solid #dfe1e4;display:flex;align-items:center;}' +
-      '.inv-role-btn{height:100%;display:flex;align-items:center;gap:5px;padding:0 12px;background:none;border:0;font-family:inherit;font-size:13px;color:#212b36;cursor:pointer;white-space:nowrap;border-radius:0 7px 7px 0;}' +
-      '.inv-role-btn:hover{background:#f8f9fb;}' +
-      '.inv-role-btn svg{width:13px;height:13px;color:#6b6f76;}' +
-      '.inv-role-menu{position:absolute;top:calc(100% + 5px);right:0;min-width:150px;background:#fff;border:1px solid #e6e8eb;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.14);padding:4px;display:none;z-index:10;}' +
-      '.inv-role-menu.open{display:block;}' +
-      '.inv-role-opt{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;padding:7px 10px;background:none;border:0;font-family:inherit;border-radius:6px;cursor:pointer;}' +
-      '.inv-role-opt:hover{background:#f1f3f5;}' +
-      '.inv-role-opt b{font-size:13px;font-weight:500;color:#212b36;}' +
-      '.inv-role-opt span{font-size:11.5px;color:#9aa0a6;line-height:1.3;}' +
-      '.inv-email-input{flex:1;min-width:0;border:none;outline:none;font-family:inherit;font-size:14px;padding:11px 12px;color:#212b36;background:transparent;}' +
-      // Added emails live in their own area below the input, so the input never grows.
-      '.inv-recipients{display:none;flex-wrap:wrap;align-content:flex-start;gap:6px;max-height:78px;overflow-y:auto;margin:-4px 0 16px;scrollbar-width:thin;scrollbar-color:#cfd2d8 transparent;}' +
-      '.inv-recipients.has{display:flex;}' +
-      '.inv-recipients::-webkit-scrollbar{width:6px;}' +
-      '.inv-recipients::-webkit-scrollbar-track{background:transparent;}' +
-      '.inv-recipients::-webkit-scrollbar-thumb{background:#cfd2d8;border-radius:3px;}' +
-      '.inv-recipients::-webkit-scrollbar-thumb:hover{background:#b9bcc1;}' +
-      '.inv-chip{display:inline-flex;align-items:center;gap:5px;background:#eef0f4;border-radius:6px;padding:3px 4px 3px 9px;font-size:13px;color:#212b36;max-width:100%;}' +
-      '.inv-chip-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-      '.inv-chip-x{border:0;background:none;cursor:pointer;color:#6b6f76;padding:1px;border-radius:4px;display:flex;align-items:center;line-height:1;}' +
-      '.inv-chip-x:hover{background:rgba(0,0,0,0.07);color:#212b36;}' +
-      '.inv-chip-x svg{width:13px;height:13px;}' +
-      '.inv-list{border:1px solid #dfe1e4;border-radius:10px;overflow:hidden;}' +
-      '.inv-person{display:flex;align-items:center;gap:11px;padding:9px 13px;cursor:pointer;transition:background .12s;}' +
-      '.inv-person:hover{background:#f8f9fb;}' +
-      '.inv-person.selected{background:#f1f3f5;}' +
-      '.inv-person+.inv-person{border-top:1px solid #f1f3f4;}' +
-      '.inv-av{width:30px;height:30px;border-radius:50%;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
-      '.inv-person-add{margin-left:auto;flex-shrink:0;color:#6b6f76;opacity:0;display:flex;align-items:center;}' +
-      '.inv-person-add svg{width:17px;height:17px;}' +
-      '.inv-person.selected .inv-person-add{opacity:1;}' +
-      '.inv-nm{font-size:13.5px;font-weight:500;line-height:1.3;}' +
-      '.inv-em{font-size:12.5px;color:#6b6f76;line-height:1.3;}' +
-      '.inv-foot{position:relative;padding:16px 22px 22px;flex-shrink:0;}' +
-      '.inv-foot::before{content:"";position:absolute;left:0;right:0;top:-30px;height:30px;background:linear-gradient(to bottom,rgba(255,255,255,0),#fff);pointer-events:none;}' +
-      '.inv-btn{width:100%;height:44px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}' +
-      '.inv-btn:hover{background:#000;}' +
-      '.inv-btn:disabled{background:#e7e9ec;color:#a8acb3;cursor:default;}' +
-      '.inv-later{display:block;width:100%;margin-top:8px;padding:8px;background:none;border:none;font-family:inherit;font-size:13px;color:#6b6f76;cursor:pointer;}' +
-      '.inv-later:hover{color:#212b36;}' +
-      '.inv-success{align-items:center;text-align:center;padding-top:8px;}' +
-      '.inv-check-circle{width:56px;height:56px;border-radius:50%;background:#e9f6ec;color:#3a9d5d;display:flex;align-items:center;justify-content:center;margin:8px auto 18px;}' +
-      '.inv-check-circle svg{width:30px;height:30px;}' +
-      '.inv-sent{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:18px;}' +
-      '.inv-sent span{background:#f1f3f5;border-radius:6px;padding:4px 10px;font-size:13px;color:#212b36;}' +
       // ── "Explore the client experience" interstitial (shown before the portal) ──
       '.pi-ov{position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
       '.pi-ov.show{opacity:1;pointer-events:auto;}' +
@@ -137,149 +77,7 @@
     document.head.appendChild(css);
   }
 
-  // ── Invite-team modal (injected once per document) ──
-  function ensureModal() {
-    var ov = document.querySelector('.inv-overlay');
-    if (ov) return ov;
-    // Suggested teammates use generic names and emails on the user's own
-    // domain (from their signup email) — or the company domain for Google /
-    // personal-email signups.
-    var inviteDomain = (function () {
-      var COMMON = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com', 'live.com', 'aol.com', 'proton.me'];
-      var email = hashParam('email');
-      if (email && email.indexOf('@') > -1) {
-        var d = email.split('@')[1].toLowerCase().trim();
-        if (d && COMMON.indexOf(d) === -1) return d;
-      }
-      var co = (hashParam('company') || 'Studio').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      return (co || 'studio') + '.com';
-    })();
-    var people = [
-      ['Jordan Lee', 'jordan'], ['Sam Carter', 'sam'], ['Riley Chen', 'riley'],
-      ['Taylor Brooks', 'taylor'], ['Morgan Diaz', 'morgan']
-    ].map(function (p) { return [p[0], p[1] + '@' + inviteDomain]; });
-    function initials(n) { var p = n.trim().split(/\s+/); return ((p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '')).toUpperCase(); }
-    var listHtml = people.map(function (p) { var c = avc(p[0]); return '<div class="inv-person" data-email="' + p[1] + '"><span class="inv-av" style="background:' + c[0] + ';color:' + c[1] + '">' + initials(p[0]) + '</span><div><div class="inv-nm">' + p[0] + '</div><div class="inv-em">' + p[1] + '</div></div><span class="inv-person-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>'; }).join('');
-    ov = document.createElement('div');
-    ov.className = 'inv-overlay';
-    ov.innerHTML = '<div class="inv-modal">' +
-      '<div class="inv-banner"></div>' +
-      '<div class="inv-body">' +
-      '<h2 class="inv-title">Bring your team into Studio</h2>' +
-      '<p class="inv-sub">Your app is now available to your team. Add teammates to get everyone working in one place.</p>' +
-      '<div class="inv-input-row"><input type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" id="invEmail" class="inv-email-input" />' +
-        '<div class="inv-role-wrap"><button type="button" class="inv-role-btn" id="invRoleBtn"><span class="inv-role-label">Member</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' +
-          '<div class="inv-role-menu" id="invRoleMenu">' +
-            '<button type="button" class="inv-role-opt" data-role="Member"><b>Member</b><span>Can use apps and work in the portal</span></button>' +
-            '<button type="button" class="inv-role-opt" data-role="Admin"><b>Admin</b><span>Full access, including settings and billing</span></button>' +
-          '</div></div>' +
-      '</div>' +
-      '<div class="inv-recipients" id="invRecipients"></div>' +
-      '</div>' +
-      '<div class="inv-scroll"><div class="inv-list">' + listHtml + '</div></div>' +
-      '<div class="inv-foot"><button class="inv-btn">Invite</button><button class="inv-later">Maybe later</button></div>' +
-      '</div>';
-    document.body.appendChild(ov);
-    // Closing the modal any way — "Invite", "Maybe later", or the backdrop —
-    // marks the checklist item done.
-    ov.addEventListener('click', function (e) { if (e.target === ov) completeInvite(); });
-    // Emails live as chips in the top box. Clicking a suggested teammate adds
-    // their email as a chip (clicking again removes it); typing + Enter/comma
-    // adds a typed one. The Invite button reflects the chip count.
-    var inviteBtn = ov.querySelector('.inv-btn');
-    var recipients = ov.querySelector('#invRecipients');
-    var emailInput = ov.querySelector('#invEmail');
-    var inviteRole = 'Member';   // one role for the whole invite batch
-    var X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    function chipFor(email) { return recipients.querySelector('.inv-chip[data-email="' + email.replace(/"/g, '') + '"]'); }
-    function rowFor(email) { return ov.querySelector('.inv-person[data-email="' + email.replace(/"/g, '') + '"]'); }
-    function syncInviteCount() {
-      var n = recipients.querySelectorAll('.inv-chip').length;
-      inviteBtn.textContent = n ? 'Invite ' + n + (n > 1 ? ' members' : ' member') : 'Invite';
-      inviteBtn.disabled = !n;
-      recipients.classList.toggle('has', n > 0);   // the chip area only shows once there's a recipient
-      // Drop the placeholder once at least one email is in — it reads as redundant.
-      if (emailInput) emailInput.placeholder = n ? '' : 'name@company.com';
-    }
-    function addChip(email) {
-      email = (email || '').trim().replace(/,$/, '');
-      if (!email || chipFor(email)) return;
-      var chip = document.createElement('span');
-      chip.className = 'inv-chip';
-      chip.setAttribute('data-email', email);
-      chip.innerHTML = '<span class="inv-chip-label"></span><button type="button" class="inv-chip-x" aria-label="Remove">' + X + '</button>';
-      chip.querySelector('.inv-chip-label').textContent = email;
-      chip.querySelector('.inv-chip-x').addEventListener('click', function (e) { e.stopPropagation(); removeChip(email); });
-      recipients.appendChild(chip);
-      var row = rowFor(email); if (row) row.classList.add('selected');
-      syncInviteCount();
-    }
-    function removeChip(email) {
-      var chip = chipFor(email); if (chip) chip.remove();
-      var row = rowFor(email); if (row) row.classList.remove('selected');
-      syncInviteCount();
-    }
-    [].forEach.call(ov.querySelectorAll('.inv-person'), function (p) {
-      var email = p.getAttribute('data-email');
-      p.addEventListener('click', function () { if (chipFor(email)) removeChip(email); else addChip(email); });
-    });
-    if (emailInput) {
-      emailInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addChip(emailInput.value); emailInput.value = ''; }
-        else if (e.key === 'Backspace' && !emailInput.value) {
-          var chips = recipients.querySelectorAll('.inv-chip'); if (chips.length) { removeChip(chips[chips.length - 1].getAttribute('data-email')); }
-        }
-      });
-      emailInput.addEventListener('blur', function () { if (emailInput.value.trim()) { addChip(emailInput.value); emailInput.value = ''; } });
-    }
-    // Clicking the input row focuses the text field.
-    var inputRow = ov.querySelector('.inv-input-row');
-    if (inputRow) inputRow.addEventListener('click', function (e) { if (e.target === inputRow) emailInput && emailInput.focus(); });
-    // Clicking Invite confirms with a success state (the button is disabled
-    // until at least one email is added); "Maybe later" just closes.
-    function showInviteSuccess() {
-      var emails = [].map.call(recipients.querySelectorAll('.inv-chip'), function (c) { return c.getAttribute('data-email'); });
-      var n = emails.length;
-      if (!n) return;
-      var modal = ov.querySelector('.inv-modal');
-      var check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      modal.innerHTML = '<div class="inv-banner"></div>' +
-        '<div class="inv-body inv-success">' +
-        '<div class="inv-check-circle">' + check + '</div>' +
-        '<h2 class="inv-title">' + (n > 1 ? n + ' invitations sent' : 'Invitation sent') + '</h2>' +
-        '<p class="inv-sub">' + (n > 1 ? 'Your teammates' : 'Your teammate') + ' will get an email to join Studio as ' + (inviteRole === 'Admin' ? (n > 1 ? 'admins' : 'an admin') : (n > 1 ? 'members' : 'a member')) + '.</p>' +
-        '</div>' +
-        '<div class="inv-foot"><button class="inv-btn">Done</button></div>';
-      modal.querySelector('.inv-btn').addEventListener('click', completeInvite);
-    }
-    inviteBtn.addEventListener('click', function () { if (!inviteBtn.disabled) showInviteSuccess(); });
-    ov.querySelector('.inv-later').addEventListener('click', completeInvite);
-    // Role selector (Member / Admin) — applies to everyone in this invite.
-    var roleBtn = ov.querySelector('#invRoleBtn');
-    var roleMenu = ov.querySelector('#invRoleMenu');
-    if (roleBtn && roleMenu) {
-      roleBtn.addEventListener('click', function (e) { e.stopPropagation(); roleMenu.classList.toggle('open'); });
-      [].forEach.call(roleMenu.querySelectorAll('.inv-role-opt'), function (opt) {
-        opt.addEventListener('click', function (e) {
-          e.stopPropagation();
-          inviteRole = opt.getAttribute('data-role');
-          roleBtn.querySelector('.inv-role-label').textContent = inviteRole;
-          roleMenu.classList.remove('open');
-        });
-      });
-      ov.addEventListener('click', function () { roleMenu.classList.remove('open'); });
-    }
-    syncInviteCount();
-    return ov;
-  }
-  function openInvite() { ensureModal().classList.add('show'); }
-  function hideInvite() { var ov = document.querySelector('.inv-overlay'); if (ov) ov.classList.remove('show'); }
-  function completeInvite() {
-    hideInvite();
-    var s = get(); if (s.invite !== 'done') { s.invite = 'done'; save(s); render(); }
-  }
-
-  var keys = ['publish', 'client', 'explore', 'invite'];
+  var keys = ['publish', 'client', 'explore'];
 
   function render() {
     var cl = document.querySelector('.checklist');
@@ -460,8 +258,6 @@
     // Onboarding already finished on a prior visit → the card stays retired.
     try { if (localStorage.getItem('onb.ftuxDone') === '1') { if (cl.parentNode) cl.parentNode.removeChild(cl); return; } } catch (e) {}
 
-    ensureModal();
-
     // The test client is no longer its own checklist step — it's surfaced via the
     // CRM coachmark. Hide that row on every page (kept in the DOM so the keys[]
     // index mapping stays aligned), leaving only "Explore the client experience".
@@ -504,7 +300,6 @@
         }
         else if (i === 1) location.href = 'crm.html' + suffix;    // (hidden) test-client step
         else if (i === 2) location.href = 'crm.html' + suffix;    // Explore → CRM coachmark (resumes at the last step if in-progress)
-        else openInvite();                                        // Invite your team → modal
       });
     });
 
@@ -522,7 +317,6 @@
   }
 
   window.ftuxInit = ftuxInit;
-  window.ftuxOpenInvite = openInvite;
   window.ftuxMarkPublishProgress = function () { markPublish('progress'); };
   window.ftuxMarkPublishDone = function () { markPublish('done'); };
   // Keep the checklist in sync across open tabs — without this a page only
