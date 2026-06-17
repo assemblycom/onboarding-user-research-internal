@@ -81,17 +81,18 @@
       '.cf-nv{display:flex;align-items:center;gap:7px;font-size:9.9px;color:#212b36;padding:4px 6px;border-radius:4px;}' +
       '.cf-nv.active{background:#e6e8eb;}' +
       '.cf-nv svg{width:13px;height:13px;flex-shrink:0;}' +
+      '.cf-nv img{width:14px;height:14px;flex-shrink:0;}' +
       '.cf-lbl{font-size:10px;color:#6b6f76;padding:8px 7px 2px;}' +
       '.cf-main{flex:1;min-width:0;display:flex;flex-direction:column;}' +
       '.cf-main-h{font-size:11px;font-weight:500;color:#212b36;padding:11px 14px;border-bottom:1px solid #dfe1e4;}' +
       '.cf-tabs{display:flex;gap:16px;font-size:11.5px;color:#212b36;padding:9px 14px 0;border-bottom:1px solid #dfe1e4;}' +
       '.cf-tabs span{padding-bottom:8px;}' +
-      '.cf-tabs .on{border-bottom:1.5px solid #212b36;}' +
+      '.cf-tabs .on{border-bottom:1px solid #212b36;margin-bottom:-1px;}' +
       '.cf-cname{font-size:10px;color:#6b6f76;padding:11px 14px 7px;}' +
       '.cf-ct{display:flex;align-items:center;gap:9px;padding:7px 14px;}' +
-      '.cf-av{width:24px;height:24px;border-radius:50%;background:#f2f2f3;color:#212b36;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}' +
-      '.cf-ct b{display:block;font-size:11px;font-weight:500;color:#212b36;line-height:1.35;}' +
-      '.cf-ct span{display:block;font-size:10px;color:#6b6f76;line-height:1.35;}' +
+      '.cf-av{width:24px;height:24px;border-radius:50%;background:#f2f2f3;color:#212b36;font-size:9px;font-weight:500;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+      '.cf-ct div b{display:block;font-size:11px;font-weight:500;color:#212b36;line-height:1.35;}' +
+      '.cf-ct div span{display:block;font-size:10px;color:#6b6f76;line-height:1.35;}' +
       '@media (max-width:680px){.cf-right{display:none;}}' +
       '@media (max-width:640px){.pi-right{display:none;}}';
     document.head.appendChild(css);
@@ -248,16 +249,16 @@
       '<div class="cf-right"><div class="cf-crm">' +
         '<div class="cf-side">' +
           '<div class="cf-ws"><span class="cf-ws-av">' + esc(initial) + '</span>' + esc(co) + '</div>' +
-          '<div class="cf-nv active">' + IC.crm + 'CRM</div>' +
-          '<div class="cf-nv">' + IC.team + 'Team</div>' +
+          '<div class="cf-nv active"><img src="assets/crm.svg" alt="" width="14" height="14" />CRM</div>' +
+          '<div class="cf-nv"><img src="assets/team.svg" alt="" width="14" height="14" />Team</div>' +
           '<div class="cf-nv">' + IC.bell + 'Notifications</div>' +
           '<div class="cf-lbl">Apps</div>' +
-          '<div class="cf-nv">' + IC.home + 'Home</div>' +
-          '<div class="cf-nv">' + IC.msg + 'Messages</div>' +
-          '<div class="cf-nv">' + IC.plus + 'Add app</div>' +
+          '<div class="cf-nv"><img src="assets/home.svg" alt="" width="14" height="14" />Home</div>' +
+          '<div class="cf-nv"><img src="assets/message.svg" alt="" width="14" height="14" />Messages</div>' +
+          '<div class="cf-nv"><img src="assets/pls.svg" alt="" width="13" height="13" />Add app</div>' +
           '<div class="cf-lbl">Customize</div>' +
-          '<div class="cf-nv">' + IC.brand + 'Brand</div>' +
-          '<div class="cf-nv">' + IC.apps + 'Apps</div>' +
+          '<div class="cf-nv"><img src="assets/brand.svg" alt="" width="14" height="14" />Brand</div>' +
+          '<div class="cf-nv"><img src="assets/apps.svg" alt="" width="14" height="14" />App Library</div>' +
         '</div>' +
         '<div class="cf-main">' +
           '<div class="cf-main-h">CRM</div>' +

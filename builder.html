@@ -46,7 +46,7 @@
     })();
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
-  <script src="ftux.js?v=47"></script>
+  <script src="ftux.js?v=48"></script>
   <script src="builder-sidebar.js?v=18"></script>
 </head>
 <body>
@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       '@keyframes asmCardOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(20px); } }',
 
       // ── Q&A card — bottom-anchored overlay over the input area ──
-      '.asm-qa-anchor { position: absolute; left: 18px; right: 18px; bottom: 24px; pointer-events: none; display: flex; justify-content: center; }',
+      '.asm-qa-anchor { position: absolute; left: 18px; right: 18px; top: 0; bottom: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }',
       // ── Skeleton loading state for the 2s after auth before the
       //    Q&A appears. We show shimmering placeholder lines in place
       //    of the user prompt + agent ack while the boot delay runs,
@@ -2883,18 +2883,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         '.pp-nv{display:flex;align-items:center;gap:7px;font-size:9.9px;color:#212b36;padding:4px 6px;border-radius:4px;}' +
         '.pp-nv.active{background:#e6e8eb;}' +
         '.pp-nv svg{width:13px;height:13px;flex-shrink:0;}' +
+        '.pp-nv img{width:14px;height:14px;flex-shrink:0;}' +
         '.pp-lbl{font-size:10px;color:#6b6f76;padding:8px 7px 2px;}' +
         '.pp-main{flex:1;min-width:0;display:flex;flex-direction:column;}' +
         '.pp-main-h{font-size:11px;font-weight:500;color:#212b36;padding:11px 14px;border-bottom:1px solid #dfe1e4;}' +
         '.pp-tabs{display:flex;gap:16px;font-size:11.5px;color:#212b36;padding:9px 14px 0;border-bottom:1px solid #dfe1e4;}' +
         '.pp-tabs span{padding-bottom:8px;}' +
-        '.pp-tabs .on{border-bottom:1.5px solid #212b36;}' +
+        '.pp-tabs .on{border-bottom:1px solid #212b36;margin-bottom:-1px;}' +
         '.pp-cname{font-size:10px;color:#6b6f76;padding:11px 14px 7px;}' +
         '.pp-ct{display:flex;align-items:center;gap:9px;padding:7px 14px;}' +
-        '.pp-av{width:24px;height:24px;border-radius:50%;background:#f2f2f3;color:#212b36;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+        '.pp-av{width:24px;height:24px;border-radius:50%;background:#f2f2f3;color:#212b36;font-size:9px;font-weight:500;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
         '.pp-av.tc{background:#e4f1eb;color:#44856f;}' +
-        '.pp-ct b{display:block;font-size:11px;font-weight:500;color:#212b36;line-height:1.35;}' +
-        '.pp-ct span{display:block;font-size:10px;color:#6b6f76;line-height:1.35;}' +
+        '.pp-ct div b{display:block;font-size:11px;font-weight:500;color:#212b36;line-height:1.35;}' +
+        '.pp-ct div span{display:block;font-size:10px;color:#6b6f76;line-height:1.35;}' +
         '@media (max-width:680px){.pp-right{display:none;}}';
       document.head.appendChild(css);
     }
@@ -2936,16 +2937,16 @@ document.addEventListener('DOMContentLoaded', async function() {
       '<div class="pp-right"><div class="pp-crm">' +
         '<div class="pp-side">' +
           '<div class="pp-ws"><span class="pp-ws-av">' + initial + '</span>' + escapeHtml(co) + '</div>' +
-          '<div class="pp-nv active">' + IC.crm + 'CRM</div>' +
-          '<div class="pp-nv">' + IC.team + 'Team</div>' +
+          '<div class="pp-nv active"><img src="assets/crm.svg" alt="" width="14" height="14" />CRM</div>' +
+          '<div class="pp-nv"><img src="assets/team.svg" alt="" width="14" height="14" />Team</div>' +
           '<div class="pp-nv">' + IC.bell + 'Notifications</div>' +
           '<div class="pp-lbl">Apps</div>' +
-          '<div class="pp-nv">' + IC.home + 'Home</div>' +
-          '<div class="pp-nv">' + IC.msg + 'Messages</div>' +
-          '<div class="pp-nv">' + IC.plus + 'Add app</div>' +
+          '<div class="pp-nv"><img src="assets/home.svg" alt="" width="14" height="14" />Home</div>' +
+          '<div class="pp-nv"><img src="assets/message.svg" alt="" width="14" height="14" />Messages</div>' +
+          '<div class="pp-nv"><img src="assets/pls.svg" alt="" width="13" height="13" />Add app</div>' +
           '<div class="pp-lbl">Customize</div>' +
-          '<div class="pp-nv">' + IC.brand + 'Brand</div>' +
-          '<div class="pp-nv">' + IC.apps + 'Apps</div>' +
+          '<div class="pp-nv"><img src="assets/brand.svg" alt="" width="14" height="14" />Brand</div>' +
+          '<div class="pp-nv"><img src="assets/apps.svg" alt="" width="14" height="14" />App Library</div>' +
         '</div>' +
         '<div class="pp-main">' +
           '<div class="pp-main-h">CRM</div>' +
