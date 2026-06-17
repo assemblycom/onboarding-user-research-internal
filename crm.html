@@ -631,7 +631,7 @@
           bodyEl.style.display = '';
           titleEl.style.marginBottom = '6px';
           document.getElementById('crmCoachLater').textContent = 'Back';
-          open.querySelector('.coach-label').textContent = 'Open portal';
+          open.style.display = 'none';   // no CTA on step 2 — the user clicks the spotlighted "Open portal as client" menu item the card points at
           markExploreProgress();   // seeing the magic-link card half-lights "Explore"
           // Step 2 is about the action → drop the row highlight, point at the ••• only
           // and open its menu. The card stays pinned bottom-right (positionCoach).
@@ -933,7 +933,7 @@
       }
     })();
   </script>
-  <script src="ftux.js?v=43"></script>
+  <script src="ftux.js?v=45"></script>
   <script src="apps-nav.js?v=6"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>

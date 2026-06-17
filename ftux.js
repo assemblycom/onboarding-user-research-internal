@@ -63,16 +63,36 @@
       // ── "Meet your test client first" gate (Open Portal before visiting the CRM) ──
       '.cf-ov{position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
       '.cf-ov.show{opacity:1;pointer-events:auto;}' +
-      '.cf-card{width:420px;max-width:100%;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,0.28);padding:28px;}' +
-      '.cf-ic{width:44px;height:44px;border-radius:11px;background:#f0f1f3;color:#5a6068;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}' +
-      '.cf-ic svg{width:22px;height:22px;}' +
-      '.cf-title{font-size:19px;font-weight:500;margin:0 0 8px;color:#212b36;}' +
-      '.cf-copy{font-size:14px;line-height:1.55;color:#6b6f76;margin:0 0 22px;}' +
-      '.cf-actions{display:flex;gap:10px;justify-content:flex-end;}' +
-      '.cf-cancel{height:40px;padding:0 16px;background:#fff;border:1px solid #dfe1e4;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;color:#212b36;cursor:pointer;}' +
-      '.cf-cancel:hover{background:#eff1f4;}' +
-      '.cf-go{height:40px;padding:0 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}' +
-      '.cf-go:hover{background:#000;}' +
+      '.cf-card{position:relative;width:760px;max-width:100%;max-height:90vh;background:#fff;border:1px solid #eff1f4;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.07);display:flex;overflow:hidden;}' +
+      '.cf-left{flex:1;min-width:0;padding:24px;display:flex;flex-direction:column;gap:24px;}' +
+      '.cf-content{flex:1;display:flex;flex-direction:column;gap:12px;}' +
+      '.cf-title{font-size:20px;font-weight:500;line-height:28px;margin:0;color:#212b36;}' +
+      '.cf-copy{font-size:13px;line-height:21px;color:#6b6f76;margin:0;}' +
+      '.cf-go{align-self:flex-start;height:28px;padding:0 9px;background:#212b36;color:#fff;border:1px solid rgba(0,0,0,0.12);border-radius:4px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;}' +
+      '.cf-go:hover{background:#0f1620;}' +
+      '.cf-x{position:absolute;top:7px;right:6px;width:26px;height:26px;border-radius:999px;background:#fff;border:1px solid #dfe1e4;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b6f76;padding:0;z-index:2;}' +
+      '.cf-x svg{width:12px;height:12px;}' +
+      '.cf-x:hover{background:#f8f9fb;}' +
+      '.cf-right{width:380px;flex-shrink:0;background:#eff1f4;padding:20px 0 0 20px;display:flex;align-items:stretch;overflow:hidden;}' +
+      '.cf-crm{width:100%;height:420px;background:#fff;border:1px solid #dfe1e4;border-right:none;border-bottom:none;border-radius:8px 0 0 0;overflow:hidden;display:flex;}' +
+      '.cf-side{width:152px;flex-shrink:0;background:#f8f9fb;border-right:1px solid #dfe1e4;padding:8px;display:flex;flex-direction:column;gap:1px;}' +
+      '.cf-ws{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#212b36;padding:5px 7px 9px;}' +
+      '.cf-ws-av{width:17px;height:17px;border-radius:4px;background:#101010;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+      '.cf-nv{display:flex;align-items:center;gap:7px;font-size:9.9px;color:#212b36;padding:4px 6px;border-radius:4px;}' +
+      '.cf-nv.active{background:#e6e8eb;}' +
+      '.cf-nv svg{width:13px;height:13px;flex-shrink:0;}' +
+      '.cf-lbl{font-size:10px;color:#6b6f76;padding:8px 7px 2px;}' +
+      '.cf-main{flex:1;min-width:0;display:flex;flex-direction:column;}' +
+      '.cf-main-h{font-size:11px;font-weight:500;color:#212b36;padding:11px 14px;border-bottom:1px solid #dfe1e4;}' +
+      '.cf-tabs{display:flex;gap:16px;font-size:11.5px;color:#212b36;padding:9px 14px 0;border-bottom:1px solid #dfe1e4;}' +
+      '.cf-tabs span{padding-bottom:8px;}' +
+      '.cf-tabs .on{border-bottom:1.5px solid #212b36;}' +
+      '.cf-cname{font-size:10px;color:#6b6f76;padding:11px 14px 7px;}' +
+      '.cf-ct{display:flex;align-items:center;gap:9px;padding:7px 14px;}' +
+      '.cf-av{width:24px;height:24px;border-radius:50%;background:#f2f2f3;color:#212b36;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}' +
+      '.cf-ct b{display:block;font-size:11px;font-weight:500;color:#212b36;line-height:1.35;}' +
+      '.cf-ct span{display:block;font-size:10px;color:#6b6f76;line-height:1.35;}' +
+      '@media (max-width:680px){.cf-right{display:none;}}' +
       '@media (max-width:640px){.pi-right{display:none;}}';
     document.head.appendChild(css);
   }
@@ -205,15 +225,58 @@
     var CRM_IC = '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.17969 2.6375C1.17969 1.37504 2.20316 0.351562 3.46563 0.351562H10.9469C11.9807 0.351562 12.8172 1.18801 12.8172 2.22188V8.87188C12.8172 9.52129 12.4873 10.0928 11.9859 10.4279V12.4047H12.1938C12.5392 12.4047 12.8172 12.6826 12.8172 13.0281C12.8172 13.3736 12.5392 13.6516 12.1938 13.6516H3.25781C2.10965 13.6516 1.17969 12.7216 1.17969 11.5734V2.6375ZM2.42656 11.5734C2.42656 12.0332 2.79803 12.4047 3.25781 12.4047H10.7391V10.7422H3.25781C2.79803 10.7422 2.42656 11.1137 2.42656 11.5734ZM2.42656 9.66936C2.68113 9.55766 2.96168 9.49531 3.25781 9.49531H10.9469C11.2924 9.49531 11.5703 9.21736 11.5703 8.87188V2.22188C11.5703 1.87639 11.2924 1.59844 10.9469 1.59844H3.46563C2.89154 1.59844 2.42656 2.06342 2.42656 2.6375V9.66936ZM5.75156 4.50781C5.75156 3.81998 6.31061 3.26094 6.99844 3.26094C7.68627 3.26094 8.24531 3.81998 8.24531 4.50781C8.24531 5.19564 7.68627 5.75469 6.99844 5.75469C6.31061 5.75469 5.75156 5.19564 5.75156 4.50781ZM5.25801 8.04063C4.87355 8.04063 4.57742 7.68475 4.79043 7.36524C5.09955 6.89766 5.63207 6.58594 6.23732 6.58594H7.76215C8.3674 6.58594 8.89732 6.89506 9.20904 7.36524C9.41945 7.68475 9.12592 8.04063 8.74147 8.04063H5.25801Z" fill="currentColor"/></svg>';
     ov = document.createElement('div');
     ov.className = 'cf-ov';
+    var co = (hashParam('company') || 'Studio').trim();
+    var initial = (co[0] || 'S').toUpperCase();
+    var esc = function (s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+    var SK = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+    var IC = {
+      crm: '<svg viewBox="0 0 24 24" ' + SK + '><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3"/></svg>',
+      team: '<svg viewBox="0 0 24 24" ' + SK + '><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+      bell: '<svg viewBox="0 0 24 24" ' + SK + '><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+      home: '<svg viewBox="0 0 24 24" ' + SK + '><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>',
+      msg: '<svg viewBox="0 0 24 24" ' + SK + '><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+      plus: '<svg viewBox="0 0 24 24" ' + SK + '><path d="M12 5v14M5 12h14"/></svg>',
+      brand: '<svg viewBox="0 0 24 24" ' + SK + '><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="8.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/></svg>',
+      apps: '<svg viewBox="0 0 24 24" ' + SK + '><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
+    };
+    var X = '<svg viewBox="0 0 24 24" ' + SK + '><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
     ov.innerHTML = '<div class="cf-card">' +
-      '<div class="cf-ic">' + CRM_IC + '</div>' +
-      '<h2 class="cf-title">Meet your test client first</h2>' +
-      '<p class="cf-copy">To preview the client portal, head to your CRM and open it as your test client — we’ll walk you through it from there.</p>' +
-      '<div class="cf-actions"><button class="cf-cancel" type="button">Not now</button><button class="cf-go" type="button">Go to CRM</button></div>' +
+      '<div class="cf-left">' +
+        '<div class="cf-content">' +
+          '<h2 class="cf-title">Meet your test client first</h2>' +
+          '<p class="cf-copy">To preview the client portal, head to your CRM and open it as your test client — we’ll walk you through it from there.</p>' +
+        '</div>' +
+        '<button class="cf-go" type="button">Go to CRM</button>' +
+      '</div>' +
+      '<div class="cf-right"><div class="cf-crm">' +
+        '<div class="cf-side">' +
+          '<div class="cf-ws"><span class="cf-ws-av">' + esc(initial) + '</span>' + esc(co) + '</div>' +
+          '<div class="cf-nv active">' + IC.crm + 'CRM</div>' +
+          '<div class="cf-nv">' + IC.team + 'Team</div>' +
+          '<div class="cf-nv">' + IC.bell + 'Notifications</div>' +
+          '<div class="cf-lbl">Apps</div>' +
+          '<div class="cf-nv">' + IC.home + 'Home</div>' +
+          '<div class="cf-nv">' + IC.msg + 'Messages</div>' +
+          '<div class="cf-nv">' + IC.plus + 'Add app</div>' +
+          '<div class="cf-lbl">Customize</div>' +
+          '<div class="cf-nv">' + IC.brand + 'Brand</div>' +
+          '<div class="cf-nv">' + IC.apps + 'Apps</div>' +
+        '</div>' +
+        '<div class="cf-main">' +
+          '<div class="cf-main-h">CRM</div>' +
+          '<div class="cf-tabs"><span>Companies</span><span class="on">Contacts</span></div>' +
+          '<div class="cf-cname">Name</div>' +
+          '<div class="cf-ct"><span class="cf-av">TC</span><div><b>Test Client</b><span>name@test.com</span></div></div>' +
+          '<div class="cf-ct"><span class="cf-av">JD</span><div><b>Jane Doe</b><span>jane@rocket.com</span></div></div>' +
+          '<div class="cf-ct"><span class="cf-av">JD</span><div><b>John Doe</b><span>john@rocket.com</span></div></div>' +
+        '</div>' +
+      '</div></div>' +
+      '<button class="cf-x" type="button" aria-label="Close">' + X + '</button>' +
     '</div>';
     document.body.appendChild(ov);
-    function close() { ov.classList.remove('show'); }
-    ov.querySelector('.cf-cancel').addEventListener('click', close);
+    // Dismissing the gate (✕ or backdrop) remembers it — it won't show again.
+    function close() { ov.classList.remove('show'); try { localStorage.setItem('onb.clientFirstSeen', '1'); } catch (e) {} }
+    ov.querySelector('.cf-x').addEventListener('click', close);
     ov.querySelector('.cf-go').addEventListener('click', function () { location.href = 'crm.html' + navSuffix(); });
     ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     return ov;
@@ -234,6 +297,14 @@
     if (location.pathname.indexOf('crm.html') > -1) {
       var sfx = navSuffix();
       location.href = 'portal.html#from=crm.html' + (sfx ? '&' + sfx.slice(1) : '');
+      return;
+    }
+    // Test client isn't active yet (explore !== 'done'). Show the gate once; if it's
+    // already been dismissed, don't nag — send them to the branded sign-in page instead.
+    var seen = false; try { seen = localStorage.getItem('onb.clientFirstSeen') === '1'; } catch (e) {}
+    if (seen) {
+      var sfx2 = navSuffix();
+      location.href = 'portal.html#signin=1' + (sfx2 ? '&' + sfx2.slice(1) : '');
       return;
     }
     showClientFirst();
