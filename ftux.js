@@ -271,8 +271,6 @@
           '<div class="cf-tabs"><span>Companies</span><span class="on">Contacts</span></div>' +
           '<div class="cf-cname">Name</div>' +
           '<div class="cf-ct"><span class="cf-av">TC</span><div><b>Test Client</b><span>name@test.com</span></div></div>' +
-          '<div class="cf-ct"><span class="cf-av">JD</span><div><b>Jane Doe</b><span>jane@rocket.com</span></div></div>' +
-          '<div class="cf-ct"><span class="cf-av">JD</span><div><b>John Doe</b><span>john@rocket.com</span></div></div>' +
         '</div>' +
       '</div></div>' +
       '<button class="cf-x" type="button" aria-label="Close">' + X + '</button>' +

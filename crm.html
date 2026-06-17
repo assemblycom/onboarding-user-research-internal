@@ -622,7 +622,7 @@
           // Step 1 introduces the client → highlight the whole row, not the dots.
           if (row) { row.classList.add('spotlight'); var d1 = row.querySelector('.row-actions'); if (d1) d1.classList.remove('coach-focus'); }
           titleEl.textContent = 'Meet your test client';
-          bodyEl.textContent = 'We’ve added a test client to help you test the platform.';
+          bodyEl.textContent = 'This client can be used to test new workflows, apps, and custom visibility.';
           bodyEl.style.display = '';
           titleEl.style.marginBottom = '6px';
           document.getElementById('crmCoachLater').textContent = 'Later';
@@ -630,8 +630,8 @@
           positionCoach();
         } else {
           try { localStorage.setItem('onb.crmCoachStep', '2'); } catch (e) {}   // remember they reached step 2, so a later return resumes here
-          titleEl.textContent = 'Open the client experience';
-          bodyEl.textContent = 'Open the portal as your client from the actions menu to preview exactly what they’ll see.';
+          titleEl.textContent = 'Explore the client experience';
+          bodyEl.textContent = 'Open the portal as your client anytime to see the experience from their perspective.';
           bodyEl.style.display = '';
           titleEl.style.marginBottom = '6px';
           document.getElementById('crmCoachLater').textContent = 'Back';
@@ -944,7 +944,7 @@
       }
     })();
   </script>
-  <script src="ftux.js?v=52"></script>
+  <script src="ftux.js?v=53"></script>
   <script src="apps-nav.js?v=6"></script>
   <script src="prototype-hints.js?v=6"></script>
 </body>
