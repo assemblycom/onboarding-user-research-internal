@@ -140,8 +140,6 @@
       <div class="signin-or">or</div>
       <div class="signin-field"><label>Email</label><input id="signinEmail" type="email" /></div>
       <button class="signin-btn" id="signinBtn" type="button">Continue</button>
-      <div><button class="signin-skip" id="signinSkip" type="button">Skip — you're previewing →</button></div>
-      <div class="signin-foot">Secured by Assembly</div>
     </div>
   </div>
 
@@ -252,7 +250,6 @@
       function enter() { sov.classList.remove('show'); }
       document.getElementById('signinBtn').addEventListener('click', enter);
       var g = document.getElementById('signinGoogle'); if (g) g.addEventListener('click', enter);
-      document.getElementById('signinSkip').addEventListener('click', enter);
     })();
   </script>
   <script src="ftux.js?v=48"></script>
