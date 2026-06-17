@@ -68,8 +68,11 @@
       '.cf-content{flex:1;display:flex;flex-direction:column;gap:12px;}' +
       '.cf-title{font-size:20px;font-weight:500;line-height:28px;margin:0;color:#212b36;}' +
       '.cf-copy{font-size:13px;line-height:21px;color:#6b6f76;margin:0;}' +
-      '.cf-go{align-self:flex-start;height:28px;padding:0 9px;background:#212b36;color:#fff;border:1px solid rgba(0,0,0,0.12);border-radius:4px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;}' +
+      '.cf-actions{align-self:flex-start;display:flex;align-items:center;gap:14px;}' +
+      '.cf-go{height:28px;padding:0 9px;background:#212b36;color:#fff;border:1px solid rgba(0,0,0,0.12);border-radius:4px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;}' +
       '.cf-go:hover{background:#0f1620;}' +
+      '.cf-skip{background:none;border:none;padding:0;font-family:inherit;font-size:12px;font-weight:500;color:#6b6f76;cursor:pointer;}' +
+      '.cf-skip:hover{color:#212b36;}' +
       '.cf-x{position:absolute;top:7px;right:6px;width:26px;height:26px;border-radius:999px;background:#fff;border:1px solid #dfe1e4;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b6f76;padding:0;z-index:2;}' +
       '.cf-x svg{width:12px;height:12px;}' +
       '.cf-x:hover{background:#f8f9fb;}' +
@@ -250,7 +253,10 @@
           '<h2 class="cf-title">Meet your test client first</h2>' +
           '<p class="cf-copy">To preview the client portal, head to your CRM and open it as your test client — we’ll walk you through it from there.</p>' +
         '</div>' +
-        '<button class="cf-go" type="button">Go to CRM</button>' +
+        '<div class="cf-actions">' +
+          '<button class="cf-go" type="button">Go to CRM</button>' +
+          '<button class="cf-skip" type="button">Continue to portal</button>' +
+        '</div>' +
       '</div>' +
       '<div class="cf-right"><div class="cf-crm">' +
         '<div class="cf-side">' +
@@ -291,6 +297,15 @@
     } else {
       goBtn.addEventListener('click', function () { markSeen(); location.href = 'crm.html' + navSuffix(); });
     }
+    // Secondary "skip" path — for users who'd rather go straight into the portal
+    // instead of the CRM tutorial. Sends them to the branded sign-in page (same
+    // destination as a later, already-seen "Open Portal").
+    var skipBtn = ov.querySelector('.cf-skip');
+    if (skipBtn) skipBtn.addEventListener('click', function () {
+      markSeen();
+      var sfx = navSuffix();
+      location.href = 'portal.html#signin=1' + (sfx ? '&' + sfx.slice(1) : '');
+    });
     // Dismissable ONLY via the ✕ — clicking the backdrop does nothing.
     return ov;
   }

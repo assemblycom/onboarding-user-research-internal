@@ -46,7 +46,7 @@
     })();
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
-  <script src="ftux.js?v=53"></script>
+  <script src="ftux.js?v=54"></script>
   <script src="builder-sidebar.js?v=20"></script>
 </head>
 <body>
@@ -413,6 +413,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     'Connecting integrations',
     'Finalizing your app'
   ];
+
+  // Shown both when a build finishes live and when the user returns to a build
+  // that completed in the background (resume) — so there's always a clear
+  // "it's done" signal in the chat.
+  var BUILD_DONE_MSG = "Done! Your app is live in the preview on the right. Take a look — let me know what to refine.";
 
   // ============================================================
   // State
@@ -5209,8 +5214,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         // the user pauses the build — so they can request a refinement,
         // which stops the build and pushes a new plan version.
         var v4PausedBuild = STATE.phase === 'building' && STATE.buildPaused;
+        // Plan revision via the composer is disabled in this prototype — users
+        // review the plan and Approve; they can't type changes to it. (Active
+        // only post-build refinement and a paused build.)
         var composerActive = STATE.phase === 'done'
-                          || STATE.phase === 'plan'
                           || v4PausedBuild;
         if (composerActive) {
           if (ta.disabled) {
@@ -5284,7 +5291,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             document.body.appendChild(flash);
             setTimeout(function() { if (flash.parentNode) flash.parentNode.removeChild(flash); }, 1300);
           }
-          var doneMsg = "Done! Your app is live in the preview on the right. Take a look — let me know what to refine.";
+          var doneMsg = BUILD_DONE_MSG;
           if (thinkingEl) {
             resolveThinking(thinkingEl, doneMsg);
           } else {
@@ -5417,6 +5424,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       document.querySelectorAll('[data-step]').forEach(function(el) {
         el.setAttribute('data-status', 'done');
       });
+      // Also light up the terminal "App built" node (it has no data-step), so
+      // the plan reads as fully complete on resume — same as the live finish.
+      document.querySelectorAll('.asm-plan-todos-end').forEach(function(el) {
+        el.setAttribute('data-status', 'done');
+      });
       if (!resumeDoneOnly) {
         STATE.isPublished = true;
         STATE.upToDate = true; // already published, nothing to re-publish
@@ -5425,6 +5437,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         STATE.appVersion = 1;
         document.body.classList.add('asm-published');
         appendVersionBlock(scroll, 'Initial version published', 'publish-v1');
+      } else {
+        // Returning to a build that finished in the background — the live
+        // completion tick never ran, so post the "Done!" message here too,
+        // otherwise there's no chat indication the build completed.
+        appendMsg(scroll, 'agent', BUILD_DONE_MSG, 'build-done');
       }
       return;
     }
