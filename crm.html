@@ -403,7 +403,10 @@
     if (getHashParam('theme')) navParams.push('theme=' + encodeURIComponent(getHashParam('theme')));
     const navSuffix = navParams.length ? '#' + navParams.join('&') : '';
     document.querySelectorAll('[data-nav]').forEach(a => { a.setAttribute('href', a.dataset.nav + navSuffix); });
-    (function(){ const purl = 'portal.html' + navSuffix; const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', function(){ location.href = purl; }); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', function(){ location.href = purl; }); } }); })();
+    // Route "Open Portal" + the "Explore" checklist item through the ftux gate so the
+    // portal only opens once the test client is activated (explore === 'done'); until
+    // then the gate modal shows instead of opening the portal directly.
+    (function(){ const purl = 'portal.html' + navSuffix; function go(e){ if (e) e.preventDefault(); if (typeof window.ftuxOpenPortalIntro === 'function') { window.ftuxOpenPortalIntro(); } else { location.href = purl; } } const op = document.querySelector('.open-portal'); if (op) op.addEventListener('click', go); document.querySelectorAll('.checklist-item').forEach(function(it){ if (it.textContent.indexOf('Explore the client experience') > -1) { it.style.cursor = 'pointer'; it.addEventListener('click', go); } }); })();
 
     // ── Add-client moment: three switchable variants for testing ──
     // All three are ONE-CLICK adds — they differ only in the showcase that follows:
@@ -648,13 +651,9 @@
         markClientDone();   // seeing card 1 completes "Meet your test client"
         const row = tbody.querySelector('tr');
         if (row) row.classList.add('spotlight');
-        // Resume where they left off — but only if they genuinely advanced to
-        // step 2 before (tracked explicitly below). Being on the CRM half-lights
-        // "Explore" on its own, so the ftux 'progress' flag can't tell "just
-        // arrived" from "saw step 2" — first-time visitors must start at step 1.
-        var resumeStep = 1;
-        try { if (localStorage.getItem('onb.crmCoachStep') === '2') resumeStep = 2; } catch (e) {}
-        renderCoachB(resumeStep);
+        // Always start at the intro (step 1) so the user is introduced to the test
+        // client first — the coachmark walks step 1 → step 2 each time it opens.
+        renderCoachB(1);
         requestAnimationFrame(function () { positionCoach(); coach.classList.add('show'); });
       }
       function closeCoach() {
@@ -933,7 +932,7 @@
       }
     })();
   </script>
-  <script src="ftux.js?v=45"></script>
+  <script src="ftux.js?v=47"></script>
   <script src="apps-nav.js?v=6"></script>
   <script src="prototype-hints.js?v=5"></script>
 </body>

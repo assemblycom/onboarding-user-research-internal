@@ -126,18 +126,15 @@
     if (visCount > 0 && doneCount === visCount) finishFtux(cl);
   }
 
-  // All steps done: flip the title to an "all set" confirmation, then fade the
-  // card out and remove it. A flag keeps it gone on reload.
+  // All steps done: flip the title to an "all set" confirmation and leave it visible
+  // for the rest of this view — it does NOT fade away on its own. The done flag keeps
+  // it retired on the next page load / new session (handled in ftuxInit).
   function finishFtux(cl) {
     if (cl.getAttribute('data-ftux-finishing') === '1') return;
     cl.setAttribute('data-ftux-finishing', '1');
     var title = cl.querySelector('.checklist-title');
     if (title) title.textContent = 'You’re all set';
-    setTimeout(function () {
-      try { localStorage.setItem('onb.ftuxDone', '1'); } catch (e) {}
-      cl.classList.add('ftux-dismiss-out');
-      setTimeout(function () { if (cl && cl.parentNode) cl.parentNode.removeChild(cl); }, 480);
-    }, 1300);
+    try { localStorage.setItem('onb.ftuxDone', '1'); } catch (e) {}
   }
 
   // Mark "Publish your first app" as in-progress (a prompt was entered) or done
@@ -277,7 +274,16 @@
     // Dismissing the gate (✕ or backdrop) remembers it — it won't show again.
     function close() { ov.classList.remove('show'); try { localStorage.setItem('onb.clientFirstSeen', '1'); } catch (e) {} }
     ov.querySelector('.cf-x').addEventListener('click', close);
-    ov.querySelector('.cf-go').addEventListener('click', function () { location.href = 'crm.html' + navSuffix(); });
+    // On the CRM the user is already where they need to be — relabel the CTA and just
+    // close (the coachmark points at the row's "Open portal as client"). Elsewhere it
+    // routes to the CRM.
+    var goBtn = ov.querySelector('.cf-go');
+    if (location.pathname.indexOf('crm.html') > -1) {
+      goBtn.textContent = 'Got it';
+      goBtn.addEventListener('click', close);
+    } else {
+      goBtn.addEventListener('click', function () { location.href = 'crm.html' + navSuffix(); });
+    }
     ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     return ov;
   }
@@ -292,15 +298,10 @@
     // the only thing that sets explore='done'. Until then we funnel them to the CRM.
     var exp; try { exp = (get() || {}).explore; } catch (e) {}
     if (exp === 'done') { location.href = 'portal.html' + navSuffix(); return; }
-    // On the CRM itself there's nowhere to redirect — opening the portal here IS the
-    // completion path, so route through from=crm.html (which marks Explore done).
-    if (location.pathname.indexOf('crm.html') > -1) {
-      var sfx = navSuffix();
-      location.href = 'portal.html#from=crm.html' + (sfx ? '&' + sfx.slice(1) : '');
-      return;
-    }
-    // Test client isn't active yet (explore !== 'done'). Show the gate once; if it's
-    // already been dismissed, don't nag — send them to the branded sign-in page instead.
+    // Test client isn't active yet (explore !== 'done'). The generic "Open Portal" must
+    // NOT open the portal directly — even on the CRM. Activation happens only via the
+    // row's "Open portal as client" action. Show the gate once; if it's already been
+    // dismissed, don't nag — send them to the branded sign-in page instead.
     var seen = false; try { seen = localStorage.getItem('onb.clientFirstSeen') === '1'; } catch (e) {}
     if (seen) {
       var sfx2 = navSuffix();

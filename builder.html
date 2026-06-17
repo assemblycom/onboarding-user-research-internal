@@ -46,7 +46,7 @@
     })();
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
-  <script src="ftux.js?v=45"></script>
+  <script src="ftux.js?v=47"></script>
   <script src="builder-sidebar.js?v=18"></script>
 </head>
 <body>
@@ -2913,14 +2913,23 @@ document.addEventListener('DOMContentLoaded', async function() {
       apps: '<svg viewBox="0 0 24 24" ' + S + '><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'
     };
     var X = '<svg viewBox="0 0 24 24" ' + S + '><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    // Branch the copy on the app's visibility: internal vs client-facing.
+    var visEl = document.getElementById('asm-pub-vis-val');
+    var isInternal = !!(visEl && visEl.textContent.trim() === 'Internal');
+    var ppTitle = isInternal
+      ? 'Take your client experience even further'
+      : 'Your app is live — now view it as your client';
+    var ppBody = isInternal
+      ? 'Nice work, your app is live and ready for your team to use. Before that, we’d love for you to meet your test client and explore the CRM — so you can see how to take your client experience even further.'
+      : 'Nice work, your app is now part of your client portal. Jump into your CRM and open the test client we created to see your app from their side first.';
     var ov = document.createElement('div');
     ov.className = 'pp-ov';
     ov.id = 'asm-postpub';
     ov.innerHTML = '<div class="pp-card">' +
       '<div class="pp-left">' +
         '<div class="pp-content">' +
-          '<h2 class="pp-title">Take your client experience even further</h2>' +
-          '<p class="pp-copy">Nice work, your app is live and ready for your team to use. Before that, we’d love for you to meet your test client and explore the CRM — so you can see how to take your client experience even further.</p>' +
+          '<h2 class="pp-title">' + ppTitle + '</h2>' +
+          '<p class="pp-copy">' + ppBody + '</p>' +
         '</div>' +
         '<button class="pp-btn" id="asm-postpub-cta" type="button">Meet your test client</button>' +
       '</div>' +
