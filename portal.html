@@ -28,9 +28,27 @@
     .side-item:hover { background: rgba(255,255,255,0.35); }
     .side-item.active { background: var(--side-active); font-weight: 500; }
     .side-item svg { flex-shrink: 0; opacity: 0.85; }
-    .side-foot { margin-top: auto; padding: 6px; }
-    .side-foot .gear { width: 32px; height: 32px; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--side-tx); opacity: 0.7; display: flex; align-items: center; justify-content: center; }
-    .side-foot .gear:hover { background: rgba(255,255,255,0.35); }
+    .side-foot { margin-top: auto; padding: 0; }
+    .side-foot .gear { width: 32px; height: 32px; border: 1px solid rgba(16,16,16,0.12); background: #fff; border-radius: 999px; cursor: pointer; color: #6b6f76; padding: 0; display: flex; align-items: center; justify-content: center; }
+    .side-foot .gear:hover { background: #f8f9fb; }
+    /* Getting-started card in the portal sidebar — replaces the exit pill, lets
+       the client return to the CRM and see remaining onboarding items. */
+    .pgs { background: #fff; border: 1px solid #eff1f4; border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+    .pgs-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 4px; cursor: pointer; }
+    .pgs-title { font-size: 12px; font-weight: 500; line-height: 20px; color: #212b36; }
+    .pgs-chev { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; color: #6b6f76; transition: transform 0.15s ease; }
+    .pgs.collapsed .pgs-chev { transform: rotate(-90deg); }
+    .pgs-bar { height: 3px; border-radius: 4px; background: #eff1f4; overflow: hidden; margin: 0 8px 4px; }
+    .pgs-bar-fill { height: 100%; background: #212b36; border-radius: 4px; width: 0; transition: width 0.35s ease; }
+    .pgs.collapsed .pgs-body { display: none; }
+    .pgs.collapsed .pgs-bar { margin-bottom: 0; }
+    .pgs.collapsed { padding-bottom: 10px; }
+    .pgs-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; }
+    .pgs-item img { width: 14px; height: 14px; flex-shrink: 0; display: block; }
+    .pgs-item span { font-size: 12px; line-height: 20px; color: #212b36; }
+    .pgs-item.done span { color: #6b6f76; text-decoration: line-through; }
+    .pgs-return { display: flex; align-items: center; justify-content: center; margin: 4px 10px 10px; height: 28px; padding: 0 9px; background: #212b36; color: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 4px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none; }
+    .pgs-return:hover { background: #0f1620; }
 
     /* ── Main ── */
     .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
@@ -143,8 +161,6 @@
     </div>
   </div>
 
-  <a class="exit-preview" id="exitPreview" data-live="1" data-tip="Only here for the prototype — in the real product the client portal opens in its own tab." href="studio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Exit preview</a>
-
   <div class="shell">
     <!-- Themed client sidebar -->
     <aside class="side">
@@ -158,6 +174,18 @@
         <a class="side-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</a>
       </nav>
       <div class="side-foot">
+        <div class="pgs" id="portalGs">
+          <div class="pgs-head" id="pgsHead">
+            <span class="pgs-title">Getting started</span>
+            <span class="pgs-chev"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </div>
+          <div class="pgs-bar"><div class="pgs-bar-fill" id="pgsFill"></div></div>
+          <div class="pgs-body">
+            <div class="pgs-item" data-key="publish"><img alt="" /><span>Publish your first app</span></div>
+            <div class="pgs-item" data-key="explore"><img alt="" /><span>Explore the client experience</span></div>
+            <a class="pgs-return" id="pgsReturn" data-live="1" href="#">Return to CRM</a>
+          </div>
+        </div>
         <button class="gear"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       </div>
     </aside>
@@ -232,8 +260,40 @@
     const navParams = [];
     ['company','name','email','theme'].forEach(k => { const v = getHashParam(k); if (v) navParams.push(k + '=' + encodeURIComponent(v)); });
     const fromPage = getHashParam('from');
-    const exitEl = document.getElementById('exitPreview');
-    exitEl.setAttribute('href', (fromPage || 'studio.html') + (navParams.length ? '#' + navParams.join('&') : ''));
+    const returnHref = (fromPage || 'studio.html') + (navParams.length ? '#' + navParams.join('&') : '');
+
+    // ── Getting-started card (sidebar) ──
+    // Reflects the real onboarding state from onb.ftux so it handles non-linear
+    // progress (e.g. "Publish your first app" may still be incomplete) and stays
+    // put even once everything's done. "Return to CRM" goes back where the
+    // preview was opened from. Re-rendered on load so it picks up explore being
+    // marked done when the portal opens (handled in ftux.js, which runs later).
+    (function () {
+      const gs = document.getElementById('portalGs');
+      if (!gs) return;
+      const ICON = { done: 'assets/check-green.svg?v=3', progress: 'assets/progress-indication.svg', todo: 'assets/todo.svg' };
+      function readFtux() { try { return JSON.parse(localStorage.getItem('onb.ftux')) || {}; } catch (e) { return {}; } }
+      function renderGs() {
+        const st = readFtux();
+        const items = gs.querySelectorAll('.pgs-item');
+        let done = 0, prog = 0;
+        items.forEach(function (it) {
+          const s = st[it.getAttribute('data-key')];
+          const img = it.querySelector('img');
+          it.classList.remove('done', 'progress');
+          if (s === 'done') { img.src = ICON.done; it.classList.add('done'); done++; }
+          else if (s === 'progress') { img.src = ICON.progress; it.classList.add('progress'); prog++; }
+          else { img.src = ICON.todo; }
+        });
+        const total = items.length;
+        const pct = total ? Math.round((done + 0.5 * prog) / total * 100) : 0;
+        document.getElementById('pgsFill').style.width = Math.max(5, pct) + '%';
+      }
+      renderGs();
+      window.addEventListener('load', renderGs);   // catch explore→done set by ftux.js
+      document.getElementById('pgsHead').addEventListener('click', function () { gs.classList.toggle('collapsed'); });
+      document.getElementById('pgsReturn').setAttribute('href', returnHref);
+    })();
 
     // ── Branded sign-in preview (arriving with #signin=1) ──
     // Shows how a client's branded sign-in looks; skippable since it's a preview.
