@@ -133,10 +133,7 @@
     .crm-coach-title { font-size: 15px; font-weight: 500; color: #212b36; margin: 0 0 6px; letter-spacing: -0.005em; padding-right: 20px; }
     .crm-coach-body { font-size: 13px; line-height: 1.55; color: var(--muted); margin: 0 0 18px; }
     .crm-coach-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .crm-coach-dots { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .crm-coach-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: #d4d6db; cursor: pointer; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease; will-change: width; }
-    .crm-coach-dot:hover { background: #b9bcc1; }
-    .crm-coach-dot.on { width: 18px; background: #1a1a1a; }
+    .crm-coach-step { font-size: 12px; color: #9aa0a6; flex-shrink: 0; white-space: nowrap; }
     .crm-coach-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
     .crm-coach-later { background: none; border: 0; font-family: inherit; font-size: 13px; color: var(--muted); cursor: pointer; padding: 6px 10px; border-radius: 7px; white-space: nowrap; }
     .crm-coach-later:hover { color: var(--text); background: var(--bg-hover); }
@@ -326,10 +323,7 @@
     <div class="crm-coach-title" id="crmCoachTitle">Your test client is ready</div>
     <div class="crm-coach-body" id="crmCoachBody"></div>
     <div class="crm-coach-foot">
-      <div class="crm-coach-dots" id="crmCoachStep">
-        <button class="crm-coach-dot" type="button" data-step="1" aria-label="Step 1"></button>
-        <button class="crm-coach-dot" type="button" data-step="2" aria-label="Step 2"></button>
-      </div>
+      <span class="crm-coach-step" id="crmCoachStep">1 of 2</span>
       <div class="crm-coach-actions">
         <button class="crm-coach-later" id="crmCoachLater" type="button" style="display:none">Later</button>
         <button class="crm-coach-btn" id="crmCoachOpen" type="button"><span class="coach-label">Next</span></button>
@@ -619,7 +613,7 @@
         stepEl.style.display = '';
         open.style.display = '';
         document.getElementById('crmCoachLater').style.display = 'none';   // no Back/Later — dismiss via X only
-        [].forEach.call(stepEl.querySelectorAll('.crm-coach-dot'), function (d) { d.classList.toggle('on', parseInt(d.getAttribute('data-step'), 10) === step); });
+        stepEl.textContent = step + ' of 2';
         const row = tbody.querySelector('tr');
         if (step === 1) {
           closeRowMenu();
@@ -857,13 +851,6 @@
       document.getElementById('crmCoachLater').addEventListener('click', function () {
         if (coachMode === 'coach' && coachStep === 2) { renderCoachB(1); return; }
         closeCoach();
-      });
-      // Progress dots double as navigation — click to jump between the two steps.
-      [].forEach.call(document.querySelectorAll('#crmCoachStep .crm-coach-dot'), function (d) {
-        d.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (coachMode === 'coach') renderCoachB(parseInt(d.getAttribute('data-step'), 10));
-        });
       });
 
       // Row ••• menu: toggle on the row's actions button (delegated — rows are dynamic).
