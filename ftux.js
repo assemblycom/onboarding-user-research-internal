@@ -278,20 +278,22 @@
       '<button class="cf-x" type="button" aria-label="Close">' + X + '</button>' +
     '</div>';
     document.body.appendChild(ov);
-    // Dismissing the gate (✕ or backdrop) remembers it — it won't show again.
-    function close() { ov.classList.remove('show'); try { localStorage.setItem('onb.clientFirstSeen', '1'); } catch (e) {} }
+    // Seen once = never again. Both dismissing (✕) AND taking the CTA mark it seen,
+    // so a later "Open Portal" skips the gate and goes through the auth flow instead.
+    function markSeen() { try { localStorage.setItem('onb.clientFirstSeen', '1'); } catch (e) {} }
+    function close() { ov.classList.remove('show'); markSeen(); }
     ov.querySelector('.cf-x').addEventListener('click', close);
     // On the CRM the user is already where they need to be — relabel the CTA and just
     // close (the coachmark points at the row's "Open portal as client"). Elsewhere it
-    // routes to the CRM.
+    // routes to the CRM. Either path marks the gate as seen.
     var goBtn = ov.querySelector('.cf-go');
     if (location.pathname.indexOf('crm.html') > -1) {
       goBtn.textContent = 'Got it';
       goBtn.addEventListener('click', close);
     } else {
-      goBtn.addEventListener('click', function () { location.href = 'crm.html' + navSuffix(); });
+      goBtn.addEventListener('click', function () { markSeen(); location.href = 'crm.html' + navSuffix(); });
     }
-    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    // Dismissable ONLY via the ✕ — clicking the backdrop does nothing.
     return ov;
   }
   function showClientFirst() {
