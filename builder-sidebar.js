@@ -302,7 +302,7 @@
       '<div class="spacer"></div>' +
       '<div class="checklist">' +
         '<div class="checklist-title">Getting started</div>' +
-        '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Add your first app</div>' +
+        '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Publish your first app</div>' +
         '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Create test client</div>' +
         '<div class="checklist-item"><img class="ic" src="assets/todo.svg" alt="" width="14" height="14" />Explore the client experience</div>' +
       '</div>' +
@@ -691,7 +691,7 @@
     sb.innerHTML = buildHTML();
     wire(sb);
     if (typeof window.ftuxInit === 'function') window.ftuxInit();
-    // "Add your first app" goes in-progress when the user presses Start building
+    // "Publish your first app" goes in-progress when the user presses Start building
     // (handled in studio.html), not merely on landing in the builder.
     syncDraft(sb);
     removeCover();

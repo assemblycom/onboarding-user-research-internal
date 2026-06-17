@@ -43,12 +43,17 @@
     .pgs.collapsed .pgs-body { display: none; }
     .pgs.collapsed .pgs-bar { margin-bottom: 0; }
     .pgs.collapsed { padding-bottom: 10px; }
-    .pgs-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; }
+    .pgs-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; cursor: pointer; border-radius: 6px; transition: background 0.12s; }
+    .pgs-item:hover { background: #f6f7f8; }
     .pgs-item img { width: 14px; height: 14px; flex-shrink: 0; display: block; }
     .pgs-item span { font-size: 12px; line-height: 20px; color: #212b36; }
     .pgs-item.done span { color: #6b6f76; text-decoration: line-through; }
     .pgs-return { display: flex; align-items: center; justify-content: center; margin: 4px 10px 10px; height: 28px; padding: 0 9px; background: #212b36; color: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 4px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none; }
     .pgs-return:hover { background: #0f1620; }
+    /* Smooth hand-off to the CRM: fade the portal to white before navigating,
+       so the colored portal doesn't hard-cut to the white CRM. */
+    .pgs-exit-cover { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity 0.24s ease; z-index: 10000; }
+    .pgs-exit-cover.show { opacity: 1; pointer-events: auto; }
 
     /* ── Main ── */
     .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
@@ -292,7 +297,33 @@
       renderGs();
       window.addEventListener('load', renderGs);   // catch explore→done set by ftux.js
       document.getElementById('pgsHead').addEventListener('click', function () { gs.classList.toggle('collapsed'); });
-      document.getElementById('pgsReturn').setAttribute('href', returnHref);
+      const ret = document.getElementById('pgsReturn');
+      ret.setAttribute('href', returnHref);
+      ret.addEventListener('click', function (e) {
+        e.preventDefault();
+        const cover = document.createElement('div');
+        cover.className = 'pgs-exit-cover';
+        document.body.appendChild(cover);
+        requestAnimationFrame(function () { cover.classList.add('show'); });
+        setTimeout(function () { location.href = returnHref; }, 240);
+      });
+
+      // Checklist items are shortcuts (same as the studio sidebar): Publish →
+      // the app builder, resuming the in-progress build if there is one;
+      // Explore → back to the CRM. Carries the nav params either way.
+      const navHash = navParams.length ? '#' + navParams.join('&') : '';
+      function builderHref() {
+        let app = null;
+        try { const al = JSON.parse(localStorage.getItem('onb.buildApps')); if (Array.isArray(al) && al.length) app = al[al.length - 1]; } catch (e) {}
+        return app ? ('builder.html' + (app.hash || navHash)) : ('studio.html' + navHash);
+      }
+      const DEST = { publish: builderHref, explore: function () { return returnHref; } };
+      gs.querySelectorAll('.pgs-item').forEach(function (it) {
+        it.addEventListener('click', function () {
+          const fn = DEST[it.getAttribute('data-key')];
+          if (fn) location.href = fn();
+        });
+      });
     })();
 
     // ── Branded sign-in preview (arriving with #signin=1) ──
