@@ -105,7 +105,7 @@
     if (!cl) return;
     var items = [].slice.call(cl.querySelectorAll('.checklist-item'));
     var st = get();
-    var visCount = 0, doneCount = 0;
+    var visCount = 0, doneCount = 0, progressCount = 0;
     items.forEach(function (it, i) {
       var k = keys[i];
       var img = it.querySelector('img');
@@ -119,10 +119,16 @@
       if (img) img.setAttribute('src', src);
       // Progress reflects only visible steps (some options hide the test-client /
       // explore steps), so the bar can't read as partially full with nothing checked.
-      if (it.style.display !== 'none') { visCount++; if (st[k] === 'done') doneCount++; }
+      if (it.style.display !== 'none') {
+        visCount++;
+        if (st[k] === 'done') doneCount++;
+        else if (st[k] === 'progress') progressCount++;
+      }
     });
     var fill = cl.querySelector('.ftux-bar-fill');
-    if (fill) fill.style.width = Math.max(7, Math.round(doneCount / Math.max(1, visCount) * 100)) + '%';
+    // Done steps count fully; in-progress steps count as half, so the bar advances
+    // as soon as a step is started (not only when it's completed).
+    if (fill) fill.style.width = (visCount ? Math.round((doneCount + 0.5 * progressCount) / visCount * 100) : 0) + '%';
     // Everything complete → show the all-done state briefly, then retire the card.
     if (visCount > 0 && doneCount === visCount) finishFtux(cl);
   }
