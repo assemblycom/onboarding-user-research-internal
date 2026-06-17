@@ -47,7 +47,7 @@
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
   <script src="ftux.js?v=52"></script>
-  <script src="builder-sidebar.js?v=18"></script>
+  <script src="builder-sidebar.js?v=19"></script>
 </head>
 <body>
   <div id="__bundler_thumbnail">
@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       '@keyframes asmCardOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(20px); } }',
 
       // ── Q&A card — bottom-anchored overlay over the input area ──
-      '.asm-qa-anchor { position: absolute; left: 18px; right: 18px; top: 0; bottom: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }',
+      '.asm-qa-anchor { position: absolute; left: 18px; right: 18px; bottom: 24px; pointer-events: none; display: flex; justify-content: center; }',
       // ── Skeleton loading state for the 2s after auth before the
       //    Q&A appears. We show shimmering placeholder lines in place
       //    of the user prompt + agent ack while the boot delay runs,

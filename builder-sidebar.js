@@ -49,7 +49,7 @@
     '.asm-sb .spacer{flex:1;}' +
     '.asm-sb .checklist{border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;}' +
     '.asm-sb .checklist-title{font-size:12.5px;font-weight:500;margin-bottom:10px;}' +
-    '.asm-sb .checklist-item{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12.5px;color:var(--muted);position:relative;}' +
+    '.asm-sb .checklist-item{display:flex;align-items:center;gap:10px;margin:0;padding:5px 0;font-size:12.5px;color:var(--muted);position:relative;}' +
     '.asm-sb .checklist-item.active{color:var(--text);font-weight:500;}' +
     '.asm-sb .sidebar-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 2px;}' +
     '.asm-sb .foot-actions{display:flex;align-items:center;gap:8px;}' +

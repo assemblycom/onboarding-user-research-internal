@@ -434,7 +434,7 @@
       // the "sample" persona is an obvious, generic stand-in (variants B + C).
       const TEST_CLIENT = {
         kind: 'test', name: uName || 'Test User', email: uEmail || ('test.user@' + coDomain),
-        company: wsDisplay + ' (Test Company)', coInitial: wsDisplay.trim()[0].toUpperCase(), status: 'active'
+        company: wsDisplay + ' (Test Company)', coInitial: wsDisplay.trim()[0].toUpperCase(), status: 'inactive'
       };
       const SAMPLE_CLIENT = {
         kind: 'sample', name: 'Jane Rivera', email: 'jane@acme.co',
@@ -472,7 +472,9 @@
         const first = c.name.trim().split(/\s+/)[0];
         const statusHtml = c.status === 'sample'
           ? '<span class="badge badge-sample">Sample</span>'
-          : '<span class="badge badge-active">Active</span>';
+          : c.status === 'active'
+            ? '<span class="badge badge-active">Active</span>'
+            : '<span class="badge badge-inactive">Inactive</span>';
         const tr = document.createElement('tr');
         tr.innerHTML =
           '<td><div class="cell-name"><span class="avatar"></span><div><div class="nm"></div><div class="em"></div></div></div></td>' +
@@ -732,8 +734,21 @@
         if (toastTimer) clearTimeout(toastTimer);
         toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
       }
+      // Opening the portal is what "activates" the client — until then the row reads
+      // Inactive. Flip the stored status so the badge shows Active on return to the CRM.
+      function markClientActive() {
+        try {
+          var c = readClient();
+          if (c && c.status !== 'sample' && c.status !== 'active') {
+            c.status = 'active';
+            localStorage.setItem(CLIENT_KEY, JSON.stringify(c));
+            if (current) current.status = 'active';
+          }
+        } catch (e) {}
+      }
       function gotoPortal() {
         markClientDone();   // engaging with the test client completes the step
+        markClientActive(); // opening the portal activates the client
         location.href = 'portal.html#from=crm.html' + (navSuffix ? '&' + navSuffix.slice(1) : '');
       }
       // The single focused action for this moment: copy the client's magic link.
@@ -824,7 +839,7 @@
         if (formMode === 'create') {
           addClient(Object.assign({}, formClient, { name: name, email: email, company: co, coInitial: coInitial }), formShowcase);
         } else {
-          addClient({ kind: 'real', name: name, email: email, company: co, coInitial: coInitial, status: 'active' });
+          addClient({ kind: 'real', name: name, email: email, company: co, coInitial: coInitial, status: 'inactive' });
         }
       });
 
@@ -832,6 +847,7 @@
       document.getElementById('crmConvertBtn').addEventListener('click', openInviteForm);
 
       document.getElementById('crmPopOpen').addEventListener('click', function () {
+        markClientActive();
         location.href = 'portal.html#from=crm.html' + (navSuffix ? '&' + navSuffix.slice(1) : '');
       });
       document.getElementById('crmPopAlt').addEventListener('click', function () {
