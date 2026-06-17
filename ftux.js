@@ -113,7 +113,7 @@
       var src;
       // Done → green check. Any step set to 'progress' shows the in-progress
       // indicator + is highlighted; otherwise it's a plain todo.
-      if (st[k] === 'done') { src = 'assets/check-green.svg?v=2'; it.classList.add('ftux-done'); }
+      if (st[k] === 'done') { src = 'assets/check-green.svg?v=3'; it.classList.add('ftux-done'); }
       else if (st[k] === 'progress') { src = 'assets/progress-indication.svg'; it.classList.add('active'); }
       else { src = 'assets/todo.svg'; }
       if (img) img.setAttribute('src', src);
