@@ -691,8 +691,8 @@
     sb.innerHTML = buildHTML();
     wire(sb);
     if (typeof window.ftuxInit === 'function') window.ftuxInit();
-    // Reaching the builder means a prompt was entered → publish is in-progress.
-    if (window.ftuxMarkPublishProgress) window.ftuxMarkPublishProgress();
+    // "Add your first app" goes in-progress when the user presses Start building
+    // (handled in studio.html), not merely on landing in the builder.
     syncDraft(sb);
     removeCover();
   }

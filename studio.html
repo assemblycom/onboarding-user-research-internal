@@ -267,9 +267,11 @@
       startBtn.style.cursor = has ? 'pointer' : 'default';
     }
 
-    // A prompt (typed, chip-selected, or carried from the website) flips the
-    // "Add your first app" FTUX item from todo to in-progress.
-    function markPromptEntered() {
+    // Pressing "Start building" is what flips the "Add your first app" FTUX item
+    // from todo to in-progress (half). Entering, restoring, or chip-/template-
+    // filling a prompt no longer counts — progress only reflects a build that
+    // was actually kicked off.
+    function markBuildStarted() {
       if (window.ftuxMarkPublishProgress) { window.ftuxMarkPublishProgress(); return; }
       try { var s = JSON.parse(localStorage.getItem('onb.ftux')) || {}; if (!s.publish) { s.publish = 'progress'; localStorage.setItem('onb.ftux', JSON.stringify(s)); } } catch (e) {}
     }
@@ -284,11 +286,11 @@
     if (!initial) { try { initial = localStorage.getItem(STUDIO_PROMPT_KEY) || ''; } catch (e) {} }
     // Persist the prompt (incl. one carried from the website via #prompt=) so it
     // survives navigating away and back, not just typing here.
-    if (initial) { promptField.value = initial; markPromptEntered(); savePrompt(); }
+    if (initial) { promptField.value = initial; savePrompt(); }
     autosize();
     updateStart();
 
-    promptField.addEventListener('input', () => { autosize(); updateStart(); savePrompt(); if (promptField.value.trim()) markPromptEntered(); });
+    promptField.addEventListener('input', () => { autosize(); updateStart(); savePrompt(); });
 
     // Category chips below open a dropdown of related starter apps; picking one
     // fills the prompt (same effect the old single-prompt chips had).
@@ -300,7 +302,6 @@
           autosize();
           updateStart();
           savePrompt();
-          markPromptEntered();
           promptField.focus();
         }
       });
@@ -339,7 +340,6 @@
           autosize();
           updateStart();
           savePrompt();
-          markPromptEntered();
           promptField.focus();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
@@ -371,6 +371,7 @@
       const p = promptField.value.trim();
       if (!p) { promptField.focus(); return; }
       if (existingApp) { showOneAppTip(); return; }   // one-app limit
+      markBuildStarted();   // build kicked off → "Add your first app" goes half-done
       // Build kicked off — clear the saved draft so a later visit starts clean.
       try { localStorage.removeItem(STUDIO_PROMPT_KEY); } catch (e) {}
       window.location.href = 'builder.html#prompt=' + encodeURIComponent(p);
