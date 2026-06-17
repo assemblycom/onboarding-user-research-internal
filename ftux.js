@@ -128,7 +128,7 @@
     var fill = cl.querySelector('.ftux-bar-fill');
     // Done steps count fully; in-progress steps count as half, so the bar advances
     // as soon as a step is started (not only when it's completed).
-    if (fill) fill.style.width = (visCount ? Math.round((doneCount + 0.5 * progressCount) / visCount * 100) : 0) + '%';
+    if (fill) fill.style.width = Math.max(5, visCount ? Math.round((doneCount + 0.5 * progressCount) / visCount * 100) : 0) + '%';
     // Everything complete → show the all-done state briefly, then retire the card.
     if (visCount > 0 && doneCount === visCount) finishFtux(cl);
   }
