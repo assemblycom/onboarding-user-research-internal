@@ -715,4 +715,28 @@
     var n = 0;
     (function burst() { injectSriApp(); if (++n < 16) requestAnimationFrame(burst); })();
   }, true);
+
+  // The hand-built preview is a fixed-position overlay synced to its card on a
+  // 60ms poll. During scroll that poll lags the card, so the overlay visibly
+  // jitters/drifts. Re-glue it to the card on every scroll/resize frame (cheap:
+  // just reads the cached card's rect — no DOM re-query or innerHTML swap).
+  function repositionOverlay() {
+    var ov = document.getElementById('asm-sri-overlay');
+    if (!ov || ov.style.display === 'none' || !overlaidCard) return;
+    var r = overlaidCard.getBoundingClientRect();
+    if (r.width === 0) return;
+    var left = Math.max(r.left, previewPaneLeft());
+    ov.style.left = left + 'px';
+    ov.style.top = r.top + 'px';
+    ov.style.width = Math.max(0, r.right - left) + 'px';
+    ov.style.height = r.height + 'px';
+  }
+  var repoQueued = false;
+  function queueReposition() {
+    if (repoQueued) return;
+    repoQueued = true;
+    requestAnimationFrame(function () { repoQueued = false; repositionOverlay(); });
+  }
+  window.addEventListener('scroll', queueReposition, true);   // capture → any nested scroller
+  window.addEventListener('resize', queueReposition);
 })();
