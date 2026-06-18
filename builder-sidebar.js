@@ -504,14 +504,14 @@
   // bundle's Time Tracker artboard in the preview pane so the built app reads
   // as a service-request intake. Re-applied each tick (survives re-renders).
   var SRI_ROWS = [
-    ['Login page won’t load', 'Meridian Corp', 'Bug', 'Apr 10', 'High', 'open', 'Open'],
-    ['Onboard new team member', 'Oakwood LLC', 'Onboarding', 'Apr 10', 'Normal', 'review', 'In review'],
-    ['Update billing contact', 'Meridian', 'Account', 'Apr 9', 'Normal', 'resolved', 'Resolved'],
-    ['Export account data', '—', 'Data', 'Apr 9', 'Low', 'open', 'Open'],
-    ['Integration not syncing', 'Bloom Studios', 'Bug', 'Apr 9', 'High', 'review', 'In review'],
-    ['Add 5 user seats', 'NovaTech Inc', 'Account', 'Apr 8', 'Normal', 'resolved', 'Resolved'],
-    ['Reset team passwords', 'Bloom Studios', 'Security', 'Apr 8', 'High', 'resolved', 'Resolved'],
-    ['Question about an invoice', 'NovaTech Inc', 'Billing', 'Apr 7', 'Low', 'closed', 'Closed']
+    ['Reconcile March bank statements', 'Meridian Corp', 'Bookkeeping', 'Apr 10', 'High', 'open', 'Open'],
+    ['Run payroll for 3 new hires', 'Oakwood LLC', 'Payroll', 'Apr 10', 'Normal', 'review', 'In review'],
+    ['Question about Q1 estimated taxes', 'Meridian', 'Tax', 'Apr 9', 'Normal', 'resolved', 'Resolved'],
+    ['Categorize last month’s expenses', '—', 'Bookkeeping', 'Apr 9', 'Low', 'open', 'Open'],
+    ['Fix a payroll tax discrepancy', 'Bloom Studios', 'Payroll', 'Apr 9', 'High', 'review', 'In review'],
+    ['File 1099s for contractors', 'NovaTech Inc', 'Tax', 'Apr 8', 'Normal', 'resolved', 'Resolved'],
+    ['Update direct deposit details', 'Bloom Studios', 'Payroll', 'Apr 8', 'High', 'resolved', 'Resolved'],
+    ['General question about our retainer', 'NovaTech Inc', 'General', 'Apr 7', 'Low', 'closed', 'Closed']
   ];
   var PRIO_COLOR = { High: '#d9634a', Normal: '#c69b3c', Low: '#9aa0a6' };
   function sriAppHTML() {
@@ -699,4 +699,20 @@
 
   setInterval(apply, 60);
   apply();
+
+  // Switching preview tabs (Dashboard ↔ Portal) re-renders the bundle's preview
+  // card. With only the 60ms poll, the freshly-rendered card — whose dark Portal
+  // nav sits behind our overlay's rounded corners — flashes black for up to a
+  // frame or two. Re-running injectSriApp on the click and across the next few
+  // frames re-covers the new card before the browser paints it, killing the
+  // flicker. Capture phase so it runs as the tab is activated.
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('button') : null;
+    if (!btn) return;
+    var txt = btn.textContent.trim();
+    if (txt !== 'Dashboard' && txt !== 'Portal' && txt !== 'Notifications') return;
+    if (((window.__ASM_STATE || {}).phase) !== 'done') return;
+    var n = 0;
+    (function burst() { injectSriApp(); if (++n < 16) requestAnimationFrame(burst); })();
+  }, true);
 })();

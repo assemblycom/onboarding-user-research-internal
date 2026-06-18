@@ -46,8 +46,8 @@
     })();
   </script>
   <!-- Shared Studio sidebar + Getting-started FTUX, injected into the bundle. -->
-  <script src="ftux.js?v=54"></script>
-  <script src="builder-sidebar.js?v=21"></script>
+  <script src="ftux.js?v=55"></script>
+  <script src="builder-sidebar.js?v=23"></script>
 </head>
 <body>
   <div id="__bundler_thumbnail">
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   // The service-request prompt is the fully fleshed-out showcase; other prompts
   // get a generic (app-name-based) plan + requirements so the copy still tracks
   // what the user asked for instead of always reading as a time tracker.
-  var IS_SERVICE = /service\s*request/i.test(PAYLOAD.prompt || '') || (APP_NAME || '').toLowerCase() === 'requests';
+  var IS_SERVICE = /service\s*request|support request|request hub/i.test(PAYLOAD.prompt || '') || (APP_NAME || '').toLowerCase() === 'requests';
 
   // Persist the in-progress app as a draft the instant the builder loads — so it
   // survives navigating away mid-build/plan even before the sidebar script's
@@ -4190,11 +4190,11 @@ document.addEventListener('DOMContentLoaded', async function() {
   // surface. Variant choice is persisted in localStorage.
   // ============================================================
   var PLAN_ITEMS_DEFAULT = IS_SERVICE ? [
-    { title: 'Requests data model',      detail: 'Client, type, priority, status',        kind: 'data' },
-    { title: 'New request form',         detail: 'Client, category, description, files',   kind: 'screen' },
+    { title: 'Requests data model',      detail: 'Client, category, priority, status',    kind: 'data' },
+    { title: 'New request form',         detail: 'Bookkeeping, payroll, tax, or general',  kind: 'screen' },
     { title: 'Request queue',            detail: 'My queue, team, all requests',          kind: 'screen' },
-    { title: 'Filters + export',         detail: 'By status, client, or date',            kind: 'action' },
-    { title: 'Status notifications',     detail: 'On new, in-review, and resolved',       kind: 'automation' },
+    { title: 'Filters + export',         detail: 'By status, client, or category',        kind: 'action' },
+    { title: 'Client status updates',    detail: 'On new, in-review, and resolved',       kind: 'automation' },
     { title: 'Brand and permissions',    detail: 'Use your colors, gate by role',         kind: 'setup' }
   ] : [
     { title: APP_NAME + ' data model',   detail: 'The core records your app stores',      kind: 'data' },
@@ -4775,25 +4775,25 @@ document.addEventListener('DOMContentLoaded', async function() {
   // and auto-scrolls so everything is visible. The user approves THIS
   // (via the composer "Build plan" callout), not a step checklist.
   var REQUIREMENTS_HTML = (IS_SERVICE ? [
-    '<p>A service request intake app for your team to capture, triage, and resolve client requests in one place — turning scattered emails and messages into a clear, trackable queue with status, priority, and ownership.</p>',
+    '<p>A client support request hub for your accounting clients — one place for them to submit bookkeeping, payroll, tax, and general accounting questions, track the status of each request, and get updates from your team.</p>',
     '<div class="asm-req-h">Audience and Roles</div>',
-    '<p>Team members pick up requests from the queue, update status, and respond. Managers see every request across the team, reassign work, and track resolution. Because the app is visible in your Client Portal, clients can submit requests and follow their own — but nothing else.</p>',
+    '<p>Your accounting team picks up requests from the queue, updates status, and replies. Managers see every request across clients, reassign work, and track resolution. Because the app is visible in your Client Portal, clients can submit requests and follow their own — but nothing else.</p>',
     '<div class="asm-req-h">Core Flows</div>',
     '<ul>',
-    '<li>A client or team member submits a request with a category, description, and any attachments.</li>',
+    '<li>A client submits a request, choosing a category — bookkeeping, payroll, tax, or general — with a description and any files.</li>',
     '<li>The request lands in the queue with a priority and an Open status, ready to be picked up.</li>',
     '<li>A team member opens a request, assigns it, and moves it through In review → Resolved.</li>',
-    '<li>A manager filters by status, client, or date and exports a summary of the queue.</li>',
-    '<li>A client opens the Client Portal and sees their own requests with current status.</li>',
+    '<li>A manager filters by status, client, or category and exports a summary of the queue.</li>',
+    '<li>A client opens the Client Portal and tracks their own requests with current status and updates.</li>',
     '</ul>',
     '<div class="asm-req-h">Notifications</div>',
     '<ul>',
-    '<li>New request: notify the team so it gets picked up quickly.</li>',
-    '<li>Status change: notify the requester when their request moves to in-review or resolved.</li>',
+    '<li>New request: notify the accounting team so it gets picked up quickly.</li>',
+    '<li>Status change: update the client when their request moves to in-review or resolved.</li>',
     '<li>Unassigned: remind the team if a request sits without an owner.</li>',
     '</ul>',
     '<div class="asm-req-h">Design Preferences</div>',
-    '<p>Inherits Assembly\'s design system. Internal views are table-driven and scannable, with clear status badges and quick actions. The client-facing view stays calm: submit a request and track its status.</p>'
+    '<p>Inherits Assembly\'s design system. Internal views are table-driven and scannable, with clear status badges and quick actions. The client-facing view stays calm: submit a question and track its status.</p>'
   ] : [
     '<p>A custom ' + escapeHtml(APP_NAME) + ' app built from your prompt — “' + escapeHtml(PAYLOAD.prompt || '') + '”. It sets up the data, screens, and actions for that goal so your team works in one place and shares the right parts with clients.</p>',
     '<div class="asm-req-h">Audience and Roles</div>',

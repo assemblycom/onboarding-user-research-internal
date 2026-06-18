@@ -26,10 +26,16 @@
       '.checklist-item{cursor:pointer;border-radius:6px;margin:0 -8px;padding:6px 8px;gap:8px;transition:background .12s;}' +
       '.checklist-item:hover{background:var(--bg-hover,#eff1f4);}' +
       '.checklist-item.ftux-done{color:#8a9099;}' +
+      '.checklist-item.ftux-done .ci-label{text-decoration:line-through;}' +
       '.checklist{transition:opacity .45s ease, transform .45s ease;}' +
       '.checklist.ftux-dismiss-out{opacity:0;transform:translateY(10px);pointer-events:none;}' +
       '.checklist-item img{flex-shrink:0;}' +
       '.ci-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+      // Collapsible header (chevron on the right), matching the portal card.
+      '.checklist-title{display:flex;align-items:center;justify-content:space-between;cursor:pointer;}' +
+      '.checklist-chev{display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:#6b6f76;flex-shrink:0;transition:transform .15s ease;}' +
+      '.checklist.ftux-collapsed .checklist-chev{transform:rotate(-90deg);}' +
+      '.checklist.ftux-collapsed .checklist-item{display:none;}' +
       // ── "Explore the client experience" interstitial (shown before the portal) ──
       '.pi-ov{position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,0.42);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:Inter,system-ui,sans-serif;}' +
       '.pi-ov.show{opacity:1;pointer-events:auto;}' +
@@ -366,6 +372,15 @@
     if (title && !cl.querySelector('.ftux-bar')) {
       var bar = document.createElement('div'); bar.className = 'ftux-bar'; bar.innerHTML = '<div class="ftux-bar-fill"></div>';
       title.parentNode.insertBefore(bar, title.nextSibling);
+    }
+    // Collapse chevron on the title — click to hide/show the items (the bar
+    // stays visible), matching the portal's Getting-started card.
+    if (title && !title.querySelector('.checklist-chev')) {
+      var chev = document.createElement('span');
+      chev.className = 'checklist-chev';
+      chev.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+      title.appendChild(chev);
+      title.addEventListener('click', function () { cl.classList.toggle('ftux-collapsed'); });
     }
 
     var suffix = navSuffix();
