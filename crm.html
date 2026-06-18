@@ -757,6 +757,7 @@
         try { if (navigator.clipboard) navigator.clipboard.writeText(link); } catch (e) {}
         toast('Magic link copied to clipboard');
         markClientDone();
+        markExploreProgress();   // copying the magic link = started the preview flow → in-progress
       }
 
       // ── Variants A + C: open the ••• menu (Copy highlighted) + a minimal card ──
@@ -883,9 +884,10 @@
         if (!item) return;
         const act = item.dataset.act;
         if (act === 'open') { gotoPortal(); return; }   // navigates away — leave menu/coach as-is
+        if (act === 'copy') { copyMagicLink(); closeRowMenu(); closeCoach(); return; }   // copies link + marks Explore in-progress
         closeRowMenu();
         closeCoach();
-        // Email / Copy magic link are illustrative only (not wired in this prototype).
+        // Email is illustrative only (not wired in this prototype).
       });
 
       window.addEventListener('resize', function () {
@@ -944,7 +946,7 @@
       }
     })();
   </script>
-  <script src="ftux.js?v=55"></script>
+  <script src="ftux.js?v=56"></script>
   <script src="apps-nav.js?v=6"></script>
   <script src="prototype-hints.js?v=6"></script>
 </body>

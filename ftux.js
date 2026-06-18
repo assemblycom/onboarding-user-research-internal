@@ -326,6 +326,8 @@
     // the only thing that sets explore='done'. Until then we funnel them to the CRM.
     var exp; try { exp = (get() || {}).explore; } catch (e) {}
     if (exp === 'done') { location.href = 'portal.html' + navSuffix(); return; }
+    // Opening the Open Portal preview = the user has started the preview flow → in-progress.
+    try { var sp = get(); if (sp.explore !== 'progress') { sp.explore = 'progress'; save(sp); render(); } } catch (e) {}
     // Test client isn't active yet (explore !== 'done'). The generic "Open Portal" must
     // NOT open the portal directly — even on the CRM. Activation happens only via the
     // row's "Open portal as client" action. Show the gate once; if it's already been
